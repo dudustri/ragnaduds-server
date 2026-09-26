@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Start the renewal server (if needed) and the kRO 2026 client, in the background.
+# The terminal is freed right away; output goes to ~/games/kro2026/client.log.
+LOG="$HOME/games/kro2026/client.log"
+if [ -z "$RO_DETACHED" ]; then
+  RO_DETACHED=1 setsid -f "$0" "$@" >"$LOG" 2>&1 </dev/null
+  echo "Ragnarok 2026 starting in the background (log: $LOG)"
+  exit 0
+fi
+"$HOME/rathena/duds_server/duds.sh" up local re-db re-login re-char re-map </dev/null || echo "warning: could not start the renewal server"
+export WINEPREFIX="$HOME/games/kro2026/wine" WINEDEBUG="${WINEDEBUG:--all}"
+cd "$WINEPREFIX/drive_c/Gravity/kRO2026"
+exec wine ragexe_2026_patched.exe 1rag1 "$@"

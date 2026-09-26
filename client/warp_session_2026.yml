@@ -1,0 +1,90 @@
+from: "C:/Users/Victor/Desktop/20260107/2026-01-07_Ragexe_1767686776_VHL_v4_clientinfo.exe"
+to: "C:/Users/Victor/Desktop/20260107/2026-01-07_Ragexe_1767686776_VHL_v4_clientinfo_patched.exe"
+inputs:
+    $translationFile:
+        data: ''
+        display: "Inputs/Translations_EN.yml"
+        type: 10
+    
+    $customDLL:
+        data: ''
+        display: "Inputs/DLLSpec.yml"
+        type: 10
+    
+    $newShownButtons:
+        data: ''
+        display: 
+            - type: 10
+              value: "Battleground"
+    
+    $dataINI:
+        data: '444154412e494e4900'
+        display: "DATA.INI"
+        type: 10
+    
+    $inpFlag:
+        data: ''
+        display: "Inputs/FlagSpec.yml"
+        type: 10
+    
+    $GoldPCMaxPoints:
+        data: '84030000'
+        display: 900
+        type: 2
+    
+patches:
+    - AllowPL2Leave
+    - AllowGuildInClan
+    - EnableWho
+    - EnableShowName
+    - ShowRoulette
+    - ZeroCinShop
+    - PreviewInShop
+    - PreviewInTrader
+    - MediumCamAngle
+    - ZoomMax
+    - UseOldLogin
+    - AlwaysAscii
+    - CallKoreaClientInfo
+    - PlainTextDesc
+    - LoadKrExtSettings
+    - IncrMapQuality
+    - CustomDLL
+    - HideBuildInfo
+    - TranslateClient
+    - RestoreCpsDll
+    - GRFsFromIni
+    - DataFolderFirst
+    - EnableSysMenu
+    - RestoreIcon
+    - EnableDnsSupport
+    - NoNagle
+    - NoLoginOTP
+    - EnableProxy
+    - SendClientFlags
+    - Enable44kHzAudio
+    - TildeForMatk
+    - NoSwearFilter
+    - OpenToServiceSelect
+    - GuildBrackets
+    - FixChatAt
+    - NoHourly
+    - EnableFlagEmotes
+    - AllowSpaceInGName
+    - NoHelpMsg
+    - CloseCutinOnEsc
+    - EnableNpcDialogueScrolling
+    - HideZeroDateInGuildWin
+    - EnableFlagAnimation
+    - RestoreBattlegroundUI
+    - FixSelectMenuReset
+    - FixSelectMenuWidthExpansion
+    - FixSkillbarReset
+    - ChangeGoldPCMaxPoints
+    - CustomBarterZenySep
+    - InsensitiveStorageSearch
+    - InsensitiveShopSearch
+    - NoGravityAds
+    - NoGravityLogo
+    - ShowNewButtons
+    - FixLatestNCWin

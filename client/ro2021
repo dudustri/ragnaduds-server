@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Start the pre-renewal server (if needed) and the kRO 2021 client, in the background.
+# The terminal is freed right away; output goes to ~/games/kro2021/client.log.
+LOG="$HOME/games/kro2021/client.log"
+if [ -z "$RO_DETACHED" ]; then
+  RO_DETACHED=1 setsid -f "$0" "$@" >"$LOG" 2>&1 </dev/null
+  echo "Ragnarok 2021 starting in the background (log: $LOG)"
+  exit 0
+fi
+"$HOME/rathena/duds_server/duds.sh" up local prere-db prere-login prere-char prere-map </dev/null || echo "warning: could not start the pre-renewal server"
+export WINEPREFIX="$HOME/games/kro2021/wine" WINEDEBUG="${WINEDEBUG:--all}"
+cd "$WINEPREFIX/drive_c/Gravity/RagnarokKRO"
+exec wine ragexe_2021_patched.exe "$@"
