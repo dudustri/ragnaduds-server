@@ -1,0 +1,22 @@
+#cloud-config
+package_update: true
+packages:
+    - ca-certificates
+    - curl
+    - git
+
+runcmd:
+    - curl -fsSL https://get.docker.com | sh
+    - usermod -aG docker ubuntu
+    - systemctl enable --now docker
+
+    # firewall: reject incoming traffic except SSH by default
+    - for p in 80 443 6900 6121 5121 6901 6122 5122 8888 8889; do iptables -I INPUT -p tcp --dport $p -j ACCEPT; done
+    - |
+        if ! command -v netfilter-persistent >/dev/null; then
+          echo "iptables-persistent iptables-persistent/autosave_v4 boolean true" | debconf-set-selections
+          echo "iptables-persistent iptables-persistent/autosave_v6 boolean true" | debconf-set-selections
+          DEBIAN_FRONTEND=noninteractive apt-get install -y iptables-persistent
+        fi
+    - netfilter-persistent save
+    - date > /var/log/duds-provisioned

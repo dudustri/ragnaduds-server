@@ -1,0 +1,139 @@
+# Everything that runs: both game servers + the download page. Images only: no source code needed.
+# Per-host settings live in hosts/<host>/ (git-ignored): .env (passwords, ports, volumes) + game configs.
+#   ../duds.sh up local            → docker compose --env-file hosts/local/.env up -d
+#   ../duds.sh up vm               → copies this folder to the VM, pulls images, starts
+# Each game stack has its own network with the aliases db/login/char/map its configs expect.
+name: duds
+
+x-rathena: &rathena
+    init: true
+    restart: unless-stopped
+    # Denmark time (CET/CEST) as a POSIX rule: works without tzdata in the images. Daily resets happen at midnight here.
+    environment: { TZ: "CET-1CEST,M3.5.0,M10.5.0/3" }
+
+services:
+    # ---------------- pre-renewal (client 2021-11-03) ----------------
+    prere-db:
+        image: "ghcr.io/dudustri/duds-server-db:${TAG:-latest}"
+        restart: unless-stopped
+        environment: { TZ: "CET-1CEST,M3.5.0,M10.5.0/3", MYSQL_ROOT_PASSWORD: "${PRERE_DB_PASS}", MYSQL_DATABASE: ragnarok, MYSQL_USER: ragnarok, MYSQL_PASSWORD: "${PRERE_DB_PASS}" }
+        volumes: ["prere_db:/var/lib/mysql"]
+        networks: { prere: { aliases: [db] } }
+    prere-login:
+        <<: *rathena
+        image: "ghcr.io/dudustri/duds-server-pre-renewal:${TAG:-latest}"
+        command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./login-server"
+        volumes: ["${HOST_DIR}/pre_renewal/import:/rathena/conf/import:z"]
+        ports: ["6900:6900"]
+        networks: { prere: { aliases: [login] } }
+        depends_on: [prere-db]
+    prere-char:
+        <<: *rathena
+        image: "ghcr.io/dudustri/duds-server-pre-renewal:${TAG:-latest}"
+        command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./char-server"
+        volumes: ["${HOST_DIR}/pre_renewal/import:/rathena/conf/import:z"]
+        ports: ["6121:6121"]
+        networks: { prere: { aliases: [char] } }
+        depends_on: [prere-login]
+    prere-map:
+        <<: *rathena
+        image: "ghcr.io/dudustri/duds-server-pre-renewal:${TAG:-latest}"
+        command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./map-server"
+        volumes:
+            - "${HOST_DIR}/pre_renewal/import:/rathena/conf/import:z"
+            - "./gm_commands.txt:/rathena/npc/custom/duds_gm_commands.txt:ro,z"   # @god / @nocooldown
+            - "./welcome.txt:/rathena/npc/custom/duds_welcome.txt:ro,z"   # random welcome line
+            - "./buffer.txt:/rathena/npc/custom/duds_buffer.txt:ro,z"     # Agente VIP at the bRO spots
+            - "./motd.txt:/rathena/conf/motd.txt:ro,z"
+        ports: ["5121:5121"]
+        networks: { prere: { aliases: [map] } }
+        depends_on: [prere-char]
+
+    prere-web:      # account settings + guild emblems for the client (2020+ clients ask for it)
+        <<: *rathena
+        image: "ghcr.io/dudustri/duds-server-pre-renewal:${TAG:-latest}"
+        command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./web-server"
+        volumes: ["${HOST_DIR}/pre_renewal/import:/rathena/conf/import:z"]
+        ports: ["8889:8889"]
+        networks: [prere]
+        depends_on: [prere-db]
+
+    # ---------------- renewal (client 2026-01-07) ----------------
+    re-db:
+        image: "ghcr.io/dudustri/duds-server-db:${TAG:-latest}"
+        restart: unless-stopped
+        environment: { TZ: "CET-1CEST,M3.5.0,M10.5.0/3", MYSQL_ROOT_PASSWORD: "${RE_DB_PASS}", MYSQL_DATABASE: ragnarok, MYSQL_USER: ragnarok, MYSQL_PASSWORD: "${RE_DB_PASS}" }
+        volumes: ["re_db:/var/lib/mysql"]
+        networks: { re: { aliases: [db] } }
+    re-login:
+        <<: *rathena
+        image: "ghcr.io/dudustri/duds-server-renewal:${TAG:-latest}"
+        command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./login-server"
+        volumes: ["${HOST_DIR}/renewal/import:/rathena/conf/import:z"]
+        ports: ["6901:6901"]
+        networks: { re: { aliases: [login] } }
+        depends_on: [re-db]
+    re-char:
+        <<: *rathena
+        image: "ghcr.io/dudustri/duds-server-renewal:${TAG:-latest}"
+        command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./char-server"
+        volumes: ["${HOST_DIR}/renewal/import:/rathena/conf/import:z"]
+        ports: ["6122:6122"]
+        networks: { re: { aliases: [char] } }
+        depends_on: [re-login]
+    re-map:
+        <<: *rathena
+        image: "ghcr.io/dudustri/duds-server-renewal:${TAG:-latest}"
+        command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./map-server"
+        volumes:
+            - "${HOST_DIR}/renewal/import:/rathena/conf/import:z"
+            - "./gm_commands.txt:/rathena/npc/custom/duds_gm_commands.txt:ro,z"
+            - "./welcome.txt:/rathena/npc/custom/duds_welcome.txt:ro,z"   # random welcome line
+            - "./buffer.txt:/rathena/npc/custom/duds_buffer.txt:ro,z"     # Agente VIP at the bRO spots
+            - "./motd.txt:/rathena/conf/motd.txt:ro,z"
+            # bRO special maps (Mapas Especiais, Cheffenia, Turn In): script + rooms, tickets, free cash shop
+            - "./special_maps.txt:/rathena/npc/custom/duds_special_maps.txt:ro,z"
+            - "./re_db_import/instance_db.yml:/rathena/db/import/instance_db.yml:ro,z"
+            - "./re_db_import/item_db.yml:/rathena/db/import/item_db.yml:ro,z"
+            - "./re_db_import/item_cash.yml:/rathena/db/import/item_cash.yml:ro,z"
+        ports: ["5122:5122"]
+        networks: { re: { aliases: [map] } }
+        depends_on: [re-char]
+
+    re-web:         # account settings + guild emblems for the client (2020+ clients ask for it)
+        <<: *rathena
+        image: "ghcr.io/dudustri/duds-server-renewal:${TAG:-latest}"
+        command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./web-server"
+        volumes: ["${HOST_DIR}/renewal/import:/rathena/conf/import:z"]
+        ports: ["8888:8888"]
+        networks: [re]
+        depends_on: [re-db]
+
+    # ---------------- download page ----------------
+    web:
+        image: "ghcr.io/dudustri/duds-server-web:${TAG:-latest}"
+        restart: unless-stopped
+        environment: { TZ: "CET-1CEST,M3.5.0,M10.5.0/3", DL_TOKEN: "${DL_TOKEN:?run ./duds.sh set-password <host> <user>}", SITE_ADDRESS: "${SITE_ADDRESS:-:80}" }
+        ports: ["${HTTP_PORT:-80}:80", "${HTTPS_PORT:-443}:443"]
+        volumes: ["./files:/srv/files:ro,z", "web_data:/data", "status:/srv/site/status:ro"]
+        networks: [web]
+
+    # ---------------- server status + Hall of Fame for the website (deploy/status.sh) ----------------
+    status:
+        image: "ghcr.io/dudustri/duds-server-db:${TAG:-latest}"   # only for its mariadb client + bash
+        restart: unless-stopped
+        environment: { TZ: "CET-1CEST,M3.5.0,M10.5.0/3", PRERE_DB_PASS: "${PRERE_DB_PASS}", RE_DB_PASS: "${RE_DB_PASS}" }
+        entrypoint: ["bash", "/status.sh"]
+        volumes: ["./status.sh:/status.sh:ro,z", "status:/out"]
+        networks: [prere, re]
+
+networks:
+    prere: {}
+    re: {}
+    web: {}
+
+volumes:
+    prere_db: { name: "${PRERE_DB_VOLUME:-duds_prere_db}" }
+    re_db: { name: "${RE_DB_VOLUME:-duds_re_db}" }
+    web_data: {}
+    status: {}

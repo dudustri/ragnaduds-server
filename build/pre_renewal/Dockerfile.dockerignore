@@ -1,0 +1,16 @@
+# Used automatically for "Dockerfile" in this folder (build context = repo root).
+# Skips git data, local build output (rebuilt inside the image) and local secrets.
+.git
+tools/docker
+duds_server
+**/obj
+**/Makefile
+config.log
+config.status
+login-server
+char-server
+map-server
+web-server
+conf/import
+conf/msg_conf/import
+db/import

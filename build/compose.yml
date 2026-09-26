@@ -1,0 +1,35 @@
+# Builds and pushes all images (x86 + ARM). Run from your PC:
+#   ../duds.sh release            (sets TAG to the git commit and uses the multi-arch builder)
+# Nothing here runs; the servers are started from ../deploy/compose.yml.
+name: duds-build
+
+x-platforms: &platforms ["linux/amd64", "linux/arm64"]   # PC (x86) + Oracle free VM (ARM)
+
+services:
+    pre_renewal:
+        image: "ghcr.io/dudustri/duds-server-pre-renewal:${TAG:-latest}"
+        build:
+            context: ../..
+            dockerfile: duds_server/build/pre_renewal/Dockerfile
+            platforms: *platforms
+            tags: ["ghcr.io/dudustri/duds-server-pre-renewal:latest"]
+    renewal:
+        image: "ghcr.io/dudustri/duds-server-renewal:${TAG:-latest}"
+        build:
+            context: ../..
+            dockerfile: duds_server/build/renewal/Dockerfile
+            platforms: *platforms
+            tags: ["ghcr.io/dudustri/duds-server-renewal:latest"]
+    db:
+        image: "ghcr.io/dudustri/duds-server-db:${TAG:-latest}"
+        build:
+            context: ../..
+            dockerfile: duds_server/build/db/Dockerfile
+            platforms: *platforms
+            tags: ["ghcr.io/dudustri/duds-server-db:latest"]
+    web:
+        image: "ghcr.io/dudustri/duds-server-web:${TAG:-latest}"
+        build:
+            context: web
+            platforms: *platforms
+            tags: ["ghcr.io/dudustri/duds-server-web:latest"]
