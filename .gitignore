@@ -1,0 +1,37 @@
+# ---- secrets: passwords, accounts, VM IP, game configs (one folder per host) ----
+deploy/hosts/*/
+# (deploy/hosts/.env.example is a template with placeholders: committed)
+
+# ---- built client zips and database dumps ----
+deploy/files/*.zip
+backups/
+
+# ---- caches ----
+__pycache__/
+*.pyc
+node_modules/
+
+# ---- personal photos (the repo is public): kept on this PC only ----
+# sources
+build/installer/duds_ok.jpeg
+build/web/assets/photos/
+build/web/assets/collage/main_base_collage.jpeg
+# generated from them (face icons, NPC face, Peco rider, collage photo, installer pictures)
+build/web/site/favicon.ico
+build/web/site/img/favicon.ico
+build/web/site/img/favicon-32.png
+build/web/site/img/ragnaduds-256.png
+build/web/site/img/ragnaduds-npc.png
+build/web/site/img/peco-duds.png
+build/web/site/img/collage/base.jpg
+build/web/site/img/collage/collage.jpg
+client/installer/ragnaduds.png
+client/installer/ragnaduds.ico
+client/installer/duds_ok.png
+client/installer/duds_ok_bg.png
+
+# ---- leftovers of the first local setup (safe to delete) ----
+/downloads/
+/pre_renewal/
+/renewal/
+/gm_commands.txt
