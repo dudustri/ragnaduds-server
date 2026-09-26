@@ -1,0 +1,30 @@
+# SITE_ADDRESS: ":80" (plain IP, HTTP) or a domain name (automatic HTTPS)
+# Login: site/login.html sets the cookie rd_auth = sha256("rd:<user>:<password>"). Everything except the login
+# page needs that cookie to match DL_TOKEN (set it with ./duds.sh set-password <host> <user>).
+{$SITE_ADDRESS::80} {
+	root * /srv/site
+
+	# what the login page itself needs
+	@public path /login.html /favicon.ico /img/favicon.ico /img/favicon-32.png /img/ragnaduds-npc.png
+	handle @public {
+		file_server
+	}
+
+	# no (or wrong) login cookie → login page
+	@guest not header Cookie *rd_auth={$DL_TOKEN}*
+	handle @guest {
+		redir * /login.html 302
+	}
+
+	# the big client zips: resumable (range requests), always "save as"
+	handle_path /files/* {
+		root * /srv/files
+		header Content-Disposition attachment
+		file_server
+	}
+
+	handle {
+		encode zstd gzip
+		file_server
+	}
+}

@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RagnaDuds · Downloads</title>
+<link rel="icon" href="img/favicon.ico?v=round" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=round">
+<link rel="apple-touch-icon" href="img/ragnaduds-256.png?v=round">
+<meta property="og:image" content="img/ragnaduds-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #f6ecd2; --ink-dim: #b9ab8a; --bg: #14121f; --panel: #221d33; --panel-2: #2c2542;
+    --edge: #6b4f2a; --edge-hi: #c9a25b; --pink: #ff8fb1; --green: #7ee081; --blue: #7cc4ff;
+    --gold: #ffd166; --red: #ff6b6b; --px: 4px;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0; color: var(--ink); font: 22px/1.25 "VT323", ui-monospace, monospace; min-height: 100vh;
+    background: radial-gradient(ellipse at 50% -10%, #3a2d5c 0%, transparent 60%),
+                repeating-linear-gradient(0deg, #16132a 0 32px, #181530 32px 64px);
+  }
+  body::after {                                   /* CRT scanlines + vignette */
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px),
+                radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.45) 100%);
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 16px 64px; position: relative; z-index: 1; }
+  h1, h2, .pixel { font-family: "Press Start 2P", monospace; letter-spacing: .5px; }
+  h1 { font-size: clamp(22px, 5vw, 40px); margin: 8px 0 6px; text-align: center; color: var(--gold);
+       text-shadow: 3px 3px 0 #7a3e12, 6px 6px 0 #000; }
+  .tagline { text-align: center; color: var(--ink-dim); margin: 0 0 18px; }
+  .flag { display: inline-block; width: 22px; height: 15px; vertical-align: -2px; border: 2px solid #000; background: #000; }
+  .flag svg { display: block; width: 100%; height: 100%; }
+
+  /* language switch */
+  .lang { position: absolute; top: 14px; right: 16px; display: flex; border: 3px solid #000; box-shadow: 3px 3px 0 #000; }
+  .lang button { font: 10px "Press Start 2P", monospace; padding: 8px 10px; border: 0; cursor: pointer; background: var(--panel-2); color: var(--ink); }
+  .lang button[aria-pressed="true"] { background: var(--gold); color: #1b1203; }
+
+  /* wooden RPG frame */
+  .frame { background: var(--panel); border: var(--px) solid var(--edge); margin: 18px 0; padding: 18px 20px;
+           box-shadow: inset 0 0 0 var(--px) #000, inset 0 0 0 calc(var(--px)*2) var(--edge-hi), 6px 6px 0 #000; }
+
+  /* ---------- stage: Duds on a Peco Peco vs the Poring ---------- */
+  .stage { position: relative; overflow: hidden; padding: 0; aspect-ratio: 608 / 328;
+           background: #3d5d1e url(img/orc-map.jpg) center / cover no-repeat; }
+  .walker { position: absolute; left: 0; top: 0; translate: -50% -100%; transition: opacity .5s; }
+  .walker .body { transform-origin: 50% 100%; }
+  .walker img { display: block; width: 100%; image-rendering: pixelated; filter: drop-shadow(0 3px 0 rgba(0,0,0,.35));
+                animation: waddle .5s ease-in-out infinite; transform-origin: 50% 100%; }
+  .walker.idle img { animation-duration: 1.6s; }
+  .walker.poring img { animation: hop .7s ease-in-out infinite; }
+  .walker.poring.idle img { animation-duration: 1.4s; }
+  @keyframes hop { 0%,100% { transform: translateY(0) scale(1.08, .92) } 50% { transform: translateY(-35%) scale(.95, 1.05) } }
+  @keyframes waddle { 0%,100% { transform: rotate(-3deg) translateY(0) } 50% { transform: rotate(3deg) translateY(-4%) } }
+  .walker.dead { opacity: 0; transition: none; }
+  .walker.fighting img, .walker.poring.fighting img { animation: shake .12s steps(2) infinite; }
+  @keyframes shake { 50% { transform: translateX(5px) rotate(4deg) } }
+  .ragdoll { position: absolute; left: 0; top: 0; pointer-events: none; image-rendering: pixelated; z-index: 999; }
+  .pow { position: absolute; font: 14px "Press Start 2P", monospace; color: var(--gold); z-index: 1000; translate: -50% -100%;
+         text-shadow: 2px 2px 0 #7a3e12, 4px 4px 0 #000; pointer-events: none; animation: pop .6s steps(3) infinite; }
+  @keyframes pop { 50% { transform: scale(1.3) rotate(-6deg) } }
+  .tomb { position: absolute; font: 10px "Press Start 2P", monospace; color: #fff; text-align: center; translate: -50% -100%; text-shadow: 1px 1px 0 #000; }
+  .tomb::before { content: ""; display: block; width: 22px; height: 26px; margin: 0 auto 2px; background: #8d8d99;
+                  border-radius: 11px 11px 2px 2px; box-shadow: inset -4px -4px 0 #5f5f6b, 0 0 0 3px #000; }
+  .stage:focus { outline: 3px dashed var(--gold); outline-offset: -8px; }
+  .hint { position: absolute; right: 10px; bottom: 6px; font-size: 16px; color: #fff; text-shadow: 1px 1px 0 #000, 0 0 4px #000; z-index: 1001; pointer-events: none; }
+  .killfeed { position: absolute; left: 10px; top: 8px; font-size: 20px; color: var(--green); z-index: 1001;
+              text-shadow: 2px 2px 0 #000, -1px -1px 0 #000; }
+
+  /* collage: photo + die-cut stickers on matter.js springs */
+  .collage-frame { padding: 14px; }
+  .collage-wrap { display: grid; grid-template-columns: minmax(0, 520px) 1fr; gap: 22px; align-items: center; }
+  .confession h3 { font: 13px/1.6 "Press Start 2P", monospace; color: var(--gold); margin: 0 0 12px; text-shadow: 2px 2px 0 #7a3e12; }
+  .confession p { margin: 0 0 12px; }
+  .confession b { color: var(--pink); font-weight: normal; }
+  .confession .sig { color: var(--blue); text-align: right; margin-top: 16px; }
+  @media (max-width: 760px) { .collage-wrap { grid-template-columns: 1fr; } }
+  .collage-wrap { align-items: stretch; }
+  .side { display: flex; flex-direction: column; gap: 20px; padding-top: 6px; }
+  .collage { align-self: start; }
+  .side .confession { margin-top: auto; }   /* letter sits at the bottom, level with the photo; the ranking grows into the space */
+  .hof { }
+  .side .confession { border-top: 3px dashed var(--edge); padding-top: 18px; }
+  .hof-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .hof h3 { font: 12px "Press Start 2P", monospace; color: var(--gold); margin: 0; text-shadow: 2px 2px 0 #7a3e12; }
+  .hof-tabs { display: flex; border: 3px solid #000; }
+  .hof-tabs button { font: 9px "Press Start 2P", monospace; padding: 6px 8px; border: 0; cursor: pointer; background: var(--panel-2); color: var(--ink); }
+  .hof-tabs button[aria-pressed="true"] { background: var(--gold); color: #1b1203; }
+  .hof ol { margin: 0; padding: 0; list-style: none; }
+  .hof-cols, .hof-top li { display: grid; grid-template-columns: 22px minmax(0, 1fr) 38px 38px 60px; column-gap: 12px;
+                           align-items: baseline; padding: 3px 8px; }
+  .hof-cols { font: 8px "Press Start 2P", monospace; color: var(--ink-dim); padding-bottom: 7px; border-bottom: 2px solid #000; margin-bottom: 3px; }
+  .hof-cols span:nth-child(n+3), .hof-top .n, .hof-top .lv { text-align: right; }
+  .hof-top li { font-size: 18px; line-height: 1.3; }
+  .hof-top li:nth-child(odd) { background: rgba(0,0,0,.25); }
+  .hof-top li.empty, .hof-badges li.empty { display: block; background: none; }
+  .hof-top .n { font: 10px "Press Start 2P", monospace; }
+  .hof-top .n.mvp { color: var(--gold); } .hof-top .n.pvp { color: var(--red); } .hof-top .n.zero { color: #5a5470; }
+  .hof-top .rk { font: 10px "Press Start 2P", monospace; color: var(--ink-dim); }
+  .hof-top li:nth-child(1) .rk { color: var(--gold); } .hof-top li:nth-child(2) .rk { color: #d8d8e8; } .hof-top li:nth-child(3) .rk { color: #d08a4a; }
+  .hof-top .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hof-top .nm small { color: var(--ink-dim); font-size: 15px; margin-left: 6px; }
+  .hof-top .on { color: var(--green); font-size: 13px; }
+  .hof-top .lv { color: var(--blue); white-space: nowrap; font-size: 17px; }
+  .hof-badges { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; padding: 0 8px; }
+  .hof-sub { font: 9px "Press Start 2P", monospace; color: var(--pink); margin-bottom: 6px; }
+  .hof-badges li { font-size: 17px; display: flex; justify-content: space-between; gap: 6px; line-height: 1.25; }
+  .hof-badges li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hof-badges li span:last-child { color: var(--gold); }
+  .hof .empty { color: var(--ink-dim); font-size: 18px; padding: 4px 8px; }
+  .status-card h2 { font-size: 14px; color: var(--green); margin: 0 0 12px; }
+  .srv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .srv { background: rgba(0,0,0,.3); border: 3px solid #000; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+  .srv-name { font: 12px "Press Start 2P", monospace; color: var(--pink); }
+  .srv.re .srv-name { color: var(--blue); }
+  .srv-online { grid-column: 1 / -1; color: var(--ink-dim); }
+  .srv-online b { color: var(--ink); font: 16px "Press Start 2P", monospace; margin-right: 4px; }
+  .srv-foot { margin-top: 10px; color: var(--ink-dim); font-size: 17px; }
+  .collage { margin: 0 auto; width: 100%; position: relative; width: 100%; aspect-ratio: 3 / 4; overflow: hidden; border: var(--px) solid #000;
+             background: #0a1a40 url(img/collage/base.jpg) center / cover; box-shadow: 4px 4px 0 #000; touch-action: pan-y; }
+  .collage img { position: absolute; left: 0; top: 0; user-select: none; -webkit-user-drag: none; will-change: transform;
+                 filter: drop-shadow(3px 5px 4px rgba(0,0,0,.45)); cursor: grab; touch-action: none; }
+  .collage img.pixel { image-rendering: pixelated; }
+  .collage img.title { cursor: default; filter: none; touch-action: auto; pointer-events: none; }
+  .collage img:active { cursor: grabbing; }
+  .collage .glow { position: absolute; width: 14%; aspect-ratio: 3 / 1; border-radius: 50%; translate: -50% -50%; pointer-events: none;
+                   background: radial-gradient(rgba(255,240,160,.9), rgba(255,209,102,0) 70%); opacity: 0; transition: opacity .6s; }
+  .collage .glow.on { opacity: 1; animation: glow 1.4s ease-in-out infinite; }
+  @keyframes glow { 50% { opacity: .45 } }
+
+  /* NPC dialog */
+  .npc { display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: start; cursor: pointer; user-select: none; }
+  .npc img { width: 96px; height: 96px; image-rendering: pixelated; border: var(--px) solid #000; box-shadow: 4px 4px 0 #000; }
+  .npc .name { color: var(--blue); margin-bottom: 6px; font-size: 12px; }
+  .npc .text { min-height: 3.8em; }
+  .npc .next { float: right; color: var(--gold); font-size: 10px; animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0 } }
+
+  /* download slots */
+  .slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin: 18px 0; scroll-margin-top: 12px; }
+  .slots > .frame { margin: 0; }   /* one spacing rule: 18px between every card */
+  .cta { text-align: center; margin: 0 0 4px; }
+  .cta .btn { font-size: 11px; padding: 10px 14px; }
+  html { scroll-behavior: smooth; }
+  .slot { position: relative; transition: transform .15s ease; }
+  .slot:hover { transform: translate(-2px,-2px); }
+  .slot h2 { font-size: 15px; margin: 0 0 10px; color: var(--pink); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .live { font: 9px "Press Start 2P", monospace; padding: 4px 6px; border: 2px solid #000; background: #000; letter-spacing: 0; }
+  .live.online { color: var(--green); } .live.offline { color: var(--red); } .live.starting { color: var(--gold); }
+  .live.online::first-letter { animation: blink 1.4s steps(2) infinite; }
+  .slot.re h2 { color: var(--blue); }
+  .slot .row { display: flex; gap: 14px; align-items: center; }
+  .slot canvas { image-rendering: pixelated; flex: none; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }
+  .tag { background: #000; color: var(--ink-dim); padding: 0 6px; font-size: 18px; }
+  .btn { display: inline-block; font: 12px "Press Start 2P", monospace; color: #1b1203; text-decoration: none;
+         background: var(--gold); padding: 12px 14px; border: var(--px) solid #000;
+         box-shadow: inset -4px -4px 0 #c99a2e, 4px 4px 0 #000; transition: transform .08s, box-shadow .08s; }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:active { transform: translate(4px,4px); box-shadow: inset -4px -4px 0 #c99a2e; }
+  .btn[aria-disabled="true"] { background: #555; color: #999; box-shadow: 4px 4px 0 #000; pointer-events: none; }
+  .status { margin-top: 8px; color: var(--ink-dim); font-size: 18px; }
+
+  /* lag-o-meter */
+  .meter { display: grid; grid-template-columns: 130px 1fr 80px; gap: 10px; align-items: center; margin: 8px 0; }
+  .bar { height: 18px; background: #000; border: 2px solid #444; position: relative; }
+  .bar i { position: absolute; inset: 0; width: 0; background: repeating-linear-gradient(90deg, var(--green) 0 10px, #5cbf5f 10px 12px); transition: width 1.2s steps(12); }
+  .bar.bad i { background: repeating-linear-gradient(90deg, var(--red) 0 10px, #d94d4d 10px 12px); }
+
+  /* tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .tabs button { font: 11px "Press Start 2P", monospace; color: var(--ink); background: var(--panel-2); border: 3px solid #000; padding: 10px; cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--gold); color: #1b1203; }
+  ol { margin: 0; padding-left: 1.3em; } li { margin: 4px 0; }
+  code { font: inherit; background: #000; padding: 0 6px; color: var(--green); }
+  .rules li::marker { color: var(--gold); }
+  .rules li:last-child { color: var(--gold); }
+  footer { text-align: center; color: var(--ink-dim); font-size: 18px; margin-top: 28px; }
+
+  #physics { position: fixed; inset: 0; z-index: 40; display: none; }
+  @media (max-width: 560px) {
+    .hof-cols, .hof-top li { grid-template-columns: 18px minmax(0, 1fr) 30px 30px 52px; column-gap: 8px; padding: 3px 4px; }
+    .lang { position: static; width: max-content; margin: 0 0 10px auto; }   /* don't cover the title */
+    .hint { display: none; }                                                   /* the map is too small for it */
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  @media (max-width: 560px) { .npc { grid-template-columns: 64px 1fr; } .npc img { width: 64px; height: 64px; } .meter { grid-template-columns: 90px 1fr 64px; } }
+</style>
+</head>
+<body>
+<canvas id="physics"></canvas>
+
+<div class="wrap">
+  <div class="lang" role="group" aria-label="Language">
+    <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
+  </div>
+
+  <h1>RAGNADUDS</h1>
+  <p class="tagline"><span data-i18n="tag1"></span> · <span class="flag"><svg viewBox="0 0 37 28"><rect width="37" height="28" fill="#c8102e"/><rect x="12" width="4" height="28" fill="#fff"/><rect y="12" width="37" height="4" fill="#fff"/></svg></span> × <span class="flag"><svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#009c3b"/><polygon points="10,1.6 18.4,7 10,12.4 1.6,7" fill="#ffdf00"/><circle cx="10" cy="7" r="3.4" fill="#002776"/><path d="M6.7 6.3 Q10 5.4 13.3 7.6" stroke="#fff" stroke-width=".7" fill="none"/></svg></span> · <span data-i18n="tag2"></span></p>
+
+  <p class="cta"><a class="btn" href="#downloads" data-i18n="cta"></a></p>
+
+  <div class="frame stage" id="stage" tabindex="0" aria-label="Mini game: Duds vs the Orc">
+    <div class="killfeed" id="killfeed"></div>
+    <div class="hint" data-i18n="stagehint"></div>
+    <div class="walker" id="dudsWalk"><div class="body"><img src="img/peco-duds.png" alt=""></div></div>
+    <div class="walker" id="orcWalk"><div class="body"><img src="img/orc.png" alt=""></div></div>
+  </div>
+
+  <div class="frame npc" id="npc" data-i18n-title="clickme">
+    <img src="img/ragnaduds-npc.png" alt="RagnaDuds" width="96" height="96">
+    <div>
+      <div class="name pixel" data-i18n="npcname"></div>
+      <div class="text" id="talk"></div>
+      <span class="next pixel" data-i18n="click"></span>
+    </div>
+  </div>
+
+  <section class="frame status-card">
+    <h2 class="pixel" data-i18n="statustitle"></h2>
+    <div class="srv-grid">
+      <div class="srv pre"><div class="srv-name">PRE-RENEWAL</div><span class="live offline" data-live="pre">…</span>
+        <div class="srv-online"><b data-online="pre">–</b> <span data-i18n="playerson"></span></div></div>
+      <div class="srv re"><div class="srv-name">RENEWAL</div><span class="live offline" data-live="re">…</span>
+        <div class="srv-online"><b data-online="re">–</b> <span data-i18n="playerson"></span></div></div>
+    </div>
+    <div class="srv-foot" id="srvFoot"></div>
+  </section>
+
+  <section class="frame">
+    <h2 class="pixel" style="font-size:14px;color:var(--green);margin:0 0 10px">LAG-O-METER™</h2>
+    <div class="meter"><span data-i18n="dk"></span><div class="bar"><i data-ms="99"></i></div><span>99 ms</span></div>
+    <div class="meter"><span data-i18n="br"></span><div class="bar"><i data-ms="113"></i></div><span>113 ms</span></div>
+    <div class="meter"><span data-i18n="you"></span><div class="bar" id="youBar"><i></i></div><span id="youMs">… ms</span></div>
+    <div style="color:var(--ink-dim)" data-i18n="lagnote"></div>
+  </section>
+
+  <section class="frame collage-frame">
+    <div class="collage-wrap">
+      <div class="collage" id="collage"><div class="glow" id="cardGlow"></div></div>
+      <div class="side">
+        <div class="hof">
+          <div class="hof-head"><h3 data-i18n="hoftitle"></h3>
+            <div class="hof-tabs"><button type="button" data-hof="pre" aria-pressed="false">PRE</button><button type="button" data-hof="re" aria-pressed="true">RE</button></div></div>
+          <div class="hof-cols" aria-hidden="true"><span>#</span><span data-i18n="hofname"></span><span>MVP</span><span>PVP</span><span>LV</span></div>
+          <ol class="hof-top" id="hofTop"></ol>
+          <div class="hof-badges">
+            <div><div class="hof-sub" data-i18n="hofrich"></div><ol id="hofRich"></ol></div>
+            <div><div class="hof-sub" data-i18n="hofmvp"></div><ol id="hofMvp"></ol></div>
+          </div>
+        </div>
+        <div class="confession" data-i18n="confession"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="slots" id="downloads">
+    <section class="frame slot pre">
+      <h2>PRE-RENEWAL</h2>
+      <div class="row"><canvas data-sprite="sword" data-scale="4"></canvas><div data-i18n="pretext"></div></div>
+      <div class="tags"><span class="tag">client 2021-11-03</span><span class="tag">English</span><span class="tag">port 6900</span><span class="tag" data-size="pre">…</span></div>
+      <a class="btn" href="files/duds-pre-renewal.zip" data-i18n="download"></a>
+      <div class="status" data-status="pre"></div>
+    </section>
+    <section class="frame slot re">
+      <h2>RENEWAL</h2>
+      <div class="row"><canvas data-sprite="chest" data-scale="4"></canvas><div data-i18n="retext"></div></div>
+      <div class="tags"><span class="tag">client 2026-01-07</span><span class="tag">English</span><span class="tag">port 6901</span><span class="tag" data-size="re">…</span></div>
+      <a class="btn" href="files/duds-renewal.zip" data-i18n="download"></a>
+      <div class="status" data-status="re"></div>
+    </section>
+  </div>
+
+  <section class="frame">
+    <h2 class="pixel" style="font-size:14px;color:var(--gold);margin:0 0 12px" data-i18n="howto"></h2>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="win">WINDOWS</button>
+      <button role="tab" aria-selected="false" data-tab="lin">LINUX</button>
+      <button role="tab" aria-selected="false" data-tab="mac">MAC</button>
+    </div>
+    <div data-panel="win"><ol data-i18n="win"></ol></div>
+    <div data-panel="lin" hidden><ol data-i18n="lin"></ol></div>
+    <div data-panel="mac" hidden><ol data-i18n="mac"></ol></div>
+  </section>
+
+  <section class="frame">
+    <h2 class="pixel" style="font-size:14px;color:var(--pink);margin:0 0 12px" data-i18n="rulestitle"></h2>
+    <ol class="rules" data-i18n="rules"></ol>
+  </section>
+
+  <footer><span data-i18n="footer"></span><br><span style="font-size:15px">psst: ↑ ↑ ↓ ↓ ← → ← → B A</span></footer>
+</div>
+
+<script>
+const matterReady = loadMatter();      // matter.js: stage ragdolls, collage stickers, Poring rain
+// ======================= texts (EN / PT) =======================
+const LOCALE = { en: "en", pt: "pt-BR", da: "da-DK" };   // number/date formats per language
+const T = {
+  en: {
+    tag1: "the Duds Server · est. 2026", tag2: "no rules, just chill",
+    npcname: "[RagnaDuds, Kafra intern]", click: "▼ click", clickme: "click to continue",
+    pretext: "The classic. 2004 vibes, 99/70 cap, zero bullshit. For veterans and people who cry at the Prontera theme.",
+    retext: "Modern RO. 3rd &amp; 4th jobs, level 275, forty skills per button. For masochists who read patch notes for fun.",
+    download: "▶ DOWNLOAD", cta: "▼ DOWNLOAD THE GAME", statustitle: "SERVER STATUS", playerson: "players online", totals: "{a} accounts · {c} characters · checked {t}", hoftitle: "HALL OF FAME", hofrich: "RICHEST", hofmvp: "MVP SLAYERS", hofempty: "Nobody here yet.", hofname: "NAME", lvtip: "base level / job level", killstip: "MVPs killed · players slain in PvP", online: "● ONLINE", offline: "● OFFLINE", starting: "● STARTING", livetip: "Server status, checked every 15 s", notyet: "Not uploaded yet. Duds is probably still zipping. Or drunk.", updated: "updated",
+    dk: "Denmark", br: "Brasil", you: "★ You",
+    lagnote: "Denmark/Brasil = measured data-center averages. <b>You</b> = your real ping to this server, live, every 5 s. Server lives in US East, so nobody gets to blame the lag.",
+    howto: "HOW TO INSTALL",
+    win: "<li>Download a client above and unzip it (right-click → <i>Extract All</i>).</li><li>Double-click <code>Install RagnaDuds.bat</code>. Windows whines \"protected your PC\"? <i>More info → Run anyway</i>.</li><li>Watch Duds give you a thumbs up while it installs and checks every damn file.</li><li>Smash <b>Start and YEAAAAAAAAAAH!</b> Next time: the <b>RagnaDuds</b> icon on your desktop.</li><li>Log in with the account Duds gave you. No account? Bribe Duds.</li>",
+    lin: "<li>Install Wine: <code>sudo dnf install wine winetricks</code> (Fedora) or, on Ubuntu/Debian (the game is 32-bit): <code>sudo dpkg --add-architecture i386 &amp;&amp; sudo apt update &amp;&amp; sudo apt install wine wine32:i386 winetricks</code></li><li>Unzip the download, then in that folder: <code>./install.sh</code></li><li>It unpacks, checks every file, sets up Wine + fonts and drops a <b>RagnaDuds</b> icon on your desktop.</li><li>Keep the game windowed and smaller than your screen (e.g. 1280×720). Bigger = crash. Ask Duds how he knows.</li>",
+    mac: "<li>Honestly? Borrow a Windows PC.</li><li>Or try CrossOver / Whisky and follow the Linux steps. Results may vary. Porings may cry.</li>",
+    rulestitle: "SERVER RULES",
+    rules: "<li>KS someone's MVP and you owe them a beer, your firstborn and your best card. In that order.</li><li>Crying about lag with a ping under 150 is a felony. Check the LAG-O-METER, you absolute clown.</li><li>Die to a Poring and the GM renames you to something humiliating.</li><li>Leak the password and Duds shows up at your house on a Peco Peco. He has a lance. He knows where you live.</li><li>Fuck it, I changed my mind. There are no rules. Only Duds.</li>",
+    footer: "Friends-only fan server. Not affiliated with Gravity. Ragnarok Online belongs to its owners.",
+    killOrc: "[Server] Duds turned the Orc into a kebab 🍢", killDuds: "[Server] Duds got murdered by an Orc. Again. 💀",
+    killPoring: "[Server] Duds turned the Poring into jelly 🍮", killDudsPoring: "[Server] Duds got killed by a Poring. A PORING. 💀",
+    confession: "<h3>LETTER FROM THE GM</h3><p>Had way too much fun building this.</p><p>Ragnarok addict since I was a kid, and apparently still am.</p><p>Grab a client, call the crew, and let's farm like it's 2004.</p><div class=\"sig\">— Duds</div>",
+    stagehint: "▶ click the map to walk · click the Orc or a Poring to fight · WASD / arrows",
+    rain: "IT'S RAINING PORINGS. Grab them. Throw them. Nobody cares.",
+    lines: [
+      "Oi, you absolute degenerate. I'm Duds: part-time Kafra, full-time menace, zero-time sleeper. Grab a client and let's lose our shit.",
+      "Brasil: 113 ms. Denmark: 99 ms. If you die now it's a skill issue, not lag. Cry harder.",
+      "KS my Baphomet and I will personally ban your ass. Then unban you. Then ban you again. For science.",
+      "Pre-Renewal: for boomers who miss 2004 and their knees. Renewal: for masochists who read 40 tooltips while getting their ass handed to them.",
+      "Selling Jellopy, 1z each. Brazilians get a discount, Danes pay in Tuborg, scammers get fed to the Poring.",
+      "The Poring looks cute. The Poring is a lying little shit. Never turn your back on the Poring.",
+      "Yes, that's my face on a Peco Peco. No, I will not be taking questions. The bird consented.",
+      "Forgot your password? Big brain energy. Send me a meme and a sincere apology.",
+      "If the game crashes, blame Wine. If you die, blame yourself. If the server dies, it was your fault somehow.",
+      "Lag? Never heard of her. Now shut up and farm.",
+    ],
+  },
+  pt: {
+    tag1: "o Servidor do Duds · desde 2026", tag2: "sem regras, só na paz",
+    npcname: "[RagnaDuds, estagiário da Kafra]", click: "▼ clica", clickme: "clica pra continuar",
+    pretext: "O clássico. Vibe de 2004, cap 99/70, zero frescura. Pra veterano e pra quem chora ouvindo a música de Prontera.",
+    retext: "RO moderno. Classes 3 e 4, nível 275, quarenta skills por botão. Pra masoquista que lê patch note por diversão.",
+    download: "▶ BAIXAR", cta: "▼ BAIXAR O JOGO", statustitle: "STATUS DOS SERVIDORES", playerson: "jogadores online", totals: "{a} contas · {c} personagens · conferido {t}", hoftitle: "HALL DA FAMA", hofrich: "MAIS RICOS", hofmvp: "CAÇADORES DE MVP", hofempty: "Ninguém aqui ainda.", hofname: "NOME", lvtip: "nível de base / nível de classe", killstip: "MVPs mortos · jogadores mortos no PvP", online: "● ONLINE", offline: "● DESLIGADO", starting: "● LIGANDO", livetip: "Status do servidor, conferido a cada 15 s", notyet: "Ainda não subiu. O Duds tá zipando. Ou bêbado.", updated: "atualizado",
+    dk: "Dinamarca", br: "Brasil", you: "★ Você",
+    lagnote: "Dinamarca/Brasil = média medida entre data centers. <b>Você</b> = teu ping real pro servidor, ao vivo, a cada 5 s. O servidor fica no leste dos EUA, então ninguém culpa o lag.",
+    howto: "COMO INSTALAR",
+    win: "<li>Baixa um cliente aí em cima e descompacta (botão direito → <i>Extrair Tudo</i>).</li><li>Dá dois cliques em <code>Install RagnaDuds.bat</code>. O Windows chorou \"protegeu seu PC\"? <i>Mais informações → Executar assim mesmo</i>.</li><li>Fica olhando o Duds fazer joinha enquanto instala e confere cada porra de arquivo.</li><li>Mete o dedo em <b>Start and YEAAAAAAAAAAH!</b> Da próxima vez: o ícone <b>RagnaDuds</b> na área de trabalho.</li><li>Entra com a conta que o Duds te deu. Sem conta? Suborna o Duds.</li>",
+    lin: "<li>Instala o Wine: <code>sudo dnf install wine winetricks</code> (Fedora) ou, no Ubuntu/Debian (o jogo é 32-bit): <code>sudo dpkg --add-architecture i386 &amp;&amp; sudo apt update &amp;&amp; sudo apt install wine wine32:i386 winetricks</code></li><li>Descompacta o download e, nessa pasta: <code>./install.sh</code></li><li>Ele descompacta, confere tudo, configura Wine + fontes e joga um ícone <b>RagnaDuds</b> na tua área de trabalho.</li><li>Deixa o jogo em janela e menor que a tela (tipo 1280×720). Maior = crash. Pergunta pro Duds como ele sabe.</li>",
+    mac: "<li>Sinceramente? Pega um PC com Windows emprestado.</li><li>Ou tenta CrossOver / Whisky e segue os passos do Linux. Pode dar merda. Os Porings podem chorar.</li>",
+    rulestitle: "REGRAS DO SERVIDOR",
+    rules: "<li>Deu KS no MVP de alguém? Deve uma cerveja, teu primogênito e tua melhor carta. Nessa ordem.</li><li>Reclamar de lag com ping abaixo de 150 é crime. Olha o LAG-O-METER, seu palhaço.</li><li>Morreu pra um Poring? O GM muda teu nome pra algo humilhante.</li><li>Vazou a senha? O Duds aparece na tua casa montado num Peco Peco. Ele tem uma lança. Ele sabe onde você mora.</li><li>Foda-se, mudei de ideia. Não tem regra nenhuma. Só o Duds.</li>",
+    footer: "Servidor de fã só pros amigos. Sem relação com a Gravity. Ragnarok Online pertence aos donos.",
+    killOrc: "[Servidor] Duds transformou o Orc em espetinho 🍢", killDuds: "[Servidor] Duds foi assassinado por um Orc. De novo. 💀",
+    killPoring: "[Servidor] Duds transformou o Poring em geleia 🍮", killDudsPoring: "[Servidor] Duds morreu pra um Poring. UM PORING. 💀",
+    confession: "<h3>CARTA DO GM</h3><p>Me diverti demais montando isso aqui.</p><p>Viciado em Ragnarok desde guri, e pelo visto continuo.</p><p>Baixa o cliente, chama a galera e bora farmar como se fosse 2004.</p><div class=\"sig\">— Duds</div>",
+    stagehint: "▶ clica no mapa pra andar · clica no Orc ou num Poring pra brigar · WASD / setas",
+    rain: "TÁ CHOVENDO PORING. Pega. Arremessa. Ninguém liga.",
+    lines: [
+      "E aí, seu degenerado. Eu sou o Duds: meio período na Kafra, período integral de ameaça, zero horas de sono. Baixa o cliente e bora perder a linha.",
+      "Brasil: 113 ms. Dinamarca: 99 ms. Se morrer agora é falta de skill, não lag. Chora mais.",
+      "Deu KS no meu Baphomet? Eu mesmo bano teu cu. Depois desbano. Depois bano de novo. Pela ciência.",
+      "Pre-Renewal: pra tiozão que sente saudade de 2004 e do joelho. Renewal: pra masoquista que lê 40 tooltips enquanto toma surra.",
+      "Vendo Jellopy, 1z cada. Brasileiro tem desconto, dinamarquês paga em Tuborg, golpista vira comida de Poring.",
+      "O Poring parece fofo. O Poring é um filho da puta mentiroso. Nunca dá as costas pro Poring.",
+      "Sim, é a minha cara num Peco Peco. Não, não vou responder perguntas. O pássaro consentiu.",
+      "Esqueceu a senha? Que cérebro, hein. Manda um meme e um pedido de desculpas sincero.",
+      "Se o jogo crashar, culpa do Wine. Se você morrer, culpa sua. Se o servidor cair, de algum jeito foi culpa sua também.",
+      "Lag? Nunca ouvi falar. Agora cala a boca e farma.",
+    ],
+  },
+  da: {
+    tag1: "Duds-serveren · siden 2026",
+    tag2: "ingen regler, bare chill",
+    npcname: "[RagnaDuds, Kafra-praktikant]",
+    click: "▼ klik",
+    clickme: "klik for at fortsætte",
+    pretext: "Klassikeren. 2004-vibes, 99/70 cap, nul pis. For veteraner og folk, der græder til Prontera-musikken.",
+    retext: "Moderne RO. 3. og 4. jobs, level 275, fyrre skills per knap. For masochister, der læser patch notes for sjov.",
+    download: "▶ DOWNLOAD",
+    cta: "▼ HENT SPILLET",
+    statustitle: "SERVERSTATUS",
+    playerson: "spillere online",
+    totals: "{a} konti · {c} karakterer · tjekket {t}",
+    hoftitle: "HELTEHALLEN",
+    hofrich: "RIGESTE",
+    hofmvp: "MVP-JÆGERE",
+    hofempty: "Ingen her endnu.",
+    hofname: "NAVN",
+    lvtip: "base level / job level",
+    killstip: "MVP'er dræbt · spillere dræbt i PvP",
+    online: "● ONLINE",
+    offline: "● OFFLINE",
+    starting: "● STARTER",
+    livetip: "Serverstatus, tjekkes hvert 15. sekund",
+    notyet: "Ikke uploadet endnu. Duds zipper nok stadig. Eller er fuld.",
+    updated: "opdateret",
+    dk: "Danmark",
+    br: "Brasilien",
+    you: "★ Dig",
+    lagnote: "Danmark/Brasilien = målte datacenter-gennemsnit. <b>Dig</b> = din rigtige ping til serveren, live, hvert 5. sekund. Serveren står i det østlige USA, så ingen kan skyde skylden på lag.",
+    howto: "INSTALLATION",
+    win: "<li>Hent en klient ovenfor og pak den ud (højreklik → <i>Udpak alle</i>).</li><li>Dobbeltklik på <code>Install RagnaDuds.bat</code>. Brokker Windows sig over \"beskyttede din pc\"? <i>Flere oplysninger → Kør alligevel</i>.</li><li>Se Duds give dig en tommel op, mens den installerer og tjekker hver eneste forbandede fil.</li><li>Tryk på <b>Start and YEAAAAAAAAAAH!</b> Næste gang: <b>RagnaDuds</b>-ikonet på dit skrivebord.</li><li>Log ind med den konto, Duds gav dig. Ingen konto? Bestik Duds.</li>",
+    lin: "<li>Installer Wine: <code>sudo dnf install wine winetricks</code> (Fedora) eller, på Ubuntu/Debian (spillet er 32-bit): <code>sudo dpkg --add-architecture i386 &amp;&amp; sudo apt update &amp;&amp; sudo apt install wine wine32:i386 winetricks</code></li><li>Pak downloaden ud, og kør i mappen: <code>./install.sh</code></li><li>Den pakker ud, tjekker hver fil, sætter Wine + skrifttyper op og lægger et <b>RagnaDuds</b>-ikon i din app-menu.</li><li>Kør spillet i et vindue, mindre end din skærm (fx 1280×720). Større = crash. Spørg Duds, hvordan han ved det.</li>",
+    mac: "<li>Ærligt? Lån en Windows-pc.</li><li>Eller prøv CrossOver / Whisky og følg Linux-trinene. Resultatet kan variere. Poringer kan græde.</li>",
+    rulestitle: "SERVERREGLER",
+    rules: "<li>KS'er du nogens MVP, skylder du dem en øl, din førstefødte og dit bedste card. I den rækkefølge.</li><li>At tude over lag med en ping under 150 er en forbrydelse. Tjek LAG-O-METER, din klovn.</li><li>Dør du til en Poring, omdøber GM'en dig til noget ydmygende.</li><li>Lækker du passwordet, dukker Duds op hjemme hos dig på en Peco Peco. Han har en lanse. Han ved, hvor du bor.</li><li>Fuck det, jeg har skiftet mening. Der er ingen regler. Kun Duds.</li>",
+    footer: "Fanserver kun for venner. Ikke tilknyttet Gravity. Ragnarok Online tilhører sine ejere.",
+    killOrc: "[Server] Duds lavede Orc'en om til en kebab 🍢",
+    killDuds: "[Server] Duds blev myrdet af en Orc. Igen. 💀",
+    killPoring: "[Server] Duds lavede Poring'en om til gele 🍮",
+    killDudsPoring: "[Server] Duds blev dræbt af en Poring. En PORING. 💀",
+    confession: "<h3>BREV FRA GM'EN</h3><p>Havde alt for sjovt med at bygge det her.</p><p>Ragnarok-junkie siden jeg var barn, og åbenbart stadig.</p><p>Hent en klient, ring til banden, og lad os farme, som om det er 2004.</p><div class=\"sig\">— Duds</div>",
+    stagehint: "▶ klik på kortet for at gå · klik på Orc'en eller en Poring for at slås · WASD / piletaster",
+    rain: "DET REGNER MED PORINGER. Grib dem. Kast dem. Ingen gider bekymre sig.",
+    lines: ["Hej, din komplette degenererede. Jeg er Duds: deltids-Kafra, fuldtids-plage, nul timers søvn. Hent en klient, og lad os gå amok.", "Brasilien: 113 ms. Danmark: 99 ms. Dør du nu, er det et skill issue, ikke lag. Tud mere.", "KS'er du min Baphomet, banner jeg personligt din røv. Så unbanner jeg dig. Så banner jeg dig igen. For videnskaben.", "Pre-Renewal: for boomere, der savner 2004 og deres knæ. Renewal: for masochister, der læser 40 tooltips, mens de får røvfuld.", "Sælger Jellopy, 1z stykket. Brasilianere får rabat, danskere betaler i Tuborg, svindlere bliver fodret til Poring'en.", "Poring'en ser sød ud. Poring'en er et løgnagtigt lille lort. Vend aldrig ryggen til Poring'en.", "Ja, det er mit ansigt på en Peco Peco. Nej, jeg tager ikke imod spørgsmål. Fuglen gav samtykke.", "Glemt dit password? Stor hjerne-energi. Send mig et meme og en oprigtig undskyldning.", "Crasher spillet, så giv Wine skylden. Dør du, så giv dig selv skylden. Dør serveren, var det på en eller anden måde din skyld.", "Lag? Aldrig hørt om hende. Hold nu kæft og farm."],
+  },
+};
+let LANG = (() => { try { return localStorage.getItem("lang") } catch { return null } })() ||
+           ({ pt: "pt", da: "da" }[(navigator.language || "").toLowerCase().slice(0, 2)] || "en");
+if (!T[LANG]) LANG = "en";
+function applyLang(l) {
+  LANG = l; document.documentElement.lang = LOCALE[l] || "en";
+  document.querySelectorAll("[data-i18n]").forEach(e => e.innerHTML = T[l][e.dataset.i18n]);
+  document.querySelectorAll("[data-i18n-title]").forEach(e => e.title = T[l][e.dataset.i18nTitle]);
+  document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === l));
+  try { localStorage.setItem("lang", l) } catch {}
+  li = 0; say(T[l].lines[0]); refreshSizes(); refreshLive();
+}
+document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.lang)));
+
+// ======================= pixel sprites (own drawings, from text grids) =======================
+const PAL = { k:"#2a1420", p:"#ff8fb1", l:"#ffd1df", w:"#ffffff", e:"#1b1b1b", r:"#c23b5a", s:"#cfd8e3", S:"#8a97a8",
+  g:"#ffd166", G:"#b8860b", b:"#8b5a2b", B:"#5c3a1a", d:"#3a2a4a", D:"#241a30", h:"#e8e0c8", R:"#ff3040",
+  m:"#ece8dc", n:"#b9b3a4", y:"#ffcc33", Y:"#c9901a", q:"#f2c9a0", P:"#ff9ec7", u:"#c0304a" };
+const SPR = {
+  blob: ["....kkkkkk....","..kkppppppkk..",".kppppppplllk.",".kpppppppllppk","kppppppppppppk","kppekppppekppk",
+         "kppekppppekppk","kpppppprrppppk","kppppppppppppk",".kpppppppppppk","..kkkkkkkkkkk."],
+  sword: ["........ss",".......ssS","......ssS.",".....ssS..","....ssS...",".G.ssS....","..GsS.....","..bG......",".b..G.....","b........."],
+  chest: ["..BBBBBBBB..",".BbbbbbbbbB.","BbbbbbbbbbbB","BGGGGGGGGGGB","BbbbbgGbbbbB","BbbbbGGbbbbB","BbbbbbbbbbbB","BBBBBBBBBBBB"],
+};
+function draw(cv, name, scale) {
+  const g = SPR[name], w = Math.max(...g.map(r => r.length)), h = g.length;
+  cv.width = w*scale; cv.height = h*scale;
+  const x = cv.getContext("2d");
+  g.forEach((row, j) => [...row].forEach((ch, i) => { if (PAL[ch]) { x.fillStyle = PAL[ch]; x.fillRect(i*scale, j*scale, scale, scale); } }));
+}
+document.querySelectorAll("canvas[data-sprite]").forEach(c => draw(c, c.dataset.sprite, +c.dataset.scale));
+
+// ======================= NPC dialog =======================
+const talk = document.getElementById("talk");
+let li = 0, typing = null;
+function say(s) {
+  clearInterval(typing); talk.textContent = ""; let i = 0;
+  typing = setInterval(() => { talk.textContent = s.slice(0, ++i); if (i >= s.length) clearInterval(typing); }, 20);
+}
+document.getElementById("npc").addEventListener("click", () => { li = (li + 1) % T[LANG].lines.length; say(T[LANG].lines[li]); });
+
+// ======================= stage: Duds (you control him) vs the Orc on the orc map =======================
+// Map units = pixels of the 608x328 background. Positions are the sprites' feet.
+const stage = document.getElementById("stage"), feed = document.getElementById("killfeed");
+const MAP_W = 608, MAP_H = 328;
+const WALK = [[330, 115, 592, 316], [190, 262, 592, 318]];          // walkable rectangles (right of the orc hut)
+const rnd = (a, b) => a + Math.random() * (b - a);
+function randomSpot() { const [l, t, r, b] = WALK[Math.random() < .7 ? 0 : 1]; return { x: rnd(l, r), y: rnd(t, b) }; }
+function clampWalk(x, y) {                                          // nearest walkable point
+  let best = null;
+  for (const [l, t, r, b] of WALK) {
+    const p = { x: Math.min(r, Math.max(l, x)), y: Math.min(b, Math.max(t, y)) }, d = (p.x - x) ** 2 + (p.y - y) ** 2;
+    if (!best || d < best.d) best = { ...p, d };
+  }
+  return best;
+}
+const mk = (el, h, speed, kind) => ({ el, img: el.querySelector("img"), h, speed, kind,
+  ...randomSpot(), target: null, face: 1, alive: true, busy: false, pause: 0, touching: false });
+// sizes in map pixels, matched to the orc standing in the background picture
+const duds = mk(document.getElementById("dudsWalk"), 66, 55, "duds"), orc = mk(document.getElementById("orcWalk"), 52, 38, "orc");
+// 2-3 small Porings (the pixel one from this page) hopping around
+const poringSrc = (() => { const c = document.createElement("canvas"); draw(c, "blob", 4); return c.toDataURL(); })();
+const porings = Array.from({ length: 3 }, () => {
+  const el = document.createElement("div"); el.className = "walker poring";
+  el.innerHTML = `<div class="body"><img src="${poringSrc}" alt=""></div>`; stage.appendChild(el);
+  return mk(el, 15, 26, "poring");
+});
+const enemies = [orc, ...porings], walkers = [duds, ...enemies];
+let manualUntil = 0, attackIntent = false, last = performance.now();
+const keys = new Set();
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sc = () => stage.clientWidth / MAP_W;
+function depth(w) { return .8 + .2 * (w.y / MAP_H); }             // further up the map = a bit smaller
+function place(w) {
+  const s = sc(), h = w.h * depth(w) * s, ratio = w.img.naturalWidth / (w.img.naturalHeight || 1) || .65;
+  w.el.style.left = w.x * s + "px"; w.el.style.top = w.y * s + "px";
+  w.el.style.width = h * ratio + "px"; w.el.style.zIndex = Math.round(w.y);
+  w.el.querySelector(".body").style.transform = w.face > 0 ? "scaleX(-1)" : "none";   // sprites look left
+}
+function toMap(e) { const r = stage.getBoundingClientRect(), s = sc(); return { x: (e.clientX - r.left) / s, y: (e.clientY - r.top) / s }; }
+
+stage.addEventListener("pointerdown", e => {
+  stage.focus({ preventScroll: true });
+  if (!duds.alive) return;
+  manualUntil = performance.now() + 8000;
+  const foe = enemies.find(m => m.alive && m.el.contains(e.target));
+  if (foe) { attackIntent = true; duds.target = foe; return; }      // click a monster = attack it
+  attackIntent = false; const p = clampWalk(...Object.values(toMap(e))); duds.target = { x: p.x, y: p.y };
+});
+stage.addEventListener("keydown", e => {
+  const k = e.key.toLowerCase();
+  if (["arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d"].includes(k)) { keys.add(k); e.preventDefault(); }
+});
+stage.addEventListener("keyup", e => keys.delete(e.key.toLowerCase()));
+stage.addEventListener("blur", () => keys.clear());
+
+function step(w, dt) {
+  if (!w.alive || w.busy) return;
+  let dx = 0, dy = 0;
+  if (w === duds && keys.size) {                                    // keyboard
+    manualUntil = performance.now() + 8000; w.target = null; attackIntent = false;
+    dx = (keys.has("d") || keys.has("arrowright")) - (keys.has("a") || keys.has("arrowleft"));
+    dy = (keys.has("s") || keys.has("arrowdown")) - (keys.has("w") || keys.has("arrowup"));
+  } else {
+    if (w.pause > 0) { w.pause -= dt; w.el.classList.add("idle"); return; }
+    const chasing = w.target && w.target.kind;
+    let t = chasing ? (w.target.alive ? w.target : null) : w.target;
+    const manual = w === duds && performance.now() < manualUntil;
+    if (!t) {
+      if (manual) { w.target = null; w.el.classList.add("idle"); return; }
+      w.target = t = randomSpot();                                  // AI: wander around
+    }
+    dx = t.x - w.x; dy = t.y - w.y;
+    if (Math.hypot(dx, dy) < 3) {
+      if (!chasing) { w.target = null; if (!manual) w.pause = Math.random() < .4 ? rnd(.5, 2) : 0; }
+      w.el.classList.add("idle"); return;
+    }
+  }
+  const len = Math.hypot(dx, dy) || 1, sp = w.speed * dt;
+  const p = clampWalk(w.x + dx / len * sp, w.y + dy / len * sp * .8);
+  w.x = p.x; w.y = p.y; if (Math.abs(dx) > .5) w.face = Math.sign(dx);
+  w.el.classList.toggle("idle", false);
+}
+const WIN = { orc: .5, poring: .8 };                                // Duds' odds when they bump into each other
+function tick(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  walkers.forEach(w => { step(w, dt); place(w); });
+  if (duds.alive && !duds.busy) for (const m of enemies) {
+    if (!m.alive || m.busy) { m.touching = false; continue; }
+    const near = Math.abs(duds.x - m.x) < (m.kind === "orc" ? 24 : 16) && Math.abs(duds.y - m.y) < 14;
+    if (near && attackIntent && duds.target === m) { fight(m, m.kind === "orc" ? .65 : .95); break; }   // you attacked
+    if (near && !m.touching && Math.random() < .35) { m.touching = true; fight(m, WIN[m.kind]); break; } // 35% brawl
+    m.touching = near;
+  }
+  requestAnimationFrame(tick);
+}
+
+function fight(foe, dudsWinChance) {
+  attackIntent = false; duds.target = null;
+  const pair = [duds, foe];
+  pair.forEach(w => { w.busy = true; w.el.classList.add("fighting"); w.face = Math.sign((w === duds ? foe : duds).x - w.x) || 1; place(w); });
+  const s = sc(), pow = document.createElement("div"); pow.className = "pow";
+  pow.textContent = ["POW!", "BONK!", "CRIT!", "SLAP!", "MISS!"][Math.random() * 5 | 0];
+  pow.style.left = (duds.x + foe.x) / 2 * s + "px"; pow.style.top = (Math.min(duds.y, foe.y) - 66) * s + "px"; stage.appendChild(pow);
+  setTimeout(() => {
+    pow.remove(); pair.forEach(w => { w.el.classList.remove("fighting"); w.busy = false; });
+    const loser = Math.random() < dudsWinChance ? foe : duds, winner = loser === duds ? foe : duds;
+    loser.alive = false; ragdoll(loser, winner);
+    feed.textContent = loser === duds ? (foe.kind === "orc" ? T[LANG].killDuds : T[LANG].killDudsPoring)
+                                      : (foe.kind === "orc" ? T[LANG].killOrc : T[LANG].killPoring);
+    const tomb = document.createElement("div"); tomb.className = "tomb"; tomb.textContent = "RIP";
+    tomb.style.left = loser.x * s + "px"; tomb.style.top = loser.y * s + "px"; tomb.style.zIndex = Math.round(loser.y);
+    setTimeout(() => stage.appendChild(tomb), 900);
+    setTimeout(() => {                                              // respawn somewhere away from the winner
+      tomb.remove(); if (!document.querySelector(".pow")) feed.textContent = "";
+      let p = randomSpot();
+      for (let i = 0; i < 30 && Math.hypot(p.x - winner.x, p.y - winner.y) < 100; i++) p = randomSpot();
+      Object.assign(loser, p, { target: null, pause: 1, touching: false }); place(loser);
+      loser.el.classList.remove("dead"); loser.alive = true;
+    }, rnd(3000, 5500));
+  }, 1100);
+}
+
+// matter.js ragdoll: the loser gets launched, spins, bounces off the walls and the ground, then fades
+let stagePhys = null;
+async function ragdoll(w, winner) {
+  const r = w.el.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  w.el.classList.add("dead");
+  try { await matterReady; } catch { return; }
+  const { Engine, Bodies, Composite, Body, Events } = Matter;
+  if (!stagePhys) {
+    const engine = Engine.create(), W = stage.clientWidth, H = stage.clientHeight, o = { isStatic: true };
+    Composite.add(engine.world, [Bodies.rectangle(W / 2, H + 25, W * 3, 50, o), Bodies.rectangle(-25, H / 2, 50, H * 3, o),
+                                 Bodies.rectangle(W + 25, H / 2, 50, H * 3, o)]);
+    stagePhys = { engine, items: [] };
+    Events.on(engine, "afterUpdate", () => stagePhys.items.forEach(({ body, img, iw, ih }) => {
+      img.style.transform = `translate(${body.position.x - iw / 2}px, ${body.position.y - ih / 2}px) rotate(${body.angle}rad)`;
+    }));
+    const phys = stagePhys; (function loop() { if (stagePhys !== phys) return; if (phys.items.length) Engine.update(engine, 1000 / 60); requestAnimationFrame(loop); })();
+  }
+  const img = w.img.cloneNode(); img.className = "ragdoll"; img.style.width = r.width + "px"; stage.appendChild(img);
+  const iw = r.width, ih = r.height, body = Bodies.rectangle(r.left - sr.left + iw / 2, r.top - sr.top + ih / 2, iw * .8, ih * .8,
+                                                             { restitution: .55, friction: .3 });
+  const away = Math.sign(w.x - winner.x) || 1;
+  Body.setVelocity(body, { x: away * rnd(6, 11), y: -rnd(12, 17) }); Body.setAngularVelocity(body, away * rnd(.2, .4));
+  Composite.add(stagePhys.engine.world, body); const item = { body, img, iw, ih }; stagePhys.items.push(item);
+  setTimeout(() => { img.style.transition = "opacity .6s"; img.style.opacity = 0; }, 1800);
+  const phys = stagePhys; setTimeout(() => { Composite.remove(phys.engine.world, body); img.remove(); phys.items.splice(phys.items.indexOf(item), 1); }, 2500);
+}
+addEventListener("resize", () => { walkers.forEach(place); if (stagePhys) { Matter.Composite.clear(stagePhys.engine.world, false); stagePhys = null; } });
+walkers.forEach(w => w.img.complete ? place(w) : w.img.addEventListener("load", () => place(w)));
+if (!reduced) requestAnimationFrame(tick);
+
+// ======================= collage: photo + stickers hanging on matter.js springs =======================
+const collage = document.getElementById("collage");
+async function buildCollage() {
+  const L = await (await fetch("img/collage/layout.json", { cache: "no-store" })).json();
+  const ver = u => u + "?v=" + (L.v || 0);          // new collage build = new file names for the browser cache
+  collage.style.backgroundImage = `url(${ver(L.base)})`;
+  const title = new Image(); title.src = ver(L.title.img); title.className = "title"; title.alt = "RagnaDuds"; collage.appendChild(title);
+  const items = await Promise.all(L.stickers.map(st => new Promise(ok => {
+    const img = new Image(); img.src = ver(st.img); img.alt = ""; img.draggable = false; if (st.pixel) img.className = "pixel";
+    img.onload = () => ok({ st, img, w: st.w, h: st.w * img.naturalHeight / img.naturalWidth }); img.onerror = () => ok(null);
+    collage.appendChild(img);
+  }))).then(a => a.filter(Boolean));
+  const glow = document.getElementById("cardGlow");
+  function render() {
+    const s = collage.clientWidth / L.w;
+    title.style.width = L.title.w * s + "px"; title.style.transform = `translate(${(L.w - L.title.w) / 2 * s}px, ${(L.title.y - L.title.h / 2) * s}px)`;
+    for (const it of items) {
+      const x = it.body ? it.body.position.x : it.st.x, y = it.body ? it.body.position.y : it.st.y;
+      const a = it.body ? it.body.angle : it.st.rot * Math.PI / 180;
+      it.img.style.width = it.w * s + "px";
+      it.img.style.transform = `translate(${(x - it.w / 2) * s}px, ${(y - it.h / 2) * s}px) rotate(${a}rad)`;
+    }
+    const card = items.find(i => i.st.name === "card");
+    if (card) { glow.style.left = card.st.x / L.w * 100 + "%"; glow.style.top = (card.st.y + card.h * .35) / L.h * 100 + "%"; }
+  }
+  render(); addEventListener("resize", render);
+  try { await matterReady; } catch { return; }
+  if (reduced) { glow.classList.add("on"); return; }
+
+  const { Engine, Bodies, Body, Composite, Constraint, Events, Vector } = Matter;
+  const engine = Engine.create(); engine.gravity.y = 0;
+  const springs = it => {                                            // two springs (top + bottom) keep position AND tilt
+    const a = it.st.rot * Math.PI / 180, off = it.h * .3;
+    return [-1, 1].map(k => Constraint.create({ pointA: Vector.add({ x: it.st.x, y: it.st.y }, Vector.rotate({ x: 0, y: k * off }, a)),
+      bodyB: it.body, pointB: Vector.rotate({ x: 0, y: k * off }, it.body.angle), length: 0, stiffness: .014, damping: .1, render: { visible: false } }));
+  };
+  for (const it of items) {
+    it.body = Bodies.rectangle(it.st.x, it.st.y, it.w, it.h, { frictionAir: .06, collisionFilter: { group: -1 } });
+    Body.setAngle(it.body, it.st.rot * Math.PI / 180);
+    if (it.st.name === "card") { Body.setPosition(it.body, { x: it.st.x, y: -it.h }); it.falling = true; }
+    else Composite.add(engine.world, [it.body, ...springs(it)]);
+  }
+  // the card drop: falls from the sky with gravity, bounces on the floor, then hangs on springs like the rest
+  const card = items.find(i => i.st.name === "card");
+  let dropped = false;
+  function drop() {
+    if (!card || dropped) return; dropped = true;
+    const floor = Bodies.rectangle(card.st.x, card.st.y + card.h / 2 + 30, 900, 60, { isStatic: true, collisionFilter: { group: 1, category: 2, mask: 2 } });
+    card.body.collisionFilter = { group: 0, category: 2, mask: 2 }; card.body.restitution = .45; card.body.frictionAir = .01;
+    Body.setAngularVelocity(card.body, .15);
+    Composite.add(engine.world, [floor, card.body]);
+    let still = 0;
+    const fall = () => {
+      if (!card.falling) return;
+      Body.applyForce(card.body, card.body.position, { x: 0, y: card.body.mass * .0022 });
+      still = card.body.speed < .3 && card.body.position.y > card.st.y - 60 ? still + 1 : 0;
+      if (still > 30) {
+        card.falling = false; Composite.remove(engine.world, floor); card.body.collisionFilter = { group: -1 }; card.body.frictionAir = .06;
+        Composite.add(engine.world, springs(card)); glow.classList.add("on");
+      }
+    };
+    Events.on(engine, "beforeUpdate", fall);
+  }
+  Events.on(engine, "afterUpdate", render);
+  // drag & throw with the pointer
+  let grab = null;
+  const toBase = e => { const r = collage.getBoundingClientRect(), s = r.width / L.w; return { x: (e.clientX - r.left) / s, y: (e.clientY - r.top) / s }; };
+  for (const it of items) it.img.addEventListener("pointerdown", e => {
+    if (it.falling) return;
+    e.preventDefault(); it.img.setPointerCapture(e.pointerId);
+    const p = toBase(e), local = Vector.rotate(Vector.sub(p, it.body.position), -it.body.angle);
+    grab = Constraint.create({ pointA: p, bodyB: it.body, pointB: Vector.rotate(local, it.body.angle), stiffness: .15, damping: .1 });
+    grab.local = local; Composite.add(engine.world, grab);
+  });
+  addEventListener("pointermove", e => { if (grab) { grab.pointA = toBase(e); grab.pointB = Vector.rotate(grab.local, grab.bodyB.angle); } });
+  addEventListener("pointerup", () => { if (grab) { Composite.remove(engine.world, grab); grab = null; } });
+  // a little life: now and then a sticker gets a nudge
+  setInterval(() => {
+    const it = items[Math.random() * items.length | 0]; if (!it.falling && !grab)
+      Body.applyForce(it.body, Vector.add(it.body.position, { x: 0, y: -it.h / 3 }), { x: rnd(-1, 1) * it.body.mass * .0012, y: 0 });
+  }, 1400);
+  // only simulate while visible; the card drops the first time you scroll to it
+  let visible = false;
+  new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) setTimeout(drop, 400); }, { threshold: .35 }).observe(collage);
+  (function loop() { if (visible || grab) Engine.update(engine, 1000 / 60); requestAnimationFrame(loop); })();
+}
+buildCollage();
+
+// ======================= downloads: real size + availability =======================
+// ======================= server status + Hall of Fame (status/status.json, written every 15 s by the "status" container) =======================
+const JOBS = {"0":"Novice","1":"Swordman","2":"Mage","3":"Archer","4":"Acolyte","5":"Merchant","6":"Thief","7":"Knight","8":"Priest","9":"Wizard","10":"Blacksmith","11":"Hunter","12":"Assassin","13":"Knight (mounted)","14":"Crusader","15":"Monk","16":"Sage","17":"Rogue","18":"Alchemist","19":"Bard","20":"Dancer","21":"Crusader (mounted)","22":"Wedding","23":"Super Novice","24":"Gunslinger","25":"Ninja","26":"Xmas","27":"Summer","28":"Hanbok","29":"Oktoberfest","30":"Summer (mounted)","4001":"Novice High","4002":"Swordman High","4003":"Mage High","4004":"Archer High","4005":"Acolyte High","4006":"Merchant High","4007":"Thief High","4008":"Lord Knight","4009":"High Priest","4010":"High Wizard","4011":"Whitesmith","4012":"Sniper","4013":"Assassin Cross","4014":"Lord Knight (mounted)","4015":"Paladin","4016":"Champion","4017":"Professor","4018":"Stalker","4019":"Creator","4020":"Clown","4021":"Gypsy","4022":"Paladin (mounted)","4023":"Baby","4024":"Baby Swordman","4025":"Baby Mage","4026":"Baby Archer","4027":"Baby Acolyte","4028":"Baby Merchant","4029":"Baby Thief","4030":"Baby Knight","4031":"Baby Priest","4032":"Baby Wizard","4033":"Baby Blacksmith","4034":"Baby Hunter","4035":"Baby Assassin","4036":"Baby Knight (mounted)","4037":"Baby Crusader","4038":"Baby Monk","4039":"Baby Sage","4040":"Baby Rogue","4041":"Baby Alchemist","4042":"Baby Bard","4043":"Baby Dancer","4044":"Baby Crusader (mounted)","4045":"Super Baby","4046":"Taekwon","4047":"Star Gladiator","4048":"Star Gladiator (mounted)","4049":"Soul Linker","4050":"Gangsi","4051":"Death Knight","4052":"Dark Collector","4054":"Rune Knight","4055":"Warlock","4056":"Ranger","4057":"Arch Bishop","4058":"Mechanic","4059":"Guillotine Cross","4060":"Rune Knight T","4061":"Warlock T","4062":"Ranger T","4063":"Arch Bishop T","4064":"Mechanic T","4065":"Guillotine Cross T","4066":"Royal Guard","4067":"Sorcerer","4068":"Minstrel","4069":"Wanderer","4070":"Sura","4071":"Genetic","4072":"Shadow Chaser","4073":"Royal Guard T","4074":"Sorcerer T","4075":"Minstrel T","4076":"Wanderer T","4077":"Sura T","4078":"Genetic T","4079":"Shadow Chaser T","4080":"Rune Knight (mounted)","4081":"Rune Knight T (mounted)","4082":"Royal Guard (mounted)","4083":"Royal Guard T (mounted)","4084":"Ranger (mounted)","4085":"Ranger T (mounted)","4086":"Mechanic (mounted)","4087":"Mechanic T (mounted)","4096":"Baby Rune Knight","4097":"Baby Warlock","4098":"Baby Ranger","4099":"Baby Arch Bishop","4100":"Baby Mechanic","4101":"Baby Guillotine Cross","4102":"Baby Royal Guard","4103":"Baby Sorcerer","4104":"Baby Minstrel","4105":"Baby Wanderer","4106":"Baby Sura","4107":"Baby Genetic","4108":"Baby Shadow Chaser","4109":"Baby Rune Knight (mounted)","4110":"Baby Royal Guard (mounted)","4111":"Baby Ranger (mounted)","4112":"Baby Mechanic (mounted)","4190":"Super Novice E","4191":"Super Baby E","4211":"Kagerou","4212":"Oboro","4215":"Rebellion","4218":"Summoner","4220":"Baby Summoner","4222":"Baby Ninja","4223":"Baby Kagerou","4224":"Baby Oboro","4225":"Baby Taekwon","4226":"Baby Star Gladiator","4227":"Baby Soul Linker","4228":"Baby Gunslinger","4229":"Baby Rebellion","4238":"Baby Star Gladiator (mounted)","4239":"Star Emperor","4240":"Soul Reaper","4241":"Baby Star Emperor","4242":"Baby Soul Reaper","4243":"Star Emperor (mounted)","4244":"Baby Star Emperor (mounted)","4252":"Dragon Knight","4253":"Meister","4254":"Shadow Cross","4255":"Arch Mage","4256":"Cardinal","4257":"Windhawk","4258":"Imperial Guard","4259":"Biolo","4260":"Abyss Chaser","4261":"Elemental Master","4262":"Inquisitor","4263":"Troubadour","4264":"Trouvere","4278":"Windhawk (mounted)","4279":"Meister (mounted)","4280":"Dragon Knight (mounted)","4281":"Imperial Guard (mounted)","4302":"Sky Emperor","4303":"Soul Ascetic","4304":"Shinkiro","4305":"Shiranui","4306":"Night Watch","4307":"Hyper Novice","4308":"Spirit Handler","4316":"Sky Emperor (mounted)","4331":"Second Job Start","4332":"Rune Knight 2nd","4333":"Mechanic 2nd","4334":"Guillotine Cross 2nd","4335":"Warlock 2nd","4336":"Archbishop 2nd","4337":"Ranger 2nd","4338":"Royal Guard 2nd","4339":"Genetic 2nd","4340":"Shadow Chaser 2nd","4341":"Sorcerer 2nd","4342":"Sura 2nd","4343":"Minstrel 2nd","4344":"Wanderer 2nd","4350":"Second Job End"};
+let LIVE = null, HOF = "re";
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = n => Number(n).toLocaleString(LOCALE[LANG] || "en");
+async function refreshLive() {
+  try {
+    const r = await fetch("status/status.json", { cache: "no-store" });
+    if (r.ok) LIVE = await r.json();
+  } catch {}
+  renderLive(); renderHof();
+}
+function renderLive() {
+  let acc = 0, chars = 0;
+  for (const key of ["pre", "re"]) {
+    const srv = LIVE && LIVE[key], st = srv && srv.status, stats = srv && srv.stats;
+    const pill = document.querySelector(`[data-live="${key}"]`), num = document.querySelector(`[data-online="${key}"]`);
+    const state = ["online", "offline", "starting"].includes(st) ? st : "offline";
+    pill.className = "live " + state; pill.textContent = LIVE ? T[LANG][state] : "…"; pill.title = T[LANG].livetip;
+    num.textContent = stats ? fmt(stats.online) : (state === "offline" ? "0" : "–");
+    if (stats) { acc = Math.max(acc, stats.accounts); chars += stats.chars; }
+  }
+  const t = LIVE && LIVE.updated ? new Date(LIVE.updated).toLocaleTimeString(LOCALE[LANG] || "en", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "–";
+  document.getElementById("srvFoot").textContent = T[LANG].totals.replace("{a}", fmt(acc)).replace("{c}", fmt(chars)).replace("{t}", t);
+}
+function renderHof() {
+  const stats = LIVE && LIVE[HOF] && LIVE[HOF].stats, empty = `<li class="empty">${esc(T[LANG].hofempty)}</li>`;
+  document.querySelectorAll("[data-hof]").forEach(b => b.setAttribute("aria-pressed", b.dataset.hof === HOF));
+  const top = (stats && stats.top) || [];
+  document.getElementById("hofTop").innerHTML = top.length ? top.map((c, i) =>
+    `<li><span class="rk">${i + 1}</span><span class="nm">${esc(c.name)}${c.online ? ' <span class="on">●</span>' : ""}<small>${esc(JOBS[c.class] || "Job " + c.class)}</small></span>` +
+`<span class="n mvp${c.mvp ? "" : " zero"}">${fmt(c.mvp || 0)}</span><span class="n pvp${c.pvp ? "" : " zero"}">${fmt(c.pvp || 0)}</span>` +
+    `<span class="lv" title="${esc(T[LANG].lvtip)}">${c.base}/${c.job}</span></li>`).join("") : empty;
+  const list = (arr, val) => (arr && arr.length) ? arr.map(x => `<li><span>${esc(x.name)}</span><span>${val(x)}</span></li>`).join("") : empty;
+  document.getElementById("hofRich").innerHTML = list(stats && stats.rich, x => fmt(x.zeny) + "z");
+  document.getElementById("hofMvp").innerHTML = list(stats && stats.mvp, x => fmt(x.kills) + "×");
+}
+document.querySelectorAll("[data-hof]").forEach(b => b.addEventListener("click", () => { HOF = b.dataset.hof; renderHof(); }));
+setInterval(refreshLive, 15000);
+
+async function refreshSizes() {
+  for (const a of document.querySelectorAll(".slot .btn")) {
+    const key = a.closest(".slot").classList.contains("re") ? "re" : "pre";
+    const tag = document.querySelector(`[data-size="${key}"]`), st = document.querySelector(`[data-status="${key}"]`);
+    try {
+      const r = await fetch(a.getAttribute("href"), { method: "HEAD" }); if (!r.ok) throw 0;
+      const bytes = +r.headers.get("content-length");
+      tag.hidden = false;
+      tag.textContent = bytes >= 1024**3 ? `${(bytes / 1024**3).toFixed(1)} GB` : `${Math.max(1, Math.round(bytes / 1024**2))} MB`;
+      const d = new Date(r.headers.get("last-modified")); st.textContent = isNaN(d) ? "" : `${T[LANG].updated} ${d.toLocaleDateString(LOCALE[LANG] || "en")}`;
+      a.removeAttribute("aria-disabled");
+    } catch { tag.hidden = true; st.textContent = T[LANG].notyet; a.setAttribute("aria-disabled", "true"); }
+  }
+}
+
+// ======================= lag-o-meter (live) =======================
+function setBar(i, ms) { i.style.width = Math.min(100, ms / 3) + "%"; i.parentElement.classList.toggle("bad", ms > 150); }
+requestAnimationFrame(() => document.querySelectorAll(".bar i[data-ms]").forEach(i => setBar(i, +i.dataset.ms)));
+async function ping() {
+  if (document.hidden) return;
+  let best = Infinity;
+  for (let n = 0; n < 3; n++) {
+    const t = performance.now();
+    try { await fetch("img/favicon-32.png?p=" + Math.random(), { cache: "no-store" }); best = Math.min(best, performance.now() - t); } catch {}
+  }
+  const out = document.getElementById("youMs");
+  if (!isFinite(best)) { out.textContent = "offline?"; return; }
+  out.textContent = Math.round(best) + " ms"; setBar(document.querySelector("#youBar i"), best);
+}
+ping(); setInterval(ping, 5000);
+
+// ======================= install tabs (auto-select by OS) =======================
+const tabs = document.querySelectorAll("[data-tab]");
+function show(t) {
+  tabs.forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t));
+  document.querySelectorAll("[data-panel]").forEach(p => p.hidden = p.dataset.panel !== t);
+}
+tabs.forEach(b => b.addEventListener("click", () => show(b.dataset.tab)));
+const ua = navigator.userAgent;
+show(/Mac/.test(ua) && !/iPhone|iPad/.test(ua) ? "mac" : /Linux/.test(ua) && !/Android/.test(ua) ? "lin" : "win");
+
+// ======================= easter egg: Konami → physics Poring rain (Matter.js) =======================
+const KONAMI = "ArrowUp,ArrowUp,ArrowDown,ArrowDown,ArrowLeft,ArrowRight,ArrowLeft,ArrowRight,b,a";
+let konami = [], raining = false;
+addEventListener("keydown", e => { konami = [...konami, e.key].slice(-10); if (konami.join(",") === KONAMI) rain(); });
+function loadMatter() {
+  return window.Matter ? Promise.resolve() : new Promise((ok, fail) => {
+    const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js";
+    s.onload = ok; s.onerror = fail; document.head.appendChild(s);
+  });
+}
+async function rain() {
+  if (raining || reduced) return; raining = true; say(T[LANG].rain);
+  try { await loadMatter(); } catch { raining = false; return; }
+  const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint } = Matter;
+  const cv = document.getElementById("physics"); cv.style.display = "block";
+  const W = innerWidth, H = innerHeight, engine = Engine.create();
+  const render = Render.create({ canvas: cv, engine, options: { width: W, height: H, wireframes: false, background: "transparent", pixelRatio: 1 } });
+  const wall = { isStatic: true, render: { visible: false } };
+  Composite.add(engine.world, [Bodies.rectangle(W / 2, H + 30, W * 2, 60, wall), Bodies.rectangle(-30, H / 2, 60, H * 2, wall), Bodies.rectangle(W + 30, H / 2, 60, H * 2, wall)]);
+  const tex = document.createElement("canvas"); draw(tex, "blob", 4); const url = tex.toDataURL();
+  let n = 0; const drop = setInterval(() => {
+    Composite.add(engine.world, Bodies.circle(40 + Math.random() * (W - 80), -60, 24, {
+      restitution: .7, friction: .05, render: { sprite: { texture: url, xScale: 1, yScale: 1 } } }));
+    if (++n >= 70) clearInterval(drop);
+  }, 60);
+  const mouse = Mouse.create(cv);
+  Composite.add(engine.world, MouseConstraint.create(engine, { mouse, constraint: { stiffness: .2, render: { visible: false } } }));
+  const runner = Runner.create(); Runner.run(runner, engine); Render.run(render);
+  setTimeout(() => {                                         // clean up after 20 s
+    clearInterval(drop); Render.stop(render); Runner.stop(runner); Composite.clear(engine.world, false); Engine.clear(engine);
+    cv.getContext("2d").clearRect(0, 0, W, H); cv.style.display = "none"; raining = false;
+  }, 20000);
+}
+
+applyLang(LANG);
+</script>
+</body>
+</html>

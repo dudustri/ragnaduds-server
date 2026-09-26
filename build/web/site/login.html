@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RagnaDuds · Login</title>
+<link rel="icon" href="/img/favicon.ico?v=round" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png?v=round">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #f6ecd2; --dim: #b9ab8a; --bg: #14121f; --panel: #221d33; --edge: #6b4f2a; --edge-hi: #c9a25b;
+          --gold: #ffd166; --blue: #7cc4ff; --red: #ff6b6b; --px: 4px; }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; color: var(--ink);
+         font: 22px/1.25 "VT323", ui-monospace, monospace;
+         background: radial-gradient(ellipse at 50% -10%, #3a2d5c 0%, transparent 60%),
+                     repeating-linear-gradient(0deg, #16132a 0 32px, #181530 32px 64px); }
+  body::after { content: ""; position: fixed; inset: 0; pointer-events: none;
+                background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px),
+                            radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.45) 100%); }
+  main { width: min(420px, 100%); }
+  h1 { font: clamp(22px, 7vw, 34px) "Press Start 2P", monospace; color: var(--gold); text-align: center; margin: 0 0 6px;
+       text-shadow: 3px 3px 0 #7a3e12, 6px 6px 0 #000; }
+  .sub { text-align: center; color: var(--dim); margin: 0 0 18px; }
+  .frame { background: var(--panel); border: var(--px) solid var(--edge); padding: 18px 20px;
+           box-shadow: inset 0 0 0 var(--px) #000, inset 0 0 0 calc(var(--px)*2) var(--edge-hi), 6px 6px 0 #000; }
+  .npc { display: grid; grid-template-columns: 72px 1fr; gap: 14px; align-items: center; margin-bottom: 16px; }
+  .npc img { width: 72px; height: 72px; image-rendering: pixelated; border: var(--px) solid #000; box-shadow: 3px 3px 0 #000; }
+  .npc .name { font: 10px/1.5 "Press Start 2P", monospace; color: var(--blue); margin-bottom: 4px; overflow-wrap: anywhere; }
+  label { display: block; font: 10px "Press Start 2P", monospace; color: var(--gold); margin: 12px 0 6px; }
+  input { width: 100%; font: 22px "VT323", monospace; color: var(--ink); background: #000; border: 3px solid #444;
+          padding: 8px 10px; outline: none; }
+  input:focus { border-color: var(--gold); }
+  button { margin-top: 18px; width: 100%; font: 12px "Press Start 2P", monospace; color: #1b1203; cursor: pointer;
+           background: var(--gold); padding: 14px; border: var(--px) solid #000;
+           box-shadow: inset -4px -4px 0 #c99a2e, 4px 4px 0 #000; }
+  button:active { transform: translate(4px, 4px); box-shadow: inset -4px -4px 0 #c99a2e; }
+  button:disabled { filter: grayscale(1); cursor: wait; }
+  .msg { min-height: 1.4em; margin-top: 12px; text-align: center; }
+  .msg.bad { color: var(--red); }
+  .shake { animation: shake .3s steps(3); }
+  @keyframes shake { 33% { transform: translateX(-6px) } 66% { transform: translateX(6px) } }
+  .lang { display: flex; justify-content: center; gap: 0; margin-top: 16px; }
+  .lang button { width: auto; margin: 0; padding: 8px 10px; font-size: 10px; background: var(--panel); color: var(--ink); box-shadow: none; border-width: 3px; }
+  .lang button[aria-pressed="true"] { background: var(--gold); color: #1b1203; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>RAGNADUDS</h1>
+  <p class="sub" data-t="sub"></p>
+  <form class="frame" id="form" autocomplete="on">
+    <div class="npc">
+      <img src="/img/ragnaduds-npc.png" alt="RagnaDuds" width="72" height="72">
+      <div><div class="name" data-t="npc"></div><div data-t="hello"></div></div>
+    </div>
+    <label for="user" data-t="user"></label>
+    <input id="user" name="username" autocomplete="username" required autofocus>
+    <label for="pass" data-t="pass"></label>
+    <input id="pass" name="password" type="password" autocomplete="current-password" required>
+    <button id="go" type="submit" data-t="go"></button>
+    <div class="msg" id="msg" role="status"></div>
+  </form>
+  <div class="lang"><button type="button" data-lang="en">EN</button><button type="button" data-lang="pt">PT</button><button type="button" data-lang="da">DA</button></div>
+</main>
+<script>
+// Login = a cookie with sha256("rd:" + user + ":" + password). Caddy only serves the site when that cookie
+// matches DL_TOKEN (set on the server), so the password itself is never stored anywhere.
+const T = {
+  en: { sub: "friends only · no rules, just chill", npc: "[RagnaDuds, Kafra intern]", hello: "Halt, adventurer! Password, or eat an Asura Strike to the face, motherfucker.",
+        user: "ID", pass: "PASSWORD", go: "▶ CONNECT", checking: "Checking...", bad: "Wrong ID or password. The Poring is watching you.",
+        old: "Your browser can't do this here. Use the https:// address." },
+  pt: { sub: "só pros amigos · sem regras, só na paz", npc: "[RagnaDuds, estagiário]", hello: "Alto lá, aventureiro! Senha, ou vai tomar Asura na boca, fdp.",
+        user: "ID", pass: "SENHA", go: "▶ CONECTAR", checking: "Conferindo...", bad: "ID ou senha errados. O Poring tá de olho em você.",
+        old: "Teu navegador não consegue aqui. Usa o endereço https://." },
+  da: { sub: "kun for venner · ingen regler, bare chill", npc: "[RagnaDuds, praktikant]", hello: "Stop, eventyrer! Password, eller få et Asura Strike lige i fjæset, dit røvhul.", user: "ID", pass: "PASSWORD", go: "▶ FORBIND", checking: "Tjekker...", bad: "Forkert ID eller password. Poring'en holder øje med dig.", old: "Din browser kan ikke det her. Brug https://-adressen." },
+};
+let lang = (() => { try { return localStorage.getItem("lang") } catch { return null } })() ||
+           ({ pt: "pt", da: "da" }[(navigator.language || "").toLowerCase().slice(0, 2)] || "en");
+function applyLang(l) {
+  lang = T[l] ? l : "en";
+  document.documentElement.lang = { en: "en", pt: "pt-BR", da: "da-DK" }[lang];
+  document.querySelectorAll("[data-t]").forEach(e => e.textContent = T[lang][e.dataset.t]);
+  document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+  try { localStorage.setItem("lang", lang) } catch {}
+}
+document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.lang)));
+applyLang(lang);
+
+const form = document.getElementById("form"), msg = document.getElementById("msg"), go = document.getElementById("go");
+async function token(user, pass) {
+  const data = new TextEncoder().encode(`rd:${user}:${pass}`);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!window.crypto || !crypto.subtle) { msg.textContent = T[lang].old; msg.className = "msg bad"; return; }
+  go.disabled = true; msg.className = "msg"; msg.textContent = T[lang].checking;
+  const t = await token(form.user.value.trim(), form.pass.value);
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `rd_auth=${t}; Path=/; Max-Age=${60 * 60 * 24 * 60}; SameSite=Lax${secure}`;
+  // ask the server: with a good cookie "/" answers 200, otherwise it redirects back here
+  const r = await fetch("/", { redirect: "manual", cache: "no-store" }).catch(() => null);
+  if (r && r.ok) { location.replace("/"); return; }
+  document.cookie = "rd_auth=; Path=/; Max-Age=0";
+  go.disabled = false; msg.className = "msg bad"; msg.textContent = T[lang].bad;
+  form.classList.remove("shake"); void form.offsetWidth; form.classList.add("shake");
+  form.pass.select();
+});
+</script>
+</body>
+</html>

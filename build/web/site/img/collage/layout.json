@@ -1,0 +1,164 @@
+{
+ "v": 1790444579,
+ "base": "img/collage/base.jpg",
+ "w": 1200,
+ "h": 1600,
+ "stickers": [
+  {
+   "name": "valk",
+   "img": "img/collage/valk.png",
+   "x": 160,
+   "y": 270,
+   "w": 193,
+   "rot": -7,
+   "ground": false,
+   "pixel": false
+  },
+  {
+   "name": "aprendiz",
+   "img": "img/collage/aprendiz.png",
+   "x": 130,
+   "y": 745,
+   "w": 178,
+   "rot": -8,
+   "ground": false,
+   "pixel": false
+  },
+  {
+   "name": "kafra",
+   "img": "img/collage/kafra.png",
+   "x": 1052,
+   "y": 885,
+   "w": 268,
+   "rot": 3,
+   "ground": false,
+   "pixel": false
+  },
+  {
+   "name": "shura",
+   "img": "img/collage/shura.png",
+   "x": 115,
+   "y": 1030,
+   "w": 168,
+   "rot": -8,
+   "ground": false,
+   "pixel": false
+  },
+  {
+   "name": "serpente",
+   "img": "img/collage/serpente.png",
+   "x": 978,
+   "y": 1222,
+   "w": 133,
+   "rot": 4,
+   "ground": false,
+   "pixel": false
+  },
+  {
+   "name": "poro",
+   "img": "img/collage/poro.png",
+   "x": 100,
+   "y": 1250,
+   "w": 106,
+   "rot": -6,
+   "ground": false,
+   "pixel": false
+  },
+  {
+   "name": "homunculus",
+   "img": "img/collage/homunculus.png",
+   "x": 250,
+   "y": 1255,
+   "w": 113,
+   "rot": -6,
+   "ground": false,
+   "pixel": true
+  },
+  {
+   "name": "tao",
+   "img": "img/collage/tao.png",
+   "x": 1120,
+   "y": 1290,
+   "w": 72,
+   "rot": 0,
+   "ground": false,
+   "pixel": true
+  },
+  {
+   "name": "goldenbug",
+   "img": "img/collage/goldenbug.png",
+   "x": 935,
+   "y": 1362,
+   "w": 90,
+   "rot": 8,
+   "ground": false,
+   "pixel": false
+  },
+  {
+   "name": "muka",
+   "img": "img/collage/muka.png",
+   "x": 310,
+   "y": 1502,
+   "w": 118,
+   "rot": -5,
+   "ground": true,
+   "pixel": false
+  },
+  {
+   "name": "knight",
+   "img": "img/collage/knight.png",
+   "x": 150,
+   "y": 1450,
+   "w": 193,
+   "rot": 0,
+   "ground": true,
+   "pixel": false
+  },
+  {
+   "name": "mvp",
+   "img": "img/collage/mvp.png",
+   "x": 1050,
+   "y": 1460,
+   "w": 213,
+   "rot": 3,
+   "ground": true,
+   "pixel": false
+  },
+  {
+   "name": "poring",
+   "img": "img/collage/poring.png",
+   "x": 890,
+   "y": 1525,
+   "w": 104,
+   "rot": 0,
+   "ground": true,
+   "pixel": true
+  },
+  {
+   "name": "card",
+   "img": "img/collage/card.png",
+   "x": 440,
+   "y": 1550,
+   "w": 78,
+   "rot": -10,
+   "ground": true,
+   "pixel": true
+  },
+  {
+   "name": "card2",
+   "img": "img/collage/card2.png",
+   "x": 812,
+   "y": 1558,
+   "w": 56,
+   "rot": 12,
+   "ground": true,
+   "pixel": true
+  }
+ ],
+ "title": {
+  "img": "img/collage/title.png",
+  "y": 222,
+  "w": 429,
+  "h": 61
+ }
+}
