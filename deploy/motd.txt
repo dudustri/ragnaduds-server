@@ -1,0 +1,1 @@
+// RagnaDuds: blank on purpose. The welcome line is random and comes from npc/custom/duds_welcome.txt.

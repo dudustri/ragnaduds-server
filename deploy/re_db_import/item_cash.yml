@@ -1,0 +1,13 @@
+# RagnaDuds cash shop: the event tickets for 1 cash point (rAthena needs > 0); everyone gets
+# 10 cash points at login (npc/custom/duds_special_maps.txt), so they are free.
+Header:
+  Type: ITEM_CASH_DB
+  Version: 1
+
+Body:
+  - Tab: New
+    Items:
+      - Item: Special_Maps_Ticket
+        Price: 1
+      - Item: Cheffenia_Pass
+        Price: 1

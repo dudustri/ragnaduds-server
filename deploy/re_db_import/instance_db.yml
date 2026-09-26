@@ -1,0 +1,127 @@
+# RagnaDuds special maps (renewal): each room is a shared copy of a normal map, created by
+# npc/custom/duds_special_maps.txt. Only reachable through the event NPCs.
+Header:
+  Type: INSTANCE_DB
+  Version: 2
+
+Body:
+  - Id: 900
+    Name: Mapas Especiais 1
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: ra_fild09
+      X: 190
+      Y: 190
+  - Id: 901
+    Name: Mapas Especiais 2
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: moc_fild14
+      X: 200
+      Y: 200
+  - Id: 902
+    Name: Mapas Especiais 3
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: moc_fild15
+      X: 200
+      Y: 200
+  - Id: 903
+    Name: Mapas Especiais 4
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: moc_fild05
+      X: 200
+      Y: 200
+  - Id: 904
+    Name: Mapas Especiais 5
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: moc_fild04
+      X: 200
+      Y: 200
+  - Id: 905
+    Name: Mapas Especiais 6
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: moc_fild06
+      X: 200
+      Y: 200
+  - Id: 906
+    Name: Mapas Especiais 7
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: moc_fild08
+      X: 200
+      Y: 200
+  - Id: 907
+    Name: Mapas Especiais 8
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: moc_fild10
+      X: 200
+      Y: 160
+  - Id: 908
+    Name: Cheffenia 1
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: bossnia_01
+      X: 117
+      Y: 123
+  - Id: 909
+    Name: Cheffenia 2
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: bossnia_02
+      X: 117
+      Y: 123
+  - Id: 910
+    Name: Cheffenia 3
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: bossnia_03
+      X: 117
+      Y: 123
+  - Id: 911
+    Name: Cheffenia 4
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: bossnia_04
+      X: 117
+      Y: 123
+  - Id: 912
+    Name: Turn In 1
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: pay_dun01
+      X: 150
+      Y: 150
+  - Id: 913
+    Name: Turn In 2
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: gef_dun01
+      X: 152
+      Y: 150
+  - Id: 914
+    Name: Turn In 3
+    TimeLimit: 31536000
+    IdleTimeout: 31536000
+    Enter:
+      Map: abyss_01
+      X: 150
+      Y: 150

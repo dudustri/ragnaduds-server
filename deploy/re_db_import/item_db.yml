@@ -1,0 +1,30 @@
+# RagnaDuds custom items (renewal). The client names/icons are in System/itemInfo_C.lua (tbl_custom).
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  - Id: 990001
+    AegisName: Special_Maps_Ticket
+    Name: Ingresso dos Mapas Especiais
+    Type: Etc
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+  - Id: 990002
+    AegisName: Cheffenia_Pass
+    Name: Passe para Cheffenia
+    Type: Etc
+    Trade:
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true

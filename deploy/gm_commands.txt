@@ -1,0 +1,105 @@
+//===== Duds Server: GM helper commands ======================
+//= @god         : toggle Invincible status (every hit does 1 damage)
+//= @nocooldown  : toggle zero cooldown + zero after-cast delay for the
+//=                skills you currently know (re-run after learning skills)
+//= Monsters are free-for-all (no KS protection).
+//= Parties: everything shared. Every 30 s (and at login) all parties are set to
+//= EXP Even Share + item Party Share + Even Share distribution (party_share_level
+//= in inter_conf.txt lifts the level-gap limit).
+//= Both need GM level 99 (Admin). !god <player> / !nocooldown <player> (our charcommand symbol is !)
+//= work on another player.
+//= Loaded via "npc: npc/custom/duds_gm_commands.txt" in import/map_conf.txt.
+//= Skill lists = every skill with a cooldown in db/pre-re and db/re
+//= skill_db.yml (175 pre-renewal / 606 renewal), picked at load time.
+//=============================================================
+-	script	duds_gm_commands	-1,{
+OnInit:
+	bindatcmd "god", strnpcinfo(3) + "::OnGod", 99, 99;
+	bindatcmd "nocooldown", strnpcinfo(3) + "::OnNoCooldown", 99, 99;
+	if (checkre(0)) {
+		setarray .@ids[getarraysize(.@ids)],7,8,33,57,62,66,67,79,83,85,89,91,136,141,155,212,244,247,254,267,269,304,305,306,307,308,309,310,311,312,313,317,318,319,320,321,322,325,326,327;
+		setarray .@ids[getarraysize(.@ids)],328,329,330,362,375,378,379,382,394,400,406,484,489,490,524,528,536,539,693,715,784,1001,1010,1011,2002,2003,2004,2005,2006,2009,2201,2203,2204,2205,2206,2209,2210,2211,2212,2213;
+		setarray .@ids[getarraysize(.@ids)],2216,2217,2022,2035,2037,2040,2043,2044,2045,2046,2047,2048,2050,2051,2052,2057,2233,2236,2244,2257,2261,2267,2269,2270,2272,2273,2274,2278,2280,2288,2289,2290,2291,2292,2293,2294,2295,2296,2297,2303;
+		setarray .@ids[getarraysize(.@ids)],2304,2307,2310,2311,2312,2315,2317,2318,2319,2320,2321,2323,2324,2325,2328,2330,2332,2333,2334,2335,2337,2338,2340,2344,2345,2347,2348,2517,2518,2350,2351,2352,2381,2383,2413,2414,2418,2420,2422,2423;
+		setarray .@ids[getarraysize(.@ids)],2424,2425,2426,2427,2428,2429,2430,2431,2432,2433,2434,2446,2447,2448,2449,2450,2451,2452,2453,2454,2455,2456,2457,2458,2459,2460,2461,2465,2466,2467,2468,2476,2480,2481,2482,2483,2485,2492,2493,2534;
+		setarray .@ids[getarraysize(.@ids)],2536,2552,2553,2554,2555,2557,2560,2562,2565,2566,2567,2568,2569,2570,2571,2576,2579,2581,2582,2585,2586,2587,2588,2600,2601,2603,2604,2605,2606,2607,2608,2610,2612,3004,3005,3006,3008,3009,3010,3011;
+		setarray .@ids[getarraysize(.@ids)],3012,3013,3014,3021,3022,3024,3025,3026,3027,3029,3031,3032,3033,3034,3035,3041,3042,3043,3044,3045,5001,5002,5003,5006,5009,5010,5012,5013,5014,5020,5021,5022,5023,5026,5027,5028,5029,5032,5035,5036;
+		setarray .@ids[getarraysize(.@ids)],5038,5039,5040,5041,5045,5046,5047,5048,5049,5050,5051,5053,5055,5063,5064,5065,5067,5068,5072,5073,5076,5201,5204,5205,5206,5208,5210,5211,5212,5213,5214,5215,5216,5217,5218,5220,5221,5222,5225,5227;
+		setarray .@ids[getarraysize(.@ids)],5229,5230,5232,5233,5234,5235,5237,5238,5239,5241,5242,5243,5244,5245,5246,5247,5248,5249,5250,5251,5252,5253,5254,5256,5257,5261,5262,5263,5264,5265,5266,5267,5268,5269,5273,5277,5278,5279,5280,5281;
+		setarray .@ids[getarraysize(.@ids)],5282,5283,5284,5285,5286,5287,5289,5290,5291,5292,5293,5294,5295,5296,5298,5302,5303,5304,5305,5313,5314,5315,5316,5317,5318,5319,5320,5321,5322,5324,5326,5328,5329,5330,5331,5332,5333,5334,5335,5338;
+		setarray .@ids[getarraysize(.@ids)],5340,5341,5342,5343,5344,5345,5346,5347,5348,5350,5351,5352,5353,5355,5356,5358,5359,5360,5361,5362,5363,5364,5367,5368,5369,5370,5371,5372,5373,5375,5376,5377,5378,5379,5380,5381,5384,5385,5386,5387;
+		setarray .@ids[getarraysize(.@ids)],5388,5435,5436,5437,5439,5440,5441,5442,5445,5446,5447,5448,5403,5404,5405,5406,5407,5408,5409,5410,5411,5412,5413,5414,5415,5421,5422,5424,5425,5426,5427,5428,5429,5430,5431,5432,5451,5452,5453,5454;
+		setarray .@ids[getarraysize(.@ids)],5455,5456,5457,5458,5459,5460,5461,5462,5465,5466,5467,5468,5469,5470,5471,5472,5473,5474,5475,5476,5477,5478,5479,5480,5481,5482,5483,5484,5485,5486,5487,5488,5489,5490,5491,5492,5493,5494,5495,5499;
+		setarray .@ids[getarraysize(.@ids)],5500,5501,5502,5503,5504,5506,5507,5505,6001,6002,6003,6004,6005,6006,6502,6503,6504,6505,6506,6507,6508,6509,6510,6512,6513,6514,6516,6511,6515,6517,6518,6519,6520,6521,8001,8002,8004,8005,8006,8007;
+		setarray .@ids[getarraysize(.@ids)],8008,8009,8010,8011,8012,8013,8014,8016,8023,8028,8029,8030,8033,8036,8037,8038,8044,8045,8047,8048,8050,8051,8053,8054,8056,8057,8058,8241,8445,8448,8451,8454,8457,8601,8602,8603,8604,8605,10010,10011;
+		setarray .@ids[getarraysize(.@ids)],10012,10013,10015,10017,10018,10019;
+	} else {
+		setarray .@ids[getarraysize(.@ids)],6,8,141,375,693,2002,2003,2004,2005,2006,2009,2201,2203,2206,2209,2210,2211,2213,2216,2217,2035,2040,2043,2044,2045,2046,2047,2048,2051,2052,2057,2233,2236,2244,2257,2267,2269,2270,2272,2273;
+		setarray .@ids[getarraysize(.@ids)],2274,2278,2280,2289,2290,2291,2292,2293,2294,2295,2296,2297,2303,2304,2307,2310,2312,2315,2318,2320,2321,2323,2324,2325,2328,2330,2332,2333,2334,2335,2337,2338,2340,2344,2345,2346,2347,2348,2517,2518;
+		setarray .@ids[getarraysize(.@ids)],2383,2413,2418,2420,2422,2423,2424,2425,2426,2427,2428,2429,2430,2431,2432,2433,2434,2446,2447,2448,2449,2450,2451,2452,2453,2454,2455,2456,2457,2458,2459,2460,2461,2465,2466,2467,2468,2476,2481,2482;
+		setarray .@ids[getarraysize(.@ids)],2483,2485,2492,2493,2533,2534,2536,2552,2553,2554,2555,2557,2560,2562,2565,2566,2567,2568,2569,2570,2571,3004,3005,3006,3008,3009,3010,3011,3012,3013,3014,3021,3022,3024,3025,3026,3027,3029,3031,3032;
+		setarray .@ids[getarraysize(.@ids)],3033,3034,3035,5001,5002,5003,5006,5009,5010,5012,5013,5014,5067,8029,8030;
+	}
+	for (.@i = 0; .@i < getarraysize(.@ids); .@i++)
+		.cd[.@ids[.@i]] = 1;
+	initnpctimer;
+	end;
+
+OnTimer30000:   // parties: force "everything shared"
+	.@n = query_sql("SELECT `party_id` FROM `party`", .@pid);
+	for (.@i = 0; .@i < .@n; .@i++) {
+		party_changeoption .@pid[.@i], 0, 1;   // EXP: Even Share
+		party_changeoption .@pid[.@i], 1, 1;   // item pickup: Party Share
+		party_changeoption .@pid[.@i], 2, 1;   // item distribution: Even Share
+	}
+	initnpctimer;
+	end;
+
+OnGod:
+	if (getstatus(SC_INVINCIBLE)) {
+		sc_end SC_INVINCIBLE;
+		message strcharinfo(0), "God mode OFF.";
+	} else {
+		sc_start SC_INVINCIBLE, INFINITE_TICK, 1;
+		message strcharinfo(0), "God mode ON: every hit does 1 damage. Type @god again to turn it off.";
+	}
+	end;
+
+OnNoCooldown:
+	if (NOCD_ON) {
+		NOCD_ON = 0;
+		bonus_script_clear;
+		message strcharinfo(0), "No-cooldown OFF.";
+		end;
+	}
+	getskilllist;
+	.@s$ = "{ bonus bDelayRate,-100; ";
+	for (.@i = 0; .@i < @skilllist_count; .@i++) {
+		if (!.cd[@skilllist_id[.@i]]) continue;
+		if (.@n >= 49) { .@skipped++; continue; }   // engine limit: 50 per-skill bonuses
+		.@s$ += "bonus2 bSkillCooldown," + @skilllist_id[.@i] + ",-3600000; ";
+		.@n++;
+	}
+	.@s$ += "}";
+	bonus_script .@s$, 31536000, 8;   // 1 year, removed on logout
+	NOCD_ON = 1;
+	message strcharinfo(0), "No-cooldown ON for " + .@n + " skills (+ no after-cast delay). Type @nocooldown again to turn it off." + (.@skipped ? " (" + .@skipped + " skills over the limit were skipped)" : "");
+	end;
+
+OnPCLoginEvent:
+	NOCD_ON = 0;   // the bonus is removed on logout, keep the toggle in sync
+	if (getcharid(1)) {        // already in a party: share everything right away
+		party_changeoption getcharid(1), 0, 1; party_changeoption getcharid(1), 1, 1; party_changeoption getcharid(1), 2, 1;
+	}
+	end;
+}
+
+// ---- PvP kill counter (shown in the website's Hall of Fame) ----
+// Every time a player kills another player, the killer's PVP_KILLS goes up by one
+// (a permanent character variable, stored in the char_reg_num table).
+-	script	DudsPvPCounter	-1,{
+OnPCKillEvent:
+	PVP_KILLS++;
+	dispbottom "PvP: you slayed " + rid2name(killedrid) + "! (" + PVP_KILLS + " kills)";
+	end;
+}

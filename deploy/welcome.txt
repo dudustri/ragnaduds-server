@@ -1,0 +1,57 @@
+//===== RagnaDuds: random welcome message ======================================
+//= "Bem vindo do Supla:" + a grumpy, foul-mouthed, darkly funny English/Portuguese line at every login, shown only to you, at the top of the screen
+//= and in the chat. Loaded on both servers (hosts/<host>/<server>/import/map_conf.txt).
+//= rAthena's own "Welcome to rAthena!" MOTD is blanked by deploy/motd.txt.
+//==============================================================================
+
+-	script	DudsWelcome	-1,{
+OnInit:
+	setarray .line$[0],
+		"Puta merda, you again? O servidor tava finally at peace.",
+		"Welcome back, seu persistente do caralho. Nobody asked.",
+		"Log in, morre, respawn, repeat. Igual tua vida real, but with Porings.",
+		"Os Porings souberam que you were coming. Dois pediram demissao, one shat itself.",
+		"Your character missed you. E o unico, porra.",
+		"Good news: morrer aqui e de graca. Bad news: voce continua sendo voce.",
+		"Olha ele, o 'so vou jogar 5 minutinhos' asshole. Sure you will, parca.",
+		"Teu save point sees you more than your family. Pensa nessa merda.",
+		"Hydrate, ou nao. O Owl Marquis vai te foder either way.",
+		"Somewhere um Baphomet ta afiando a foice with your fucking name on it.",
+		"Ninguem vai te ressuscitar, buddy. Compra tua propria Yggdrasil Leaf, caralho.",
+		"Every MVP card que nunca vai dropar e um lembrete: life is unfair pra caralho.",
+		"Welcome to RagnaDuds, onde teu K/D ratio e tambem tua life story. Ouch.",
+		"Server uptime: excelente. Tuas decisoes: absolute dogshit.",
+		"Logou em vez de dormir? Os Deviruchis respect that. Teu chefe vai fire your ass.",
+		"Remember: o Poring nunca foi fofo. The little shit tava esperando.",
+		"Loading your skills... 0% encontrado. Good fucking luck, campeao.",
+		"Tua guild ligou. Just kidding, ninguem te liga, loser.",
+		"Parabens por logar. Biggest achievement do teu dia triste, ne?",
+		"Denmark time, caos brasileiro. Tuas lagrimas are timezone-independent, chorao.",
+		"A Kafra says hi. Ela e paga pra isso. She hates you.",
+		"Morre no jogo, you respawn. Morre no trampo, tem que ir amanha mesmo. Fuck.",
+		"Pro tip: a saida da dungeon ta atras de voce. So is your dignity, animal.",
+		"Teu inventario e 90% lixo. Just like your life choices.",
+		"Duds is watching. Duds ta julgando. Duds ta num Peco Peco e fucking disappointed.",
+		"Mais um dia farmando loot que nao dropa. Welcome home, masoquista.",
+		"O healer e free. Tua terapia nao. Deal with it, porra.",
+		"Bem-vindo! Nobody sentiu tua falta, mas foda-se, entra ai.",
+		"Vai upar or vai ficar parado em Prontera igual um NPC desempregado, porra?",
+		"The Poring is not cute. E um filho da puta paciente.",
+		"Dying here costs nothing. Viver na vida real e que ta foda.",
+		"Aquele card won't drop. Not today, nem nunca, caralho. Bom jogo!",
+		"Congrats por logar. Probably a porra mais produtiva que voce fez hoje.",
+		"You were gone so long que os Porings fizeram um sindicato. Against you, otario.",
+		"O Peco Peco do Duds already ate 3 Porings hoje e ainda ta hungry. Run, desgracado.",
+		"Relax, aqui ninguem te julga. Just kidding, o Duds judges pra caralho.",
+		"Great day pra morrer pro Osiris de novo, seu merda.",
+		"Teu personagem e level 99. Your social life ainda ta no 1, coitado.",
+		"Fica tranquilo: a Kafra guarda teus itens. Your self-respect ela perdeu faz tempo.",
+		"Server rule #1: nao tem regra. Rule #2: nobody fucking likes you. Rule #3: see rule #1.";
+	setarray .color[0], 0xFFD166, 0x7CC4FF, 0xFF8FB1, 0x7EE081, 0xFFB86B;
+	end;
+
+OnPCLoginEvent:
+	.@i = rand(getarraysize(.line$));
+	announce "Bem vindo do Supla: " + .line$[.@i], bc_self, .color[rand(getarraysize(.color))];
+	end;
+}

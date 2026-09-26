@@ -1,0 +1,370 @@
+//===== RagnaDuds: bRO special maps (renewal only) ================================
+//= Three events from bRO (Ragnarok Online Brasil), rebuilt from bRO's own announcements:
+//=  Mapas Especiais  NPC Nanaru, Morroc (152,272). 8 rooms, instant respawn, no EXP loss. Base Lv 70+.
+//=                   Rooms and monster counts: bRO edition of April 2020, doubled (.mult = 2).
+//=  Cheffenia        Portal Fantasma, Comodo (208,187). 4 MVP rooms (Boss Nia maps), bosses +100% HP and
+//=                   +50% damage, fatigue: after 1,000 kills a day your drop rate there is 0 until tomorrow.
+//=                   Base Lv 90+. Spawns: official Boss Nia list + one "exclusive" MVP per room (bRO 2023).
+//=  Turn In          Mateus Alem, Geffen (128,117). 3 hunting maps by level + quest: kill 400 of one monster,
+//=  (Evento de Caca) get 400x its base/job EXP. Once every 24h. bRO edition of September 2020.
+//=                   bRO didn't publish amounts: 300 per monster type, doubled (.mult = 2).
+//= Every room is a shared instance (IM_NONE): its own copy of the map, reachable only through these NPCs;
+//= the normal maps stay untouched. Rooms are (re)created when the map server starts.
+//= Tickets (Cash Shop, 1 point each; everyone is topped up to 10 points at login, so they're free):
+//=   Ingresso dos Mapas Especiais (990001), Passe para Cheffenia (990002). Not consumed when entering.
+//= Instances: db/import/instance_db.yml (Ids 900-914). Items: db/import/item_db.yml + item_cash.yml.
+//==================================================================================
+
+// Creates a shared room (destroying the previous one after a script reload). Returns the instance id or 0.
+function	script	F_DudsRoom	{
+	if (getarg(1) > 0 && instance_live_info(ILI_NAME, getarg(1)) != "")
+		instance_destroy getarg(1);
+	.@id = instance_create(getarg(0), IM_NONE);
+	if (.@id <= 0) {
+		debugmes "RagnaDuds special maps: could not create '" + getarg(0) + "' (error " + .@id + ")";
+		return 0;
+	}
+	return .@id;
+}
+
+// Spawns <amount> of <mob> anywhere on <map>, calling <event> when each one dies.
+// <tough> = 1: Cheffenia rule, +100% max HP and +50% attack/magic attack.
+function	script	F_DudsSpawn	{
+	.@amount = getarg(2);
+	monster getarg(0), 0, 0, "--ja--", getarg(1), .@amount, getarg(3);
+	if (getarg(4, 0)) {
+		copyarray .@gid[0], $@mobid[0], .@amount;
+		for (.@i = 0; .@i < .@amount; .@i++) {
+			getunitdata .@gid[.@i], .@d;
+			setunitdata .@gid[.@i], UMOB_MAXHP, .@d[UMOB_MAXHP] * 2;
+			setunitdata .@gid[.@i], UMOB_HP, .@d[UMOB_MAXHP] * 2;
+			setunitdata .@gid[.@i], UMOB_ATKMIN, .@d[UMOB_ATKMIN] * 3 / 2;
+			setunitdata .@gid[.@i], UMOB_ATKMAX, .@d[UMOB_ATKMAX] * 3 / 2;
+			setunitdata .@gid[.@i], UMOB_MATKMIN, .@d[UMOB_MATKMIN] * 3 / 2;
+			setunitdata .@gid[.@i], UMOB_MATKMAX, .@d[UMOB_MATKMAX] * 3 / 2;
+		}
+	}
+	return;
+}
+
+// Puts the player in a room at a random spot.
+function	script	F_DudsEnter	{
+	if (getarg(1) <= 0 || instance_enter(getarg(0), -1, -1, getcharid(0), getarg(1)) != IE_OK) {
+		dispbottom "This room is not available right now. Tell Duds!";
+		return;
+	}
+	warp "Random", 0, 0;
+	return;
+}
+
+// ================================ Mapas Especiais ================================
+morocc,152,272,4	script	Nanaru#sm	4_F_GEFFEN_FAY,{
+	mes "[Nanaru]";
+	mes "Welcome to the ^0055FFMapas Especiais^000000!";
+	mes "8 rooms packed with monsters that respawn";
+	mes "instantly, and you lose no EXP if you fall.";
+	next;
+	if (BaseLevel < 70) {
+		mes "[Nanaru]";
+		mes "Come back when you reach";
+		mes "^FF0000base level 70^000000, little one.";
+		close;
+	}
+	if (!countitem(990001)) {
+		mes "[Nanaru]";
+		mes "You need an ^0055FFIngresso dos Mapas Especiais^000000.";
+		mes "It's ^0055FFfree in the Cash Shop^000000. Go grab one!";
+		close;
+	}
+	mes "[Nanaru]";
+	mes "Which room do you want?";
+	for (.@r = 1; .@r <= 8; .@r++)
+		.@menu$ += "Room " + .@r + ": " + .desc$[.@r] + ":";
+	.@r = select(.@menu$ + "Never mind");
+	if (.@r > 8)
+		close;
+	close2;
+	callfunc "F_DudsEnter", "Mapas Especiais " + .@r, $@SM_room[.@r];
+	end;
+
+OnInit:
+	setarray .map$[1], "ra_fild09", "moc_fild14", "moc_fild15", "moc_fild05", "moc_fild04", "moc_fild06", "moc_fild08", "moc_fild10";
+	setarray .desc$[1],
+		"Zenorc, Grove, Orc Skeleton",
+		"Deviruchi, Injustice, Evil Nymph, Dark Priest, Disguise",
+		"Bloody Knight, Banshee Master, Nightmare Mummy, Zombie Master",
+		"Evil Druid, Frus, Shadows of Vanity and Gluttony",
+		"Am Mut, Abyssal Priest, Abandoned Teddy Bear",
+		"Immortal army, Corrupt Orc Zombie, Decorated Evil Tree",
+		"Owl Marquis, Arc Elder, Warrior Laura",
+		"Owl Marquis, Arc Elder, Warrior Laura";
+	.mult = 2;	// monster multiplier: bRO amounts x2 (RagnaDuds)
+	// <mob id>:<amount> per room (bRO, April 2020)
+	setarray .mobs$[1],
+		"1177:450,1687:450,1152:100",
+		"1109:400,1257:400,1416:60,1198:200,1506:200",
+		"1268:10,1974:150,2354:600,1298:250",
+		"1117:650,1753:150,1920:150,1919:150",
+		"1301:5,2283:950,2995:150",
+		"3490:50,3477:150,3016:700,3476:100,2987:100",
+		"2923:1250,2920:50,2250:10",
+		"2923:1250,2920:50,2250:10";
+	freeloop(1);
+	for (.@r = 1; .@r <= 8; .@r++) {
+		$@SM_room[.@r] = callfunc("F_DudsRoom", "Mapas Especiais " + .@r, $@SM_room[.@r]);
+		if (!$@SM_room[.@r])
+			continue;
+		.@m$ = instance_mapname(.map$[.@r], $@SM_room[.@r]);
+		setmapflag .@m$, MF_NOEXPPENALTY;
+		setmapflag .@m$, MF_NOMEMO;
+		explode(.@list$, .mobs$[.@r], ",");
+		for (.@i = 0; .@i < getarraysize(.@list$); .@i++) {
+			explode(.@p$, .@list$[.@i], ":");
+			callfunc "F_DudsSpawn", .@m$, atoi(.@p$[0]), atoi(.@p$[1]) * .mult, "Nanaru#sm::OnKill";
+		}
+		deletearray .@list$;
+		debugmes "RagnaDuds: Mapas Especiais " + .@r + " (" + .map$[.@r] + ") ready, " + mobcount(.@m$, "Nanaru#sm::OnKill") + " monsters";
+	}
+	freeloop(0);
+	end;
+
+OnPCLoginEvent:	// cash points for the free tickets (the Cash Shop only sells them, at 1 point each)
+	if (#CASHPOINTS < 10)
+		#CASHPOINTS = 10;
+	end;
+
+OnKill:	// instant respawn: another one of the same kind, somewhere in the same room
+	if (playerattached())
+		monster strcharinfo(3), 0, 0, "--ja--", killedrid, 1, "Nanaru#sm::OnKill";
+	end;
+}
+
+// =================================== Cheffenia ===================================
+comodo,208,187,4	script	Portal Fantasma#ch	WARPNPC,{
+	mes "[Portal Fantasma]";
+	mes "The gates of ^AA0000Cheffenia^000000 hum in the dark.";
+	mes "Four rooms full of MVPs. Bosses there have";
+	mes "^AA0000double HP^000000 and hit ^AA0000+50% harder^000000.";
+	mes "After ^AA00001,000 kills^000000 in a day, you'll find";
+	mes "nothing more there until tomorrow.";
+	next;
+	if (BaseLevel < 90) {
+		mes "[Portal Fantasma]";
+		mes "Only adventurers of ^FF0000base level 90^000000 or more";
+		mes "survive in there.";
+		close;
+	}
+	if (!countitem(990002)) {
+		mes "[Portal Fantasma]";
+		mes "You need a ^AA0000Passe para Cheffenia^000000.";
+		mes "It's ^0055FFfree in the Cash Shop^000000.";
+		close;
+	}
+	if (CH_DAY == gettime(DT_YYYYMMDD) && CH_KILLS >= 1000) {
+		mes "[Portal Fantasma]";
+		mes "You are ^AA0000exhausted^000000 (" + CH_KILLS + " kills today).";
+		mes "You can still enter, but monsters there";
+		mes "won't drop anything for you until tomorrow.";
+		next;
+	}
+	.@r = select("Cheffenia 1:Cheffenia 2:Cheffenia 3:Cheffenia 4:Never mind");
+	if (.@r > 4)
+		close;
+	close2;
+	callfunc "F_DudsEnter", "Cheffenia " + .@r, $@CH_room[.@r];
+	end;
+
+OnInit:
+	// official Boss Nia spawns (npc/events/bossnia.txt): mob id, amount, respawn (seconds)
+	setarray .boss[0], 1252,1768,1272,1046,1389,1112,1719,1147,1059,1039,1658,1511,1785,1685,1115,1038,1190,1087,1492,1150,1373,1779,1734,1708,1688,1583,1312,1157,1251,1871,1159,1086,1418,1623;
+	setarray .count[0], 5,2,3,10,5,10,2,10,1,10,10,1,10,2,1,10,10,2,1,1,1,2,2,2,1,1,10,2,2,5,10,10,10,5;
+	setarray .delay[0], 7200,7200,7200,7200,1800,1800,7200,1800,1800,1800,1800,1800,1800,7200,1800,7200,7200,1800,3600,3600,3600,7200,7200,7200,3600,3600,7200,3600,3600,7200,7200,3600,7200,7200;
+	// bRO's exclusive MVP of each room doesn't exist in rAthena: closest original instead
+	// (Ilusao do Luar, Marechal Tartaruga, Conde Dracula, Ktullanux de Cristal)
+	setarray .extra[1], 1150, 1312, 1389, 1779;
+	freeloop(1);
+	for (.@r = 1; .@r <= 4; .@r++) {
+		$@CH_room[.@r] = callfunc("F_DudsRoom", "Cheffenia " + .@r, $@CH_room[.@r]);
+		if (!$@CH_room[.@r])
+			continue;
+		.@m$ = instance_mapname("bossnia_0" + .@r, $@CH_room[.@r]);
+		$@CH_map$[.@r] = .@m$;
+		setmapflag .@m$, MF_NOMEMO;
+		for (.@i = 0; .@i < getarraysize(.boss); .@i++)
+			callfunc "F_DudsSpawn", .@m$, .boss[.@i], .count[.@i], "Portal Fantasma#ch::OnBossKill", 1;
+		callfunc "F_DudsSpawn", .@m$, .extra[.@r], 1, "Portal Fantasma#ch::OnBossKill", 1;
+		debugmes "RagnaDuds: Cheffenia " + .@r + " ready, " + mobcount(.@m$, "Portal Fantasma#ch::OnBossKill") + " bosses";
+	}
+	freeloop(0);
+	end;
+
+OnBossKill:	// respawn after the official delay (2 h for the exclusive MVP)
+	if (!playerattached())
+		end;
+	.@m$ = strcharinfo(3);
+	.@mob = killedrid;
+	.@wait = 7200;
+	for (.@i = 0; .@i < getarraysize(.boss); .@i++)
+		if (.boss[.@i] == .@mob) {
+			.@wait = .delay[.@i];
+			break;
+		}
+	detachrid;
+	sleep .@wait * 1000;
+	callfunc "F_DudsSpawn", .@m$, .@mob, 1, "Portal Fantasma#ch::OnBossKill", 1;
+	end;
+
+OnNPCKillEvent:	// fatigue: kills in Cheffenia today; from 1,000 on, drops there are 0
+	.@here$ = strcharinfo(3);
+	for (.@r = 1; .@r <= 4; .@r++)
+		if ($@CH_map$[.@r] == .@here$) {
+			if (CH_DAY != gettime(DT_YYYYMMDD)) {
+				CH_DAY = gettime(DT_YYYYMMDD);
+				CH_KILLS = 0;
+			}
+			CH_KILLS++;
+			if (CH_KILLS == 1000)
+				dispbottom "Cheffenia: 1,000 kills today. You're exhausted - no more drops here until tomorrow.";
+			if (CH_KILLS >= 1000)	// refreshed on every kill, fades 10 s after you stop killing here
+				bonus_script "{ bonus2 bDropAddRace,RC_ALL,-100; }", 10, 1024;
+			break;
+		}
+	end;
+}
+
+// Cheffenia services inside every room (duplicated into each copy with the map)
+bossnia_01,121,127,4	script	Kafra#ch1	4_F_KAFRA1,{
+	mes "[Kafra]";
+	mes "Even in Cheffenia, Kafra has your back.";
+	mes "Storage is free here.";
+	close2;
+	openstorage;
+	end;
+}
+bossnia_02,121,127,4	duplicate(Kafra#ch1)	Kafra#ch2	4_F_KAFRA1
+bossnia_03,121,127,4	duplicate(Kafra#ch1)	Kafra#ch3	4_F_KAFRA1
+bossnia_04,121,127,4	duplicate(Kafra#ch1)	Kafra#ch4	4_F_KAFRA1
+
+bossnia_01,113,127,4	script	Healer#ch1	4_F_TRAINEE,{
+	percentheal 100, 100;
+	specialeffect2 EF_HEAL2;
+	dispbottom "Healed. Now go get them.";
+	end;
+}
+bossnia_02,113,127,4	duplicate(Healer#ch1)	Healer#ch2	4_F_TRAINEE
+bossnia_03,113,127,4	duplicate(Healer#ch1)	Healer#ch3	4_F_TRAINEE
+bossnia_04,113,127,4	duplicate(Healer#ch1)	Healer#ch4	4_F_TRAINEE
+
+// ================================ Turn In (Evento de Caca) ================================
+geffen,128,117,4	script	Mateus Alem#ti	4_M_SAGE_C,{
+	mes "[Mateus Alem]";
+	mes "Monsters are taking over some caves again.";
+	mes "Help me thin them out and I'll teach you";
+	mes "a thing or two - worth a lot of experience!";
+	next;
+	switch (select("Yes, I'll help:I want my reward!:Cancel my hunt:Can you teleport me?:Nothing")) {
+	case 1:
+		if (TI_MOB) {
+			mes "[Mateus Alem]";
+			mes "You're already hunting ^0055FF" + getmonsterinfo(TI_MOB, MOB_NAME) + "^000000";
+			mes "(" + TI_KILLS + "/400).";
+			close;
+		}
+		if (TI_NEXT > gettimetick(2)) {
+			mes "[Mateus Alem]";
+			mes "Rest a bit. Come back in";
+			mes "^0055FF" + callfunc("Time2Str", TI_NEXT) + "^000000.";
+			close;
+		}
+		mes "[Mateus Alem]";
+		mes "Which area fits your level?";
+		.@b = select(.bracket$[1] + ":" + .bracket$[2] + ":" + .bracket$[3]);
+		if (BaseLevel < .minlv[.@b] || BaseLevel > .maxlv[.@b]) {
+			mes "That one is for base level " + .minlv[.@b] + "-" + .maxlv[.@b] + ".";
+			close;
+		}
+		next;
+		mes "[Mateus Alem]";
+		mes "Which monster will you hunt?";
+		.@m = .mob[.@b * 2 - 2 + select(getmonsterinfo(.mob[.@b * 2 - 2], MOB_NAME) + ":" + getmonsterinfo(.mob[.@b * 2 - 1], MOB_NAME)) - 1];
+		TI_MOB = .@m;
+		TI_KILLS = 0;
+		next;
+		mes "[Mateus Alem]";
+		mes "Defeat ^0055FF400 " + getmonsterinfo(.@m, MOB_NAME) + "^000000 and come back.";
+		mes "I can teleport you to their cave.";
+		close;
+	case 2:
+		if (!TI_MOB || TI_KILLS < 400) {
+			mes "[Mateus Alem]";
+			if (TI_MOB)
+				mes "Only " + TI_KILLS + "/400 so far. Keep going!";
+			else
+				mes "You haven't taken a hunt yet.";
+			close;
+		}
+		.@base = getmonsterinfo(TI_MOB, MOB_BASEEXP) * 400;
+		.@job = getmonsterinfo(TI_MOB, MOB_JOBEXP) * 400;
+		TI_MOB = 0;
+		TI_KILLS = 0;
+		TI_NEXT = gettimetick(2) + 86400;
+		getexp .@base, .@job;
+		mes "[Mateus Alem]";
+		mes "Excellent work! Here's what I promised.";
+		mes "See you again tomorrow.";
+		close;
+	case 3:
+		mes "[Mateus Alem]";
+		if (!TI_MOB) {
+			mes "You have no hunt to cancel.";
+			close;
+		}
+		TI_MOB = 0;
+		TI_KILLS = 0;
+		mes "Hunt cancelled. Pick another any time.";
+		close;
+	case 4:
+		mes "[Mateus Alem]";
+		mes "Where to?";
+		.@b = select(.bracket$[1] + ":" + .bracket$[2] + ":" + .bracket$[3] + ":Never mind");
+		if (.@b > 3)
+			close;
+		close2;
+		callfunc "F_DudsEnter", "Turn In " + .@b, $@TI_room[.@b];
+		end;
+	}
+	close;
+
+OnInit:
+	setarray .bracket$[1], "Payon Cave [70-100]", "Geffen Cave [101-125]", "Abyss Lake [126-174]";
+	setarray .minlv[1], 70, 101, 126;
+	setarray .maxlv[1], 100, 125, 174;
+	setarray .map$[1], "pay_dun01", "gef_dun01", "abyss_01";
+	// 2 monsters per map: Anopheles + Harpy, Remover + Zombie Slaughter, Pom Spider + Shadow of Vanity
+	setarray .mob[0], 1627, 1376, 1682, 1864, 2132, 1920;
+	.mult = 2;	// monster multiplier: 300 of each x2 = 600 per type (RagnaDuds)
+	for (.@b = 1; .@b <= 3; .@b++) {
+		$@TI_room[.@b] = callfunc("F_DudsRoom", "Turn In " + .@b, $@TI_room[.@b]);
+		if (!$@TI_room[.@b])
+			continue;
+		.@m$ = instance_mapname(.map$[.@b], $@TI_room[.@b]);
+		setmapflag .@m$, MF_NOMEMO;
+		callfunc "F_DudsSpawn", .@m$, .mob[.@b * 2 - 2], 300 * .mult, "Mateus Alem#ti::OnKill";
+		callfunc "F_DudsSpawn", .@m$, .mob[.@b * 2 - 1], 300 * .mult, "Mateus Alem#ti::OnKill";
+		debugmes "RagnaDuds: Turn In " + .@b + " (" + .map$[.@b] + ") ready, " + mobcount(.@m$, "Mateus Alem#ti::OnKill") + " monsters";
+	}
+	end;
+
+OnKill:	// instant respawn in the hunting maps
+	if (playerattached())
+		monster strcharinfo(3), 0, 0, "--ja--", killedrid, 1, "Mateus Alem#ti::OnKill";
+	end;
+
+OnNPCKillEvent:	// quest progress (counts anywhere)
+	if (TI_MOB && killedrid == TI_MOB && TI_KILLS < 400) {
+		TI_KILLS++;
+		if (TI_KILLS % 50 == 0 || TI_KILLS == 400)
+			dispbottom "Turn In: " + TI_KILLS + "/400 " + getmonsterinfo(TI_MOB, MOB_NAME) + (TI_KILLS == 400 ? " - go see Mateus Alem in Geffen!" : "");
+	}
+	end;
+}

@@ -1,0 +1,52 @@
+//===== RagnaDuds: Agente VIP (buffer) ============================================
+//= bRO's VIP buff NPC, at the exact 36 spots bRO listed in its April 2019 VIP update
+//= ("Sistema VIP atualizado no Thor e Valhalla"). Free for everyone here.
+//= Buffs: Blessing + Increase AGI, level 10 (bRO didn't publish its list; add more below).
+//= Loaded on both servers (hosts/<host>/<server>/import/map_conf.txt); every spot checked walkable on both.
+//==================================================================================
+
+-	script	Agente VIP	-1,{
+	specialeffect2 EF_BLESSING;
+	sc_start SC_BLESSING, 240000, 10;
+	specialeffect2 EF_INCAGILITY;
+	sc_start SC_INCREASEAGI, 240000, 10;
+	dispbottom "Agente VIP: Blessing + Increase AGI (lv 10). Go get them!";
+	end;
+}
+
+prontera,146,93,4	duplicate(Agente VIP)	Agente VIP#1	4_F_EDEN_OFFICER
+izlude,134,92,4	duplicate(Agente VIP)	Agente VIP#2	4_F_EDEN_OFFICER
+alberta,104,60,4	duplicate(Agente VIP)	Agente VIP#3	4_F_EDEN_OFFICER
+payon,184,102,4	duplicate(Agente VIP)	Agente VIP#4	4_F_EDEN_OFFICER
+geffen,115,66,4	duplicate(Agente VIP)	Agente VIP#5	4_F_EDEN_OFFICER
+morocc,169,81,4	duplicate(Agente VIP)	Agente VIP#6	4_F_EDEN_OFFICER
+aldebaran,146,116,4	duplicate(Agente VIP)	Agente VIP#7	4_F_EDEN_OFFICER
+comodo,199,149,4	duplicate(Agente VIP)	Agente VIP#8	4_F_EDEN_OFFICER
+yuno,149,187,4	duplicate(Agente VIP)	Agente VIP#9	4_F_EDEN_OFFICER
+einbroch,235,207,4	duplicate(Agente VIP)	Agente VIP#10	4_F_EDEN_OFFICER
+einbech,189,123,4	duplicate(Agente VIP)	Agente VIP#11	4_F_EDEN_OFFICER
+lighthalzen,167,97,4	duplicate(Agente VIP)	Agente VIP#12	4_F_EDEN_OFFICER
+hugel,80,152,4	duplicate(Agente VIP)	Agente VIP#13	4_F_EDEN_OFFICER
+rachel,111,143,4	duplicate(Agente VIP)	Agente VIP#14	4_F_EDEN_OFFICER
+veins,210,109,4	duplicate(Agente VIP)	Agente VIP#15	4_F_EDEN_OFFICER
+umbala,93,160,4	duplicate(Agente VIP)	Agente VIP#16	4_F_EDEN_OFFICER
+niflheim,206,179,4	duplicate(Agente VIP)	Agente VIP#17	4_F_EDEN_OFFICER
+amatsu,102,152,4	duplicate(Agente VIP)	Agente VIP#18	4_F_EDEN_OFFICER
+gonryun,156,122,4	duplicate(Agente VIP)	Agente VIP#19	4_F_EDEN_OFFICER
+louyang,210,107,4	duplicate(Agente VIP)	Agente VIP#20	4_F_EDEN_OFFICER
+ayothaya,212,173,4	duplicate(Agente VIP)	Agente VIP#21	4_F_EDEN_OFFICER
+moscovia,220,191,4	duplicate(Agente VIP)	Agente VIP#22	4_F_EDEN_OFFICER
+brasilis,200,224,4	duplicate(Agente VIP)	Agente VIP#23	4_F_EDEN_OFFICER
+dewata,202,188,4	duplicate(Agente VIP)	Agente VIP#24	4_F_EDEN_OFFICER
+malangdo,178,139,4	duplicate(Agente VIP)	Agente VIP#25	4_F_EDEN_OFFICER
+malaya,234,218,4	duplicate(Agente VIP)	Agente VIP#26	4_F_EDEN_OFFICER
+xmas,139,141,4	duplicate(Agente VIP)	Agente VIP#27	4_F_EDEN_OFFICER
+glast_01,188,270,4	duplicate(Agente VIP)	Agente VIP#28	4_F_EDEN_OFFICER
+mid_camp,201,237,4	duplicate(Agente VIP)	Agente VIP#29	4_F_EDEN_OFFICER
+manuk,313,183,4	duplicate(Agente VIP)	Agente VIP#30	4_F_EDEN_OFFICER
+splendide,185,178,4	duplicate(Agente VIP)	Agente VIP#31	4_F_EDEN_OFFICER
+mora,52,149,4	duplicate(Agente VIP)	Agente VIP#32	4_F_EDEN_OFFICER
+dicastes01,193,191,4	duplicate(Agente VIP)	Agente VIP#33	4_F_EDEN_OFFICER
+eclage,116,40,4	duplicate(Agente VIP)	Agente VIP#34	4_F_EDEN_OFFICER
+verus04,135,238,4	duplicate(Agente VIP)	Agente VIP#35	4_F_EDEN_OFFICER
+dali,106,93,4	duplicate(Agente VIP)	Agente VIP#36	4_F_EDEN_OFFICER
