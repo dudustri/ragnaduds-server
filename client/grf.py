@@ -34,6 +34,19 @@ def read(f, e):
     f.seek(46 + pos)
     return zlib.decompress(f.read(casize))[:size]
 
+def write(path, files):
+    """Write a GRF 0x200 (zlib, no encryption) with {name inside the grf: data}. Names are client paths
+    with backslashes, e.g. 'data\\texture\\유저인터페이스\\t_login.jpg'; stored as cp949 like the client asks."""
+    body, table = bytearray(), bytearray()
+    for name, data in files.items():
+        comp = zlib.compress(data, 9)
+        table += name.encode("cp949") + b"\0" + struct.pack("<IIIBI", len(comp), len(comp), len(data), 1, len(body))
+        body += comp
+    ctable = zlib.compress(bytes(table), 9)
+    header = b"Master of Magic\0" + bytes(range(14)) + struct.pack("<IIII", len(body), 0, len(files) + 7, 0x200)
+    with open(path, "wb") as out:
+        out.write(header + bytes(body) + struct.pack("<II", len(ctable), len(table)) + ctable)
+
 if __name__ == "__main__":
     f, ents = entries(sys.argv[1])
     if sys.argv[2] == "list":

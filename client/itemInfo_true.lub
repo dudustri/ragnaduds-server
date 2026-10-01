@@ -1,0 +1,28 @@
+-- RagnaDuds: the 2026 exe only loads this file (System/iteminfo_true.lub). Shipped by client/package_client.py.
+-- 1. the original kRO item list (Korean names, complete) - renamed to itemInfo_original.lub
+-- 2. the English translation (System/LuaFiles514/itemInfo.lua, ROenglishRE) laid over it: English wins,
+--    items it doesn't know keep their Korean entry
+-- 3. our custom items (System/itemInfo_C.lua: tbl_custom), e.g. the event tickets
+-- 4. items this client doesn't know / can't show (System/itemInfo_RD.lua: tbl_ragnaduds, made by
+--    cashshop/build_shop.py): merged field by field, so a fix never removes what the client already had
+dofile("System/itemInfo_original.lub")
+local base = tbl
+local ok = pcall(dofile, "System/LuaFiles514/itemInfo.lua")
+if ok and type(tbl) == "table" and tbl ~= base then
+	for id, info in pairs(tbl) do
+		if type(info) == "table" and info.identifiedDisplayName and info.identifiedDisplayName ~= "" then base[id] = info end
+	end
+end
+tbl = base
+local okc = pcall(dofile, "System/itemInfo_C.lua")
+if okc and type(tbl_custom) == "table" then
+	for id, info in pairs(tbl_custom) do tbl[id] = info end
+end
+local okr = pcall(dofile, "System/itemInfo_RD.lua")
+if okr and type(tbl_ragnaduds) == "table" then
+	for id, info in pairs(tbl_ragnaduds) do
+		local t = tbl[id]
+		if type(t) ~= "table" then t = {}; tbl[id] = t end
+		for k, v in pairs(info) do t[k] = v end
+	end
+end

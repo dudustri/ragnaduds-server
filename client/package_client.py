@@ -20,7 +20,9 @@ Mir AI Mod preset to hunt by itself, /hoai in game) in every AI*/USER_AI, with d
 sclientinfo.xml pointing at <server-address>. Your installed folder is not modified.
 Icons/pictures come from client/installer/ (generate them with build/installer/make_assets.py).
 """
-import hashlib, json, os, re, sys, zipfile
+import hashlib, json, os, re, sys, tempfile, zipfile
+
+import grf
 
 HOME = os.path.expanduser("~")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -42,16 +44,121 @@ EXT_TEMPLATE = os.path.join(HERE, "external_settings_template.lub")   # English 
 SKIP_FILES = {"Ragexe.exe", "Ragnarok.exe"}           # official, unpatched: not for our server
 SKIP_RE = re.compile(r"\.(bak|bak-[\w-]+|disabled)$", re.I)
 STORED = {".grf", ".zip", ".mp3", ".bmp", ".jpg", ".png", ".avi", ".bik"}   # already compressed / big
-INSTALLER_FILES = ["install.ps1", "linux_install.py", "ragnaduds.ico", "ragnaduds.png", "duds_ok.png", "duds_ok_bg.png", "PressStart2P-Regular.ttf"]
+# Our screens and item pictures go in GRF archives listed FIRST in DATA.INI. Names inside a GRF are the client's
+# own cp949 bytes, so they work whatever the Windows language settings. (Loose files in Korean-named folders
+# don't: the client asks Windows for the folder name in the system code page, which differs between PCs.)
+#  - ragnaduds.grf: warning screen before the login (the 3 kRO age-warning pictures) + renewal item pictures
+#    fixed by cashshop/build_shop.py (client/grf_items/)
+#  - ragnaduds_login<N>.grf: login screen N (t_login.jpg for the 2026 client, bgi_temp.bmp for older ones).
+#    The launcher (launch.ps1 / ragnaduds.sh) points DATA.INI line 0 at a random one at every start.
+SCREENS = os.path.join(HERE, "login")                  # build/installer/make_assets.py
+GRF_ITEMS = os.path.join(HERE, "grf_items")            # cashshop/build_shop.py
+ITEMINFO = {"System/itemInfo_true.lub": os.path.join(HERE, "itemInfo_true.lub"),   # renewal item info loader
+            "System/itemInfo_RD.lua": os.path.join(HERE, "itemInfo_RD.lua")}       # + our fixes (build_shop.py)
+UI = "data\\texture\\유저인터페이스"
+MAIN_GRF, LOGIN_GRF = "ragnaduds.grf", "ragnaduds_login{}.grf"
+# screens copied loose into the dev clients by earlier versions: never ship them (they'd win over the GRFs)
+LOOSE_SCREENS = re.compile(r"(?i)^data/texture/[^/]+/(t_login\.jpg|bgi_temp\.bmp|login_interface/warning\d?\.bmp)$")
 
 
-def build_game_zip(c, addr, path):
+def game_grfs(edition, tmpdir):
+    """Build our GRFs in tmpdir. Returns ({name in the game folder: path}, [login grf names])."""
+    main = {}
+    entrance = os.path.join(SCREENS, "entrance.bmp")
+    if os.path.exists(entrance):
+        for w in ("warning.bmp", "warning2.bmp", "warning3.bmp"):
+            main[f"{UI}\\login_interface\\{w}"] = open(entrance, "rb").read()
+    if edition == "re" and os.path.isdir(GRF_ITEMS):
+        for root, _, files in os.walk(GRF_ITEMS):
+            for f in files:
+                rel = os.path.relpath(os.path.join(root, f), GRF_ITEMS).replace(os.sep, "\\")
+                main[rel] = open(os.path.join(root, f), "rb").read()
+    out, logins = {}, []
+    if main:
+        grf.write(os.path.join(tmpdir, MAIN_GRF), main); out[MAIN_GRF] = os.path.join(tmpdir, MAIN_GRF)
+    n = 1
+    while os.path.exists(os.path.join(SCREENS, f"{n}.jpg")):
+        files = {f"{UI}\\t_login.jpg": open(os.path.join(SCREENS, f"{n}.jpg"), "rb").read()}
+        if os.path.exists(os.path.join(SCREENS, f"{n}.bmp")):
+            files[f"{UI}\\bgi_temp.bmp"] = open(os.path.join(SCREENS, f"{n}.bmp"), "rb").read()
+        name = LOGIN_GRF.format(n); grf.write(os.path.join(tmpdir, name), files)
+        out[name] = os.path.join(tmpdir, name); logins.append(name); n += 1
+    return out, logins
+
+
+# No web pages: the official exes open Gravity's sites on exit and payment/"charge" pages from the cash shop,
+# and the translated msgstringtable.txt adds donation links. Every web address is blanked in what we ship
+# (same length, zero-filled in the exe; empty line in the table), so nothing opens. Your game folder is untouched.
+URL = re.compile(rb"https?://[\x21-\x7e]+")
+
+
+def no_web_exe(data):
+    def blank(m):
+        u = m.group(0)
+        return u if b"schemas" in u or b"w3.org" in u else b"\0" * len(u)   # keep the manifest's XML namespaces
+    return URL.sub(blank, data)
+
+
+def no_web_msgstrings(data):
+    return b"\n".join(b"#\r" if URL.match(l.lstrip()) and l.rstrip().endswith((b"#", b"#\r")) else l
+                       for l in data.split(b"\n"))
+
+
+# Cash shop tab labels (renewal): the client shows the 9 tabs (server order New, Hot, Limited, Rental, Permanent,
+# Scrolls, Consumables, Other, Sale) with consecutive msgstringtable lines "New#", "Popular#", "Limited Sale#", ...
+# Our labels come from cashshop/shop.yml (tab_labels), so the tabs read Beginner, 2nd Class, ... in game.
+SHOP_YML = os.path.join(HERE, "..", "cashshop", "shop.yml")
+TAB_ORDER = ["New", "Hot", "Limited", "Rental", "Permanent", "Scrolls", "Consumables", "Other", "Sale"]
+TAB_DEFAULT = [b"New", b"Popular", b"Limited Sale", b"Rental Equipment", b"Permanent Equipment", b"Scrolls",
+               b"Consumables", b"Other", b"Special"]
+
+
+def cash_tab_labels(data):
+    import yaml
+    labels = (yaml.safe_load(open(SHOP_YML)) or {}).get("tab_labels") or {}
+    lines = data.split(b"\n")
+    strip = [l.rstrip(b"\r").rstrip(b"#") for l in lines]
+    for i in range(len(lines) - len(TAB_DEFAULT)):
+        if strip[i:i + len(TAB_DEFAULT)] == TAB_DEFAULT:
+            for k, tab in enumerate(TAB_ORDER):
+                if labels.get(tab):
+                    lines[i + k] = str(labels[tab]).encode("latin-1") + b"#" + (b"\r" if lines[i + k].endswith(b"\r") else b"")
+            return b"\n".join(lines)
+    sys.exit("cash shop tab labels not found in msgstringtable.txt")
+
+
+def data_ini(src, ours):
+    """(name, bytes) of the client's DATA.INI with our GRFs listed first."""
+    name = next(f for f in os.listdir(src) if f.lower() == "data.ini")
+    old = [l.split("=", 1)[1].strip() for l in open(os.path.join(src, name), encoding="latin-1")
+           if re.match(r"\s*\d+\s*=", l)]
+    grfs = ours + [g for g in old if g not in ours]
+    return name, ("[Data]\r\n" + "".join(f"{i}={g}\r\n" for i, g in enumerate(grfs))).encode("latin-1")
+
+
+INSTALLER_FILES = ["install.ps1", "uninstall.ps1", "launch.ps1", "linux_install.py", "ragnaduds.ico", "ragnaduds.png", "duds_ok.png", "duds_ok_bg.png", "PressStart2P-Regular.ttf"]
+
+
+def build_game_zip(c, edition, addr, path):
     def clientinfo(p):
         x = open(p, encoding="latin-1").read()
         x = re.sub(r"<address>.*?</address>", f"<address>{addr}</address>", x)
         x = re.sub(r"<display>.*?</display>", f"<display>RagnaDuds {c['folder']}</display>", x)
         return x.encode("latin-1")
     n = size = 0; files_meta = {}
+    tmpdir = tempfile.mkdtemp(prefix="ragnaduds-grf-")
+    grfs, logins = game_grfs(edition, tmpdir)
+    ini_name, ini = data_ini(c["src"], logins[:1] + [g for g in grfs if g not in logins])
+    ours = {g.lower() for g in grfs} | {ini_name.lower()}
+    if edition == "re": ours |= {k.lower() for k in ITEMINFO}
+    # Windows (and PowerShell's JSON reader) ignore upper/lower case: 2 paths that differ only in case would
+    # overwrite each other. Keep the newest (e.g. the English tipoftheday.txt over Korean tipOfTheDay.txt).
+    newest = {}
+    for root, dirs, files in os.walk(c["src"]):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for f in files:
+            full = os.path.join(root, f); key = os.path.relpath(full, c["src"]).replace(os.sep, "/").lower()
+            if key not in newest or os.path.getmtime(full) > os.path.getmtime(newest[key]): newest[key] = full
     with zipfile.ZipFile(path, "w", allowZip64=True) as z:
         for root, dirs, files in os.walk(c["src"]):
             rel_root = os.path.relpath(root, c["src"])
@@ -63,8 +170,21 @@ def build_game_zip(c, addr, path):
                     continue
                 rel = os.path.normpath(os.path.join(rel_root, f)).replace(os.sep, "/")
                 full = os.path.join(root, f)
+                if newest.get(rel.lower()) != full:
+                    print(f"  skipping {rel}: same name as {os.path.relpath(newest[rel.lower()], c['src'])} on Windows (older)")
+                    continue
+                if rel.lower() in ours or LOOSE_SCREENS.match(rel):
+                    continue                                    # ours, written below
                 if rel.lower() in {f"{EXT_DIR}/{x}".lower() for x in EXT_FILES}:
                     continue                                    # written below, pointed at our web server
+                if f == c["exe"] or rel.lower() == "data/msgstringtable.txt":
+                    raw = open(full, "rb").read()
+                    data = no_web_exe(raw) if f == c["exe"] else no_web_msgstrings(raw)
+                    if edition == "re" and f != c["exe"]: data = cash_tab_labels(data)
+                    z.writestr(rel, data, zipfile.ZIP_DEFLATED)
+                    files_meta[rel] = len(data); n += 1; size += len(data)
+                    if f == c["exe"]: exe_sha = hashlib.sha256(data).hexdigest()
+                    continue
                 if rel.lower() in ("data/clientinfo.xml", "data/sclientinfo.xml"):
                     data = clientinfo(full); z.writestr(rel, data, zipfile.ZIP_DEFLATED)
                     files_meta[rel] = len(data); n += 1; size += len(data); continue
@@ -80,14 +200,28 @@ def build_game_zip(c, addr, path):
             if hits != 1: sys.exit(f"AssistAddr not found in {src}")
             rel = f"{EXT_DIR}/{x}"; data = txt.encode("latin-1")
             z.writestr(rel, data, zipfile.ZIP_DEFLATED); files_meta[rel] = len(data); n += 1; size += len(data)
+        # our GRFs (screens, item pictures) + DATA.INI listing them first, + renewal item info fixes
+        for rel, src in grfs.items():
+            z.write(src, rel, zipfile.ZIP_STORED)
+            files_meta[rel] = os.path.getsize(src); n += 1; size += files_meta[rel]
+        z.writestr(ini_name, ini, zipfile.ZIP_DEFLATED); files_meta[ini_name] = len(ini); n += 1
+        if edition == "re":
+            for rel, src in ITEMINFO.items():
+                if not os.path.exists(src): sys.exit(f"missing {src} (run: python3 cashshop/build_shop.py)")
+                z.write(src, rel, zipfile.ZIP_DEFLATED)
+                files_meta[rel] = os.path.getsize(src); n += 1; size += files_meta[rel]
         # homunculus AI: same files in every AI folder the exe may read (AI/, AI_sakray/)
         for ai_dir in sorted(d for d in os.listdir(c["src"]) if re.fullmatch(r"AI(_\w+)?", d) and os.path.isdir(os.path.join(c["src"], d))):
             for f in sorted(os.listdir(HOMUN_AI)):
                 rel = f"{ai_dir}/USER_AI/{f}"
                 z.write(os.path.join(HOMUN_AI, f), rel, zipfile.ZIP_DEFLATED)
                 files_meta[rel] = os.path.getsize(os.path.join(HOMUN_AI, f)); n += 1; size += files_meta[rel]
-    exe_sha = hashlib.sha256(open(os.path.join(c["src"], c["exe"]), "rb").read()).hexdigest()
-    return n, size, {"files": files_meta, "exe_sha256": exe_sha}
+    for f in grfs.values(): os.remove(f)
+    os.rmdir(tmpdir)
+    # exe_sha: of the exe as shipped (web addresses blanked), set while packing
+    # list of [path, size] (not a dict): PowerShell's ConvertFrom-Json rejects keys that differ only in case
+    return n, size, {"files": [[k, v] for k, v in files_meta.items()], "exe_sha256": exe_sha}, \
+        {"ini": ini_name, "grfs": logins}
 
 
 def main():
@@ -115,23 +249,32 @@ def main():
               "  Fedora: sudo dnf install wine winetricks\r\n"
               "  Ubuntu/Debian: sudo dpkg --add-architecture i386 && sudo apt update && sudo apt install wine wine32:i386 winetricks\r\n"
               "  A 'RagnaDuds' launcher appears in your app menu and on the desktop.\r\n\r\n"
+              "UPDATE / REPAIR: run the installer again on the same folder (REINSTALL). Your settings are kept.\r\n"
+              "UNINSTALL: Windows: Start menu -> RagnaDuds -> Uninstall, Settings -> Apps, or 'Uninstall RagnaDuds.bat'.\r\n"
+              "  Linux: 'Uninstall RagnaDuds ...' in the app menu, or ./uninstall.sh\r\n\r\n"
               "Keep the game windowed and smaller than your screen (e.g. 1280x720).\r\n"
               "Homunculus: type /hoai in the chat once and it hunts by itself (AI/USER_AI/README_RagnaDuds.txt).\r\n"
               "Account: ask Duds.\r\n")
 
     game_tmp = out + ".game.part"; tmp = out + ".part"
     print(f"Packing game files from {c['src']} …")
-    n, size, manifest = build_game_zip(c, addr, game_tmp)
+    n, size, manifest, login_pics = build_game_zip(c, sys.argv[1], addr, game_tmp)
     print("Adding installer …")
     with zipfile.ZipFile(tmp, "w", allowZip64=True) as z:
         z.writestr(f"{top}/Install RagnaDuds.bat",
                    '@echo off\r\ntitle RagnaDuds Setup\r\n'
                    'powershell -NoProfile -ExecutionPolicy Bypass -STA -WindowStyle Hidden '
                    '-File "%~dp0installer\\install.ps1"\r\n', zipfile.ZIP_DEFLATED)
-        sh = zipfile.ZipInfo(f"{top}/install.sh"); sh.external_attr = 0o100755 << 16; sh.compress_type = zipfile.ZIP_DEFLATED
-        z.writestr(sh, '#!/bin/sh\n# RagnaDuds installer for Linux\ncd "$(dirname "$0")" || exit 1\n'
-                       'exec python3 installer/linux_install.py "$@"\n')
+        z.writestr(f"{top}/Uninstall RagnaDuds.bat",
+                   '@echo off\r\ntitle RagnaDuds Uninstall\r\n'
+                   'powershell -NoProfile -ExecutionPolicy Bypass -STA -WindowStyle Hidden '
+                   '-File "%~dp0installer\\uninstall.ps1"\r\n', zipfile.ZIP_DEFLATED)
+        for name, what, extra in (("install.sh", "installer", ""), ("uninstall.sh", "uninstaller", " --uninstall")):
+            sh = zipfile.ZipInfo(f"{top}/{name}"); sh.external_attr = 0o100755 << 16; sh.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(sh, f'#!/bin/sh\n# RagnaDuds {what} for Linux\ncd "$(dirname "$0")" || exit 1\n'
+                           f'exec python3 installer/linux_install.py{extra} "$@"\n')
         z.writestr(f"{top}/README.txt", readme, zipfile.ZIP_DEFLATED)
+        cfg["login_pics"] = login_pics     # launcher: DATA.INI line 0 = one of these at random
         z.writestr(f"{top}/installer/config.json", json.dumps(cfg, indent=2), zipfile.ZIP_DEFLATED)
         z.writestr(f"{top}/installer/manifest.json", json.dumps(manifest), zipfile.ZIP_DEFLATED)   # for the file check
         for f in INSTALLER_FILES:
