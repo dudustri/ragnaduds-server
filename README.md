@@ -20,6 +20,7 @@ Everything of ours is in `duds_server/`; rAthena itself is untouched.
 | [CONFIG.md](CONFIG.md) | what's set and how to change settings |
 | [SPECIAL-MAPS.md](SPECIAL-MAPS.md) | Mapas Especiais, Cheffenia, Turn In |
 | [GM-COMMANDS.md](GM-COMMANDS.md) | GM commands, MVPs, builds, cards |
+| [CASHSHOP-AND-CLIENT.md](CASHSHOP-AND-CLIENT.md) | Cash Shop, item fixes, GRF/Lua client files, how to add items |
 | [SETUP.md](SETUP.md) | local servers and how the game clients were built |
 | [build/web/README.md](build/web/README.md) | the website |
 

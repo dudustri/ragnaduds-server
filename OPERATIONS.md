@@ -63,10 +63,14 @@ Services: `prere-{db,login,char,map,web}`, `re-{db,login,char,map,web}`, `web`, 
 |---|---|
 | `Install RagnaDuds.bat` | Windows installer (window with your photo, progress bar) |
 | `install.sh` | Linux installer: retro window like the website (GTK; falls back to Tk, zenity, terminal), own Wine setup + fonts |
+| `Uninstall RagnaDuds.bat` · `uninstall.sh` | remove everything (also in the Start menu / Windows Apps / Linux app menu) |
 | `game.zip` | the game folder, pointed at the server, with the homunculus AI |
 | `installer/` | config, file list for the integrity check, icons, pictures |
 
 Both installers: unpack → check every file → check the server answers → create the **RagnaDuds** shortcut → **Start and YEAAAAAAAAAAH!**
+- Run again on the same folder = **REINSTALL**: files replaced, files the new version doesn't have removed; settings, screenshots (and Wine on Linux) kept. Stops if the game is open.
+- Game screens: `build/installer/make_assets.py` → `client/login/` (original pictures, resized). They ship inside GRF archives listed first in `DATA.INI` (works on any Windows language setting; loose files in Korean-named folders don't): `ragnaduds.grf` = the warning screen before the login (`login_interface/warning*.bmp`) + fixed item pictures; `ragnaduds_login<N>.grf` = login picture N (`t_login.jpg` for the 2026 client, `bgi_temp.bmp` for older ones). The launcher (`launch.ps1` / `ragnaduds.sh`) sets `DATA.INI` line 0 to a random login GRF at every start.
+- Items: `python3 cashshop/build_shop.py` checks every renewal item against the client and fixes missing names, icons and looks (real icons + descriptions from divine-pride, cached), and builds the Cash Shop from `cashshop/shop.yml`. Run it before `./duds.sh package re`.
 - Linux needs Wine with 32-bit support (Ubuntu/Debian: `wine32:i386`); the installer says so if it's missing.
 - GNOME shows no desktop icons: the game is in the app menu (the installer tells the user).
 - **Homunculus AI** (`client/homunculus_ai/`, Mir AI Mod, GPL v2): hunts by itself. Players type `/hoai` once. Change the preset in `Config.lua`, then rebuild the zips.
