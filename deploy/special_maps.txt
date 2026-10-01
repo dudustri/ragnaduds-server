@@ -10,7 +10,7 @@
 //=                   bRO didn't publish amounts: 300 per monster type, doubled (.mult = 2).
 //= Every room is a shared instance (IM_NONE): its own copy of the map, reachable only through these NPCs;
 //= the normal maps stay untouched. Rooms are (re)created when the map server starts.
-//= Tickets (Cash Shop, 1 point each; everyone is topped up to 10 points at login, so they're free):
+//= Tickets (Cash Shop, 1 point each; the daily login gives 10 points, see deploy/cash_points.txt):
 //=   Ingresso dos Mapas Especiais (990001), Passe para Cheffenia (990002). Not consumed when entering.
 //= Instances: db/import/instance_db.yml (Ids 900-914). Items: db/import/item_db.yml + item_cash.yml.
 //==================================================================================
@@ -73,7 +73,7 @@ morocc,152,272,4	script	Nanaru#sm	4_F_GEFFEN_FAY,{
 	if (!countitem(990001)) {
 		mes "[Nanaru]";
 		mes "You need an ^0055FFIngresso dos Mapas Especiais^000000.";
-		mes "It's ^0055FFfree in the Cash Shop^000000. Go grab one!";
+		mes "It's just ^0055FF1 point in the Cash Shop^000000. Go grab one!";
 		close;
 	}
 	mes "[Nanaru]";
@@ -128,11 +128,6 @@ OnInit:
 	freeloop(0);
 	end;
 
-OnPCLoginEvent:	// cash points for the free tickets (the Cash Shop only sells them, at 1 point each)
-	if (#CASHPOINTS < 10)
-		#CASHPOINTS = 10;
-	end;
-
 OnKill:	// instant respawn: another one of the same kind, somewhere in the same room
 	if (playerattached())
 		monster strcharinfo(3), 0, 0, "--ja--", killedrid, 1, "Nanaru#sm::OnKill";
@@ -157,7 +152,7 @@ comodo,208,187,4	script	Portal Fantasma#ch	WARPNPC,{
 	if (!countitem(990002)) {
 		mes "[Portal Fantasma]";
 		mes "You need a ^AA0000Passe para Cheffenia^000000.";
-		mes "It's ^0055FFfree in the Cash Shop^000000.";
+		mes "It's just ^0055FF1 point in the Cash Shop^000000.";
 		close;
 	}
 	if (CH_DAY == gettime(DT_YYYYMMDD) && CH_KILLS >= 1000) {

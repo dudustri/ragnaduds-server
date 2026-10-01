@@ -89,7 +89,7 @@ sync_vm() {
     ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/files"
     rsync -av --delete --exclude 'hosts/local/' --exclude 'files/' --exclude 'accounts.txt' \
         "$DEPLOY/compose.yml" "$DEPLOY/gm_commands.txt" "$DEPLOY/special_maps.txt" "$DEPLOY/re_db_import" \
-        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" \
+        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" \
         "$DEPLOY/hosts" "$SSH_HOST:$REMOTE_DIR/"
 }
 

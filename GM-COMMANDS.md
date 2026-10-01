@@ -76,6 +76,8 @@ Type them in the chat box. Your account must be a GM (**group 99 = Admin**, e.g.
 | `@item <name/ID> <amount>` | get items, e.g. `@item 501 100` (Red Potion), `@item Jellopy 10` |
 | `@item2 <id> <qty> <identified> <refine> <broken> <c1> <c2> <c3> <c4>` | item with refine + cards, e.g. `@item2 1201 1 1 10 0 4001 0 0 0` |
 | `@zeny <amount>` | get zeny (negative removes) |
+| `@cash <amount>` · `!cash "<name>" <amount>` | Cash Shop points for you / for a player (renewal; negative removes) |
+| `@points` | (everyone) your Cash Shop points and how to earn more: +10 daily login, +5/hour played, +20/MVP, +2/PvP kill |
 | `@refine <position> <+/- n>` | refine equipped gear (`@refine` alone lists positions) |
 | `@refine 0 10` | **refine everything you're wearing to the max** (+10 pre-renewal; use `@refine 0 20` on renewal) |
 | `@identify` / `@repairall` | identify / repair everything |

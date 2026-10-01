@@ -1,0 +1,69 @@
+//===== RagnaDuds: cash points by playing ======================================
+//= Cash points (#CASHPOINTS, shared by all characters of the account) buy items in the Cash Shop
+//= (deploy/re_db_import/item_cash.yml). Players earn them by playing:
+//=   +10  first login of the day (per account)
+//=   +5   every hour played (idle minutes, 10+ min without doing anything, don't count)
+//=   +20  every MVP killed (the one who lands the last hit)
+//=   +2   every PvP kill (not the same victim twice within 10 minutes)
+//= GMs can give points: !cash "<character name>" <amount>   (@cash <amount> for yourself)
+//= Players see their points and how to earn more with @points.
+//= Loaded on the renewal server (hosts/<host>/renewal/import/map_conf.txt).
+//==============================================================================
+
+-	script	DudsCashPoints	-1,{
+OnInit:
+	.daily = 10;
+	.hourly = 5;
+	.mvp = 20;
+	.pvp = 2;
+	.idle = 600;		// seconds without activity = AFK
+	.pvp_repeat = 600;	// seconds before the same victim gives points again
+	bindatcmd "points", strnpcinfo(3) + "::OnPoints", 0, 99;
+	end;
+
+OnPoints:
+	dispbottom "[Cash] You have " + #CASHPOINTS + " points. Spend them in the Cash Shop.";
+	dispbottom "[Cash] Earn: +" + .daily + " first login of the day, +" + .hourly + " per hour played (not AFK), +" + .mvp + " per MVP, +" + .pvp + " per PvP kill.";
+	dispbottom "[Cash] Next hour bonus in " + (60 - DUDS_ACTIVE_MIN) + " active minutes.";
+	end;
+
+OnPCLoginEvent:
+	.@today = gettime(DT_YYYYMMDD);
+	if (#DUDS_DAILY != .@today) {
+		#DUDS_DAILY = .@today;
+		callsub S_Give, .daily, "first login of the day";
+	}
+	addtimer 60000, strnpcinfo(3) + "::OnMinute";
+	end;
+
+OnMinute:	// once a minute per player: count active minutes, pay every 60
+	if (checkidle() < .idle) {
+		DUDS_ACTIVE_MIN++;
+		if (DUDS_ACTIVE_MIN >= 60) {
+			DUDS_ACTIVE_MIN = 0;
+			callsub S_Give, .hourly, "1 hour played";
+		}
+	}
+	addtimer 60000, strnpcinfo(3) + "::OnMinute";
+	end;
+
+OnNPCKillEvent:
+	if (getmonsterinfo(killedrid, MOB_MVPEXP) > 0)
+		callsub S_Give, .mvp, "MVP " + getmonsterinfo(killedrid, MOB_NAME);
+	end;
+
+OnPCKillEvent:
+	if (killedrid == getcharid(3))
+		end;
+	if (killedrid == @duds_last_victim && gettimetick(2) - @duds_last_victim_time < .pvp_repeat)
+		end;
+	@duds_last_victim = killedrid;
+	@duds_last_victim_time = gettimetick(2);
+	callsub S_Give, .pvp, "PvP kill";
+	end;
+
+S_Give:	// getarg(0) = points, getarg(1) = reason
+	#CASHPOINTS += getarg(0);
+	dispbottom "[Cash] +" + getarg(0) + " points (" + getarg(1) + "). Total: " + #CASHPOINTS + ". Type @points for more.";
+	return;
+}

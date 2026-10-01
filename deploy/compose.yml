@@ -91,7 +91,8 @@ services:
             - "./welcome.txt:/rathena/npc/custom/duds_welcome.txt:ro,z"   # random welcome line
             - "./buffer.txt:/rathena/npc/custom/duds_buffer.txt:ro,z"     # Agente VIP at the bRO spots
             - "./motd.txt:/rathena/conf/motd.txt:ro,z"
-            # bRO special maps (Mapas Especiais, Cheffenia, Turn In): script + rooms, tickets, free cash shop
+            - "./cash_points.txt:/rathena/npc/custom/duds_cash_points.txt:ro,z"   # cash points by playing (@points)
+            # bRO special maps (Mapas Especiais, Cheffenia, Turn In): script + rooms, tickets, cash shop
             - "./special_maps.txt:/rathena/npc/custom/duds_special_maps.txt:ro,z"
             - "./re_db_import/instance_db.yml:/rathena/db/import/instance_db.yml:ro,z"
             - "./re_db_import/item_db.yml:/rathena/db/import/item_db.yml:ro,z"
