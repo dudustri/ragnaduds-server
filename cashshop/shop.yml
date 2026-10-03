@@ -7,895 +7,901 @@
 
 # worn look for items whose own look the client can't draw: item Id -> Id of an item whose look to use
 looks:
-  19163: 400110      # Catherina Von Blood -> looks like the Crown of Beelzebub
-  400500: 5017      # Gigant Helm -> Bone Helm
-  400512: 2222
-  18823: 5074
-  400676: 5679      # Flaward Hat
+    19163: 400110 # Catherina Von Blood -> looks like the Crown of Beelzebub
+    400500: 5017 # Gigant Helm -> Bone Helm
+    400512: 2222
+    18823: 5074
+    400676: 5679 # Flaward Hat
 
+# card slots we add to official items (server + client): item Id -> number of slots
+slots:
+    19138: 1 # Seraphim Coronet: +250 ATK at INT 120, now with a slot (for Kiel-D-01 in the Acid Creator set)
+    19453: 1 # JE JE CAP BROKEN
+    590009: 2
+
+# our custom items that borrow an official item's pictures (icon, floor sprite, weapon look): item Id -> donor Id
+pictures:
+    990010: 1530 # The Duds Ban Hammer -> Mjolnir
+    990011: 12020 # Ghost Converter -> Cursed Water
 
 # label the game shows on each tab (the server's tab names above are fixed; package_client.py writes these
 # into the client's msgstringtable.txt)
 tab_labels:
-  New: Beginner
-  Hot: 2nd Class
-  Limited: 3rd Class
-  Rental: Endgame
-  Permanent: MVP Cards
-  Scrolls: Refine
-  Consumables: Consumables
-  Other: Pets
-  Sale: Visuals
+    New: Popular
+    Hot: Melee
+    Limited: Ranged
+    Rental: Magic & Support
+    Permanent: MVP Cards
+    Scrolls: Refine
+    Consumables: Items & Pets
+    Other: Visuals
+    Sale: Sale
 
 tabs:
-  New:
-    note: "Beginner: Novice and 1st class rush gear (lv 1-60)"
-    items:
-      # all classes, lv 1: Paradise shadow gear + Beginner shadow gear
-      24687: 40      # Paradise Shadow Weapon
-      24688: 40      # Paradise Shadow Shield
-      24689: 40      # Paradise Shadow Armor
-      24690: 40      # Paradise Shadow Shoes
-      24691: 40      # Paradise Shadow Earring
-      24692: 40      # Paradise Shadow Pendant
-      24210: 40      # Beginner Shadow Shoes
-      24211: 40      # Beginner Shadow Shield
-      # all classes, lv 1-10: Paradise set
-      400137: 50      # Paradise Cap
-      400138: 50      # Paradise Hat
-      450183: 50      # Paradise Suit
-      450184: 50      # Paradise Robe
-      470067: auto    # Paradise Boots
-      470068: auto    # Paradise Shoes
-      480103: auto    # Paradise Manteau
-      480104: 50      # Paradise Muffler
-      490122: 50      # Paradise Ring
-      490123: 50      # Paradise Gloves
-      490124: 50      # Paradise Magic Ring
-      490125: 50      # Paradise Necklace
-      # lv 10 Paradise weapons
-      500032: 50      # Paradise Sword
-      510035: 50      # Paradise Dagger
-      520010: 50      # Paradise Axe
-      550032: auto    # Paradise Staff
-      590025: 50      # Paradise Mace
-      700036: 50      # Paradise Bow
-      800004: 50      # Paradise Revolver
-      # lv 1 extras
-      2589: auto    # Fallen Angel Wing
-      28324: auto    # Steam Starter Ring
-      28902: 100     # Mad Bunny
-      19163: 200     # Catherina Von Blood
-      # Novice / Super Novice
-      2340: 30      # Novice Breastplate
-      2113: 30      # Novice Shield
-      2416: 30      # Novice Shoes
-      2512: 30      # Novice Manteau
-      5112: 30      # Super Novice Hat
-      2628: 30      # Novice Armlet
-      # lv 50 Rookie shadow gear
-      24212: 60      # Rookie Shadow Shoes
-      24213: 60      # Rookie Shadow Shield
-      # lv 60 Eden Group set + weapons
-      15031: 80      # Paradise Uniform IV
-      2473: 80      # Eden Team Boots IV
-      2571: 80      # Eden Team Manteau II
-      18514: 80      # Eden Team Hat II
-      1197: 80      # Eden Slayer III
-      1289: 80      # Eden Katar I
-      1391: 80      # Eden Two-Handed Axe I
-      1434: 80      # Eden Spear I
-      1583: 80      # Eden Book I
-      1658: 80      # Eden Staff III
-      1831: 80      # Eden Knuckle I
-      1931: 80      # Eden Guitar I
-      1986: 80      # Eden Tail I
-      13066: 80      # Eden Dagger III
-      13114: 80      # Eden Revolver III
-      13434: 80      # Eden Saber III
-      16014: 80      # Eden Mace III
-      18106: 80      # Eden Bow III
-      # Swordman top set
-      13402: auto    # Cutlus
-      28901: auto    # Cursed Mad Bunny
-      18780: auto    # RWC Champ Crown Second Place
-      18503: auto    # Small Devil Horns
-      420246: auto    # Arbitrator Shawl
-      15023: auto    # Half Brynhild
-      2400: auto    # Pollux Shoes
-      2856: auto    # Half Megingjard
-      2910: auto    # Bakunawa Agimat Tattoo
-      # Mage top set
-      28946: auto    # Purified Knight's Shield
-      5628: auto    # F Pecopeco Hairband
-      19139: auto    # Survivor's Orb
-      20903: auto    # Short-term Hunting Manteau
-      2907: auto    # Bawaya Agimat Tattoo
-      2939: auto    # RJC2012 Spell Necklace
-      # Archer top set
-      1744: auto    # Bow Of Evil
-      490236: auto    # Double Badge
-      5825: auto    # Badge Of Order Grace
-      # Acolyte top set
-      19211: auto    # Magical Feather
-      2607: auto    # Clip
-      28432: auto    # Spiritual Ring
-      # Merchant top set
-      1547: auto    # Mace Of Madness
-      24251: auto    # Merchant Shadow Pendant
-      28429: auto    # Arquien's Necklace
-      28429: auto    # Arquien's Necklace
-  Hot:
-    note: "2nd Class: 2nd / transcendent / expanded class full sets (lv 45-99)"
-    items:
-      # Paradise 2nd class weapons (lv 45)
-      500033: auto    # Paradise Crusader Sword
-      500034: 120     # Paradise Alchemist Sword
-      500035: 120     # Paradise Super Novice Sword
-      510036: auto    # Paradise Rogue Dagger
-      510037: 120     # Paradise Soul Linker Dagger
-      520011: auto    # Paradise Blacksmith Axe
-      530017: 120     # Paradise Crusader Spear
-      540027: auto    # Paradise Sage Magic Book
-      540028: 120     # Paradise Sage Spellbook
-      540029: auto    # Paradise Taekwon Martial Arts Book
-      540030: 120     # Paradise Taekwon Power Book
-      550034: auto    # Paradise Wizard Staff
-      550035: 120     # Paradise Wizard Wand
-      550036: 120     # Paradise Priest Staff
-      550037: auto    # Paradise Soul Linker Staff
-      550040: auto    # Paradise Super Novice Staff
-      560022: auto    # Paradise Monk Knuckles
-      560023: 120     # Paradise Monk Claws
-      570021: auto    # Paradise Bard Violin
-      580021: auto    # Paradise Dancer Rope
-      590026: auto    # Paradise Alchemist Mace
-      590027: 120     # Paradise Priest Mace
-      600020: 120     # Paradise Knight Two-Handed Sword
-      610024: 120     # Paradise Assassin Chakram
-      610025: auto    # Paradise Assassin Katar
-      620011: 120     # Paradise Blacksmith Two-Handed Axe
-      630014: 120     # Paradise Knight Lance
-      650010: auto    # Paradise Ninja Punishment Shuriken
-      650011: 120     # Paradise Ninja Crucifixion Shuriken
-      700037: 120     # Paradise Rogue Bow
-      700038: 120     # Paradise Hunter Bow
-      700039: auto    # Paradise Hunter Crossbow
-      700040: 120     # Paradise Bard&Dancer Bow
-      800005: auto    # Paradise Gunslinger Revolver
-      810003: 120     # Paradise Gunslinger Rifle
-      # universal top gear (lv 94)
-      2410: auto    # Sleipnir
-      2630: auto    # Brisingamen
-      2541: auto    # Asprika
-      # bRO picks for 2nd class
-      1631: auto    # Holy Stick
-      2129: auto    # Exorcism Bible
-      15254: auto    # Abyssal Dress
-      19444: 150     # Star Eyepatch
-      22132: 150     # Fire Thunder Great Boots
-      470047: 200     # Awakened Fire Thunder Great Boots
-      # Knight / Lord Knight top set
-      1188: auto    # Veteran Sword
-      400512: auto    # Hat of Desert
-      18503: auto    # Small Devil Horns
-      420246: auto    # Arbitrator Shawl
-      2383: auto    # Brynhild
-      20939: auto    # Temporal Transcendence Manteau
-      2400: auto    # Pollux Shoes
-      490282: auto    # Kenshi Gauntlet
-      5825: auto    # Badge Of Order Grace
-      # Crusader / Paladin top set
-      28946: auto    # Purified Knight's Shield
-      18780: auto    # RWC Champ Crown Second Place
-      18823: auto    # Imperial Feather
-      28372: auto    # Imperial Ring
-      # Wizard / High Wizard top set
-      5628: auto    # F Pecopeco Hairband
-      19139: auto    # Survivor's Orb
-      470112: auto    # Moaning of Evil Spirits
-      2907: auto    # Bawaya Agimat Tattoo
-      2939: auto    # RJC2012 Spell Necklace
-      # Sage / Professor top set
-      5547: auto    # RJC Katusa Flower
-      # Hunter / Sniper top set
-      18985: auto    # Falconer Flute
-      2589: auto    # Fallen Angel Wing
-      470067: auto    # Paradise Boots
-      28321: auto    # Falconer Claw
-      28322: auto    # Falconer Glove
-      # Bard / Clown top set
-      28411: auto    # Emerald Earrings
-      28411: auto    # Emerald Earrings
-      # Priest / High Priest top set
-      2626: auto    # Rosary
-      28432: auto    # Spiritual Ring
-      # Monk / Champion top set
-      490399: auto    # Boxer Glove
-      # Assassin / Assassin Cross top set
-      2629: auto    # Megingjard
-      # Rogue / Stalker top set
-      28901: auto    # Cursed Mad Bunny
-      28379: auto    # Shadow Ring
-      28379: auto    # Shadow Ring
-      # Blacksmith top set
-      24251: auto    # Merchant Shadow Pendant
-      28429: auto    # Arquien's Necklace
-      28429: auto    # Arquien's Necklace
-      # Whitesmith top set
-      400500: auto    # Gigant Helm
-      490295: auto    # Armaia Belt
-      # Alchemist top set
-      400676: auto    # Flaward Hat
-      # Creator top set
-      490475: auto    # Chemical Glove
-      # Ninja top set
-      18948: auto    # Orochimaru's Mask
-      28426: auto    # Mercenary Ring Type B
-      # Gunslinger top set
-      28425: auto    # Mercenary Ring Type A
-  Limited:
-    note: "3rd Class: full sets per build, lv 100-160"
-    items:
-      # bRO picks: Arch Bishop
-      22225: auto    # Shoes of Punishment
-      20966: auto    # Temporal Int Manteau
-      28564: auto    # Valkyrie Drop
-      490118: auto    # Ring of Adoramus
-      19469: auto    # Sacred Crown
-      # Rune Knight - Ignition Break
-      21050: auto    # Illusion Tae Goo Lyeon
-      400647: auto    # Mighty Crown of Ashes
-      410342: auto    # Purified Pigeon
-      420110: auto    # Old Camouflage Scarf
-      450087: auto    # Grace Knight Armor
-      480018: auto    # Grace Attack Manteau
-      22006: auto    # Temporal Str Boots
-      490019: auto    # Grace Attack Ring
-      490113: auto    # Jasper Ring
-      24589: auto    # Rune Knight's Booster Shadow Weapon
-      # Rune Knight - Dragon Breath
-      600004: auto    # Dragonic Slayer
-      19116: auto    # Red Baby Dragon
-      420329: auto    # Twinhead Dragon Scale
-      450086: auto    # Grace Breath Armor
-      480084: auto    # Fafnir Breath
-      22007: auto    # Temporal Vit Boots
-      490413: auto    # Twin Head Dragon Ring
-      28594: auto    # Temporal Ring
-      # Royal Guard - Banishing Point / Cannon Spear
-      1433: auto    # Imperial Spear
-      2153: auto    # Imperial Guard
-      420246: auto    # Arbitrator Shawl
-      450088: auto    # Grace Spear Armor
-      22207: auto    # Imperial Boots
-      28551: auto    # Imperial Glove
-      24590: auto    # Royal Guard's Booster Shadow Weapon
-      # Royal Guard - Genesis Ray
-      500003: auto    # Light Blade
-      28973: auto    # Themis Balance
-      15892: auto    # Themis Helm
-      19380: auto    # Floating Ball
-      28502: auto    # Mob Scarf
-      450089: auto    # Grace Genesis Armor
-      480019: auto    # Grace Magic Manteau
-      470021: auto    # Grace Magic Boots
-      490020: auto    # Grace Magic Ring
-      28538: auto    # Magician's Gloves
-      # Warlock - Crimson Rock
-      26168: auto    # Crimson Rose Stick
-      28941: auto    # Excelion Shield
-      400646: auto    # Magic Crown of Ashes
-      450110: auto    # Grace Crimson Robe
-      22009: auto    # Temporal Int Boots
-      490098: auto    # Ring of Pazuzu
-      24595: auto    # Warlock's Booster Shadow Weapon
-      # Warlock - Comet
-      2039: auto    # Illusion Wizardry Staff
-      19252: auto    # Kardui Ears
-      450226: auto    # Four of a Kind
-      490029: auto    # Geffenia Ice Magic Tool
-      # Sorcerer - Psychic Wave
-      26118: auto    # Shadow Staff
-      410067: auto    # Professor's Mini Glasses
-      420182: auto    # Book of Sorcery
-      450112: auto    # Grace Psychic Robe
-      490038: auto    # Sixth Sense Ring
-      24596: auto    # Sorcerer's Booster Shadow Weapon
-      # Sorcerer - Varetyr Spear
-      26169: auto    # Psychic Spear Rod
-      19426: auto    # King Of Spirit Circlet
-      450242: auto    # Elemental Possession
-      22243: auto    # Mamaragan
-      24310: auto    # Sorcerer Shadow Shield
-      # Ranger - Arrow Storm
-      18164: auto    # Royal Bow
-      5898: auto    # Autumn Headband
-      450090: auto    # Grace Sharp Suit
-      22008: auto    # Temporal Dex Boots
-      490145: auto    # Ring of Ceryneian
-      24599: auto    # Ranger's Booster Shadow Weapon
-      # Ranger - Aimed Bolt
-      700003: auto    # Scarlet Dragon Leather Bow
-      400203: auto    # Wolf Officer Hat
-      450091: auto    # Grace Aimed Suit
-      470007: auto    # Sniping Shoes
-      # Minstrel - Severe Rainstorm
-      18170: auto    # Narcissus Bow
-      400648: auto    # Crown of Ashes
-      450092: auto    # Grace Severe Suit
-      470098: auto    # Jade Crystal Boots
-      490430: auto    # Record of Archer 2
-      24600: auto    # Minstrel&Wanderer's Booster Shadow Weapon
-      # Minstrel - Metallic Sound / Reverberation
-      570002: auto    # Trumpet Shell
-      450093: auto    # Grace Reverb Suit
-      2899: auto    # Sound Amplification Device
-      2899: auto    # Sound Amplification Device
-      # Wanderer - Severe Rainstorm
-      5905: auto    # Lyrica Hat
-      # Wanderer - Metallic Sound / Reverberation
-      580002: auto    # Barbed Wire Whip
-      # Arch Bishop - Adoramus
-      1631: auto    # Holy Stick
-      2115: auto    # Valkyrja's Shield
-      15254: auto    # Abyssal Dress
-      24491: auto    # Adora Shadow Weapon
-      # Arch Bishop - Full Support
-      1659: auto    # Light of Recovery
-      2162: auto    # Bible of Promise(2nd Vol.)
-      5747: auto    # Mitra
-      410337: auto    # Cherub Coronet
-      15384: auto    # Ritual Robe
-      22189: auto    # Pilgrim Shoes
-      28430: auto    # Arch Bishop Ring
-      24292: auto    # Arch Bishop Shadow Weapon
-      # Sura - Tiger Cannon
-      560002: auto    # Ray Knuckle
-      19198: auto    # Racing Cap (Sura)
-      5401: auto    # Black Frame Glasses
-      420310: auto    # Plastic Blue Rose
-      450097: auto    # Grace Tiger Suit
-      470020: auto    # Grace Attack Boots
-      2722: auto    # Medal of Honor
-      24485: auto    # Tiger Shadow Weapon
-      # Sura - Rampage Blast / Lightning Ride
-      1847: auto    # Iron Nail
-      410313: auto    # Eye of the Storm
-      450096: auto    # Grace Knuckle Suit
-      28503: auto    # Keraunos
-      24476: auto    # Rampage Shadow Armor
-      # Guillotine Cross - Rolling Cutter / Cross Ripper Slasher
-      28007: auto    # Crimson Katar
-      19191: auto    # Racing Cap (Guillotine Cross)
-      410333: auto    # Karasu Tengu Mask
-      19246: auto    # Royal Guard Necklace
-      450102: auto    # Grace Rolling Suit
-      28565: auto    # Perverse Demon Mask
-      24536: auto    # Rolling Shadow Armor
-      # Guillotine Cross - Counter Slash
-      1298: auto    # Shiver Katar
-      450103: auto    # Grace Assassin Suit
-      24542: auto    # Slash Shadow Armor
-      # Shadow Chaser - Triangle Shot
-      18145: auto    # Vigilante Bow
-      5208: auto    # Rideword Hat
-      5325: auto    # Robo Eye
-      450104: auto    # Grace Fatal Suit
-      28441: auto    # Vigilante Badge
-      24524: auto    # Triangle Shadow Armor
-      # Shadow Chaser - Fatal Menace
-      510006: auto    # Fatalist
-      5933: auto    # Crow Tengu Mask
-      19112: auto    # Tengu Scroll
-      490096: auto    # Ring of Hunter
-      24530: auto    # Menace Shadow Armor
-      # Mechanic - Arm Cannon
-      590002: auto    # Meteor Striker
-      460004: auto    # Illusion Shield I
-      19189: auto    # Racing Cap (Mechanic)
-      450099: auto    # Grace Vulcan Armor
-      2996: auto    # Upgrade Part - Gun Barrel
-      24473: auto    # Arm Shadow Weapon
-      # Mechanic - Axe Tornado / Axe Boomerang
-      28130: auto    # Avenger
-      5907: auto    # Sea Captain Hat
-      420313: auto    # Mysterious Red Plate
-      450098: auto    # Grace Tornado Armor
-      490183: auto    # Military Glove
-      24464: auto    # Tornado Shadow Armor
-      # Genetic - Cart Cannon
-      13485: auto    # Red Lotus Sword
-      19190: auto    # Racing Cap (Geneticist)
-      410254: auto    # Ancient Morocc Noble Jewelry
-      450100: auto    # Grace Cart Cannon Suit
-      32259: auto    # Cannon Modifier
-      24563: auto    # Cannon Cart Shadow Weapon
-      # Genetic - Cart Tornado
-      1326: auto    # Illusion War Axe
-      450101: auto    # Grace Cart Tornado Suit
-      490146: auto    # Paracelsus Glove
-      24560: auto    # Tornado Shadow Armor
-      # Star Emperor - Solar
-      28631: auto    # One Sky One Sun
-      19437: auto    # Little Garden
-      450114: auto    # Grace Sun Suit
-      24646: auto    # Sunshine Shadow Weapon
-      # Star Emperor - Lunar
-      450115: auto    # Grace Moon Suit
-      22196: auto    # Illusion Leg A-type
-      24649: auto    # Moonlight Shadow Earring
-      # Soul Reaper - Curse Explosion
-      26154: auto    # Spirit Pendulum
-      460077: auto    # God-Devouring Demonic Shield
-      19272: auto    # Garden of Eden
-      450119: auto    # Grace Explosion Robe
-      2715: auto    # Skull Ring
-      24658: auto    # Evil Curse Shadow Earring
-      # Soul Reaper - Eswhoo / Espa
-      450118: auto    # Grace Eswhoo Robe
-      24655: auto    # Es Shadow Weapon
-      # Kagerou / Oboro - Cross Slash
-      28764: auto    # Kiri no Tsuyu
-      28763: auto    # Surudoi Kaze
-      19203: auto    # Racing Cap (Ninja)
-      450116: auto    # Grace Ninja Suit
-      24403: auto    # Kagerou Shadow Armor
-      # Kagerou / Oboro - Swirling Petal / Kunai
-      13345: auto    # Huuma Shuriken Clearness
-      450117: auto    # Grace Kunai Suit
-      32262: auto    # Rasen Fuma's Orb
-      24622: auto    # Kunai Shadow Weapon
-      # Kagerou / Oboro - Magic Oboro
-      13078: auto    # Mikacheuki
-      460014: auto    # Illusion Shield II
-      18539: auto    # Skull Cap
-      18676: auto    # Hexagon Spectacles
-      28485: auto    # Shinobi Sash H
-      24628: auto    # First Exploding Draft Shadow Weapon
-      # Rebellion - Round Trip
-      32302: auto    # Crimson Rose
-      19202: auto    # Racing Cap (Gunslinger)
-      450108: auto    # Grace Trip Suit
-      28353: auto    # Vesper Gear 02
-      24613: auto    # Trip Shadow Weapon
-      # Rebellion - Dragon Tail / Hammer of God / Fire Dance
-      28255: auto    # Master Soul Rifle
-      450109: auto    # Grace Fire Rain Suit
-      24601: auto    # Tail Dragon Shadow Weapon
-      # Expanded Super Novice - Melee
-      510070: auto    # Blessed Knife
-      2183: auto    # Advanced Angelic Guard
-      19204: auto    # Racing Cap (Super Novice)
-      450125: auto    # Grace Super Novice Suit
-      24619: auto    # Super Power Shadow Weapon
-      # Expanded Super Novice - Magic
-      550080: auto    # Freedom Stick
-      450126: auto    # Grace Super Novice Robe
-      24616: auto    # Super Magic Shadow Shield
-  Rental:
-    note: "Endgame: full sets per build, lv 175-200"
-    items:
-      # Rune Knight - Ignition Break
-      600016: auto    # Thanatos Great Sword-AD
-      18971: auto    # Old Rune Circlet
-      410362: auto    # Exiled Ninja's Eyes
-      420236: auto    # Loyal Servant of the Demon Lord Morroc
-      450127: auto    # Automatic Armor Type A
-      480479: auto    # Royal Prontera Cape
-      470087: auto    # Gray Wolf Boots
-      490605: auto    # Document Swordsman
-      490113: auto    # Jasper Ring
-      # Rune Knight - Dragon Breath
-      600024: auto    # Dragonic Slayer-LT
-      19474: auto    # Temporal Circlet (Rune Knight)
-      420329: auto    # Twinhead Dragon Scale
-      450216: auto    # Twinhead Dragon Mail
-      480084: auto    # Fafnir Breath
-      470274: auto    # Twinhead Dragon Boots
-      490413: auto    # Twin Head Dragon Ring
-      490207: auto    # Memento Mori
-      # Royal Guard - Banishing Point / Cannon Spear
-      530019: auto    # Aquatic Spear-LT
-      460084: auto    # Alice Body Pillow
-      18983: auto    # Old Casket of Protection
-      420246: auto    # Arbitrator Shawl
-      450257: auto    # Platinum Arbitrator
-      490600: auto    # Imperial Glove
-      24289: auto    # Royal Guard Shadow Weapon
-      # Royal Guard - Genesis Ray
-      500038: auto    # Light Blade-LT
-      460092: auto    # Ancient Prontera Book
-      400200: auto    # Helm of Faith (Royal Guard)
-      28502: auto    # Mob Scarf
-      450128: auto    # Automatic Armor Type B
-      480520: auto    # Royal Geffen Cape
-      470088: auto    # Gray Wolf Shoes
-      490108: auto    # Gray Wolf Earring
-      490109: auto    # Gray Wolf Necklace
-      24302: auto    # Royal Guard Shadow Shield
-      # Warlock - Crimson Rock
-      26158: auto    # Crimson Rose Stick
-      18978: auto    # Old Magic Stone Hat
-      420110: auto    # Old Camouflage Scarf
-      470258: auto    # Zodiac Boots (Mage)
-      490608: auto    # Document Mage
-      490418: auto    # Record of Mage 2
-      24296: auto    # Warlock Shadow Weapon
-      # Warlock - Comet
-      640019: auto    # Adulter Fides Two-Handed Staff
-      400179: auto    # Helm of Faith II (Warlock)
-      450178: auto    # Gray Wolf Robe
-      # Sorcerer - Psychic Wave
-      550045: auto    # Shadow Staff-LT
-      19483: auto    # Temporal Circlet (Sorcerer)
-      410067: auto    # Professor's Mini Glasses
-      420182: auto    # Book of Sorcery
-      450179: auto    # Celine's Dress
-      470192: auto    # Fifth Element
-      490038: auto    # Sixth Sense Ring
-      24297: auto    # Sorcerer Shadow Weapon
-      # Sorcerer - Varetyr Spear
-      26159: auto    # Psychic Spear Rod
-      18980: auto    # Old Wind Whisper
-      410313: auto    # Eye of the Storm
-      450242: auto    # Elemental Possession
-      24310: auto    # Sorcerer Shadow Shield
-      # Ranger - Arrow Storm
-      700045: auto    # Royal Bow-LT
-      19484: auto    # Temporal Circlet (Ranger)
-      480504: auto    # Royal Payon Cape
-      470329: auto    # Ancient Ranger Shoes
-      490609: auto    # Document Archer
-      490145: auto    # Ring of Ceryneian
-      # Ranger - Aimed Bolt
-      700046: auto    # Scarlet Leather Dragon Bow-LT
-      400199: auto    # Helm of Faith II (Ranger)
-      450251: auto    # Assault Suits
-      480094: auto    # Erymanthian Skin
-      490471: auto    # Ring of Artemis
-      # Minstrel - Severe Rainstorm
-      700049: auto    # Narcissus Bow-LT
-      18976: auto    # Old Minstrel Song's Hat
-      450177: auto    # Gray Wolf Suit
-      470269: auto    # Jade Crystal Boots-LT
-      490427: auto    # Ring of Storm
-      24299: auto    # Maestro Shadow Weapon
-      # Minstrel - Metallic Sound / Reverberation
-      570027: auto    # Trumpet Shell-LT
-      19485: auto    # Temporal Circlet (Wanderer & Minstrel)
-      450258: auto    # Loud Park
-      490141: auto    # Metal Pick
-      2899: auto    # Sound Amplification Device
-      # Wanderer - Severe Rainstorm
-      18981: auto    # Old Dying Swan
-      24300: auto    # Wanderer Shadow Weapon
-      # Wanderer - Metallic Sound / Reverberation
-      580027: auto    # Barbed Wire Whip-LT
-      # Arch Bishop - Adoramus
-      550021: auto    # Deus Ex Machina
-      400189: auto    # Helm of Faith (Archbishop)
-      420187: auto    # Sacred Lapel
-      450291: auto    # Amazing Grace
-      470266: auto    # Mythical Moonlight Paw
-      490488: auto    # Ring of Unknown Hero (Archbishop)
-      490118: auto    # Ring of Adoramus
-      24883: auto    # Full Spell Shadow Armor
-      # Arch Bishop - Full Support
-      16099: auto    # Rubber Hammer
-      460023: auto    # Shield of Phoenix
-      18972: auto    # Old Mitra
-      410337: auto    # Cherub Coronet
-      480224: auto    # Shining Priest's Cloak
-      22189: auto    # Pilgrim Shoes
-      490244: auto    # Cardinal Ring
-      24292: auto    # Arch Bishop Shadow Weapon
-      # Sura - Tiger Cannon
-      560009: auto    # Patent Ray Knuckle
-      460015: auto    # Automatic Shield I
-      400180: auto    # Helm of Faith (Sura)
-      410333: auto    # Karasu Tengu Mask
-      420310: auto    # Plastic Blue Rose
-      480020: auto    # Automatic Engine Wing Type A
-      470270: auto    # Zodiac Boots (Acolyte)
-      490406: auto    # Ring of Unknown Hero (Sura)
-      490025: auto    # Automatic Booster L
-      24485: auto    # Tiger Shadow Weapon
-      # Sura - Rampage Blast / Lightning Ride
-      560008: auto    # Patent Iron Nail
-      400181: auto    # Helm of Faith II (Sura)
-      480149: auto    # Battle Aura Manteau
-      22259: auto    # Tohil's Shoes
-      490610: auto    # Document Acolyte
-      28503: auto    # Keraunos
-      24476: auto    # Rampage Shadow Armor
-      # Guillotine Cross - Rolling Cutter / Cross Ripper Slasher
-      610008: auto    # Patent Shiver Katar
-      400217: auto    # Helm of Faith II (Guillotine Cross)
-      19246: auto    # Royal Guard Necklace
-      470272: auto    # Zodiac Boots (Thief)
-      490464: auto    # Ring of Unknown Hero (Guillotine)
-      490394: auto    # Record of Thief 2
-      24536: auto    # Rolling Shadow Armor
-      # Guillotine Cross - Counter Slash
-      400216: auto    # Helm of Faith (Guillotine Cross)
-      24542: auto    # Slash Shadow Armor
-      # Shadow Chaser - Triangle Shot
-      700018: auto    # Patent Royal Bow
-      400192: auto    # Helm of Faith II (Shadow Chaser)
-      480427: auto    # Biolab Cape (Range)
-      490438: auto    # Ring of Unknown Hero (Shadow Chaser)
-      490613: auto    # Old Detachment Ring
-      24524: auto    # Triangle Shadow Armor
-      # Shadow Chaser - Fatal Menace
-      510020: auto    # Patent Fatalist
-      400191: auto    # Helm of Faith (Shadow Chaser)
-      5933: auto    # Crow Tengu Mask
-      480081: auto    # Glotoneria
-      470289: auto    # Ancient Mechanic Greaves
-      490545: auto    # Overdrive Rampage
-      24530: auto    # Menace Shadow Armor
-      # Mechanic - Arm Cannon
-      590011: auto    # Patent Meteor Striker
-      18974: auto    # Old Driver Band(Yellow)
-      450209: auto    # Imp Powered Suit
-      470267: auto    # Zodiac Boots (Merchant)
-      490607: auto    # Document Merchant
-      490239: auto    # Record of Merchant
-      24473: auto    # Arm Shadow Weapon
-      # Mechanic - Axe Tornado / Axe Boomerang
-      620004: auto    # Patent Avenger
-      400230: auto    # Helm of Faith (Mechanic)
-      420313: auto    # Mysterious Red Plate
-      490531: auto    # Ring of Unknown Hero (Mechanic)
-      24464: auto    # Tornado Shadow Armor
-      # Genetic - Cart Cannon
-      500013: auto    # Patent Red Lotus Sword
-      400233: auto    # Helm of Faith (Genetic)
-      410254: auto    # Ancient Morocc Noble Jewelry
-      490515: auto    # Ring of Unknown Hero (Genetic)
-      32259: auto    # Cannon Modifier
-      24563: auto    # Cannon Cart Shadow Weapon
-      # Genetic - Cart Tornado
-      590022: auto    # Adulter Fides Hall
-      400234: auto    # Helm of Faith II (Genetic)
-      490146: auto    # Paracelsus Glove
-      24560: auto    # Tornado Shadow Armor
-      # Star Emperor - Solar
-      540010: auto    # Patent One Sky One Sun
-      19486: auto    # Temporal Circlet (Star Emperor)
-      19112: auto    # Tengu Scroll
-      470022: auto    # Automatic Leg Type A
-      490469: auto    # Ring of Unknown Hero (Taekwon)
-      24646: auto    # Sunshine Shadow Weapon
-      # Star Emperor - Lunar
-      400241: auto    # Helm of Faith (Star Emperor)
-      24649: auto    # Moonlight Shadow Earring
-      # Soul Reaper - Curse Explosion
-      400697: auto    # Full Faith Crown
-      32219: auto    # Asteria's Ring
-      2715: auto    # Skull Ring
-      24658: auto    # Evil Curse Shadow Earring
-      # Soul Reaper - Eswhoo / Espa
-      400239: auto    # Helm of Faith (Soul Reaper)
-      24655: auto    # Es Shadow Weapon
-      # Kagerou / Oboro - Cross Slash
-      510022: auto    # Patent Kiri no Tsuyu
-      28763: auto    # Surudoi Kaze
-      19490: auto    # Temporal Circlet (Kagerou)
-      490479: auto    # Ring of Unknown Hero (Ninja)
-      24403: auto    # Kagerou Shadow Armor
-      # Kagerou / Oboro - Swirling Petal / Kunai
-      650004: auto    # Patent Huuma Shuriken Clearness
-      400235: auto    # Helm of Faith (Kagerou & Oboro)
-      32262: auto    # Rasen Fuma's Orb
-      24622: auto    # Kunai Shadow Weapon
-      # Kagerou / Oboro - Magic Oboro
-      510066: auto    # Kuroiro-OSAD
-      19489: auto    # Temporal Circlet (Oboro)
-      480021: auto    # Automatic Engine Wing Type B
-      470023: auto    # Automatic Leg Type B
-      28485: auto    # Shinobi Sash H
-      24628: auto    # First Exploding Draft Shadow Weapon
-      # Rebellion - Round Trip
-      800002: auto    # Patent Crimson Rose
-      400238: auto    # Helm of Faith II (Rebellion)
-      490498: auto    # Ring of Unknown Hero (Rebellion)
-      28551: auto    # Imperial Glove
-      24613: auto    # Trip Shadow Weapon
-      # Rebellion - Dragon Tail / Hammer of God / Fire Dance
-      810001: auto    # Patent Master Soul Rifle
-      400237: auto    # Helm of Faith (Rebellion)
-      24601: auto    # Tail Dragon Shadow Weapon
-      # Expanded Super Novice - Melee
-      510071: auto    # Patent Blessed Knife
-      19491: auto    # Temporal Circlet (Super Novice)
-      490511: auto    # Ring of Unknown Hero (Novice)
-      24619: auto    # Super Power Shadow Weapon
-      # Expanded Super Novice - Magic
-      550081: auto    # Patent Freedom Stick
-      460014: auto    # Illusion Shield II
-      24616: auto    # Super Magic Shadow Shield
-  Permanent:
-    note: "MVP Cards"
-    items:
-      4302: 300     # Tao Gunka Card
-      4131: 300     # Moonlight Flower Card
-      4143: 300     # Orc Hero Card
-      4135: 200     # Orc Lord Card
-      4146: 200     # Maya Card
-      4147: 250     # Baphomet Card
-      4142: 200     # Doppelganger Card
-      4144: 200     # Osiris Card
-      4137: 200     # Drake Card
-      4134: 200     # Dracula Card
-      4128: 250     # Golden Thief Bug Card
-      4121: 200     # Phreeoni Card
-      4123: 200     # Eddga Card
-      4132: 200     # Mistress Card
-      4148: 200     # Pharaoh Card
-      4145: 200     # Berzebub Card
-      4168: 200     # Dark Lord Card
-      4276: 200     # Lord of The Dead Card
-      4305: 200     # Turtle General Card
-      4318: 200     # Stormy Knight Card
-      4324: 200     # Hatii Card
-      4403: 200     # Kiel-D-01 Card
-      4374: 200     # Vesper Card
-      4419: 200     # Ktullanux Card
-      4425: 200     # Atroce Card
-      4399: 250     # Memory of Thanatos Card
-      4386: 200     # Detardeurus Card
-      4407: 250     # Randgris Card
-      4408: 200     # Gloom Under Night Card
-      4430: 200     # Ifrit Card
-      4441: 200     # Fallen Bishop Hibram Card
-      4372: 200     # White Lady Card
-      4376: 200     # Lady Tanee Card
-      4236: 200     # Amon Ra Card
-      4342: 200     # RSX-0806 Card
-      4263: 200     # Samurai Spector Card
-      4330: 200     # Evil Snake Lord Card
-      4352: 200     # General Egnigem Cenia Card
-  Scrolls:
-    note: "Refine: safe certificates (Refine Master, prontera 184,177), blessing, ores, enchant stones"
-    items:
-      6871: 300     # Safe to 14 Weapon Certificate
-      6877: 300     # Safe to 14 Armor Certificate
-      6864: 1500    # Safe to 19 Weapon Certificate
-      6865: 1500    # Safe to 19 Armor Certificate
-      6635: 20      # Blacksmith Blessing
-      6241: 15      # HD Elunium
-      6240: 15      # HD Oridecon
-      6225: 15      # HD Carnium
-      6226: 15      # HD Bradium
-      14629: 30      # Costume Enchant Stone Box
-      14681: 30      # Costume Enchant Stone Box 2
-      14695: 30      # Costume Enchant Stone Box 3
-  Consumables:
-    note: "Consumables: event tickets, levelling, speed, mount, stat foods, acid packs, supplies, homunculus, mercenaries"
-    items:
-      Special_Maps_Ticket: 1       # Ingresso dos Mapas Especiais
-      Cheffenia_Pass: 1       # Passe para Cheffenia
-      12208: 5       # Battle Manual
-      14545: 15      # Field Manual 300%
-      14606: 5       # JOB Battle Manual
-      12210: 5       # Bubble Gum
-      12212: 1       # Giant Fly Wing
-      7621: 5       # Token Of Siegfried
-      12214: 3       # Convex Mirror
-      12213: 30      # Neuralizer
-      12211: 1       # Kafra Card
-      12622: 50      # Reins Of Mount
-      12016: 2       # Speed Potion
-      12414: 3       # Guarana Candy
-      656: 2       # Awakening Potion
-      657: 3       # Berserk Potion
-      14616: 5       # Bar Cookie Of Strength
-      14618: 5       # Bar Cookie Of Agility
-      14617: 5       # Bar Cookie Of Vitality
-      14619: 5       # Bar Cookie Of Intelligence
-      14620: 5       # Bar Cookie Of Dexterity
-      14621: 5       # Bar Cookie Of Lucky
-      17070: 1       # Acidbomb Box500
-      17069: 1       # Acidbomb Box100
-      607: 3       # Yggdrasil Berry
-      608: 2       # Yggdrasil Seed
-      14232: 25      # Yggdrasil Berry 10 Box
-      717: 1       # Blue Gemstone
-      716: 1       # Red Gemstone
-      715: 1       # Yellow Gemstone
-      12221: 2       # Megaphone
-      7142: 10      # Embryo
-      12040: 30      # Stone of Sage
-      100371: 3       # Homunculus Nutritional Supplement
-      12159: 5       # Bowman Scroll 7
-      12160: 8       # Bowman Scroll 8
-      12161: 10      # Bowman Scroll 9
-      12162: 15      # Bowman Scroll 10
-      12170: 8       # Fencer Scroll 8
-      12171: 10      # Fencer Scroll 9
-      12172: 15      # Fencer Scroll 10
-      12180: 8       # Spearman Scroll 8
-      12181: 10      # Spearman Scroll 9
-      12182: 15      # Spearman Scroll 10
-  Other:
-    note: "Pets: eggs (already tamed), food, accessories"
-    items:
-      9024: 80      # Bapho Jr. Egg
-      518: 1       # Honey
-      10001: 20      # Skull Helm
-      9023: 60      # Deviruchi Egg
-      711: 1       # Shoot
-      10004: 20      # Pacifier
-      9055: 80      # Succubus Egg
-      6113: 1       # Vital Flower
-      10037: 20      # Black Butterfly Mask
-      9052: 80      # Incubus Egg
-      6110: 1       # Vital Flower
-      10034: 20      # Masked Ball
-      9020: 60      # Sohee Egg
-      10016: 20      # Golden Bell
-      9021: 60      # Isis Egg
-      10006: 20      # Queen's Hair Ornament
-      9027: 60      # Alice Egg
-      504: 1       # White Potion
-      9042: 60      # Loli Ruri Egg
-      6097: 1       # Pumpkin Pie
-      10024: 20      # Fashion Glasses
-      9049: 60      # Dullahan Egg
-      6107: 1       # Sunset On The Rock
-      10031: 20      # Ring Of Death
-      9054: 60      # Nightmare Terror Egg
-      6112: 1       # Fresh Plant
-      10036: 20      # Horn Of Hell
-      9050: 60      # Medusa Egg
-      6108: 1       # Apple Pudding
-      10032: 20      # Queen's Coronet
-      9001: 20      # Poring Egg
-      531: 1       # Apple Juice
-      10013: 10      # Backpack
-      9004: 20      # Lunatic Egg
-      534: 1       # Carrot Juice
-      9010: 30      # Baby Desert Wolf Egg
-      537: 1       # Pet Food
-      9112: 60      # Moonlight Egg
-      25377: 2       # Luxurious Pet Food
-  Sale:
-    note: "Visuals: costumes (look only, no stats)"
-    items:
-      20509: 60      # Costume Wings of Uriel
-      20516: 60      # Costume Wings of Michael
-      20530: 60      # Costume Wings of Gabriel
-      20578: 60      # Costume Raguel's Wings
-      20579: 60      # Costume Raphael's Wings
-      31737: 60      # Costume Lucifer's Wings
-      20762: 60      # Costume Great Devil Wings
-      20571: 60      # Costume Valkyrie Wings
-      20525: 60      # Costume Crimson Wings
-      20599: 60      # Costume: Sakura Wings
-      20593: 60      # Costume: Ice Wings
-      20514: 60      # Costume Thanatos Sword
-      480107: 60      # Costume Kings Twin Sword
-      20507: 40      # Costume Poring Bag
-      20534: 40      # Costume Big White Cat
-      20598: 40      # Costume Big Black Cat
-      20584: 40      # Costume Fox Tail
-      20234: 60      # Costume Baphomet Hat
-      19836: 60      # Costume Majestic Goat
-      19840: 60      # Costume Hat of the Sun God
-      19546: 50      # Costume Valkyrie Helm
-      19587: 50      # Costume King Poring Hat
-      19782: 50      # Costume Refined Drooping Cat
-      19824: 50      # Costume Evil Druid Hat
-      19639: 40      # Costume Sakkat
-      19662: 40      # Costume Magician Hat
-      20093: 40      # Costume Wizard Hat
-      19620: 40      # Costume Detective Hat
-      20347: 40      # Costume Poring Pirate Hat
-      19843: 40      # Costume Kitty Band
-      19573: 40      # Costume Heart Wing Hairband
-      19621: 40      # Costume Evil Wing Ear
-      19781: 40      # Costume Angel Wing Ears
-      19810: 40      # Costume Ifrit Ear
-      19550: 20      # Costume Blush
+    New:
+        note: "Popular: best picks for every class + featured builds"
+        items:
+            # the legend
+            990010: 2000000000 # The Duds Ban Hammer
+            # starter set, any class (lv 1)
+            19163: 200 # Catherina Von Blood
+            2589: auto # Fallen Angel Wing
+            28902: 100 # Mad Bunny
+            28324: auto # Steam Starter Ring
+            420246: auto # Arbitrator Shawl
+            15023: auto # Half Brynhild
+            2400: auto # Pollux Shoes
+            # universal top gear
+            2410: auto # Sleipnir
+            2630: auto # Brisingamen
+            480115: auto # Light of the World Asprika
+            410100: auto # 2021RTC Champion Gaming Headset
+            15254: auto # Abyssal Dress
+            22010: auto # Temporal Agi Boots
+            22011: auto # Temporal Luk Boots
+            4364: 100 # Margaretha Sorin Card
+            4685: 200 # True Margaretha Sorin Card
+            # FEATURED: Creator Acid Demonstration (lv 99): best in slot. Cast 0 s (Meer card), after-cast delay about -60%.
+            # With Arbitrator Shawl and Light of the World Asprika above. Needs INT 120 (Seraphim Coronet), then max STR.
+            400433: auto # Fallen Wing Hairpin-LT (upper, refine +11: +10% ATK, +15% all races, -12% delay)
+            300138: 300 # Half Blood Princess Meer Card (upper card: -1 s fixed cast = no cast)
+            # (middle card: Kiel-D-01, in the MVP Cards tab: -30% after-cast delay)
+            19138: auto # Seraphim Coronet (middle, +250 ATK at INT 120; 1 slot on RagnaDuds)
+            450220: auto # Chrome Metal Plate (armor, refine +8: +30% ATK)
+            300013: 300 # Reginleif Card (armor: +30% ATK; Tao Gunka in MVP Cards if you want +100% HP instead)
+            1335: auto # Cancer Axe (+179 ATK)
+            300151: 250 # Abysmal Kraken Card (weapon: +25% ranged)
+            460084: auto # Alice Body Pillow
+            300465: 150 # Jormungandr Sanctuary Guardian Card (shield: +10% ranged)
+            300473: 250 # Snowstorm Angel Card (garment: +30% ranged)
+            470167: auto # Temporal Boots Str (ROC: any class from lv 70, 1 slot; +30 ATK at STR 99)
+            470166: auto # Temporal Boots Dex (ROC: any class from lv 70, 1 slot; +3% ranged at DEX 99)
+            300184: 100 # Arena Blut Hase Card (shoes: +7% ranged, +5% ATK)
+            490475: auto # Chemical Glove (wear 2: +20% Acid Demonstration per 20 base levels each)
+            300502: 200 # Secret Wing Leizi (Sign Stamp) Card (any accessory: +15% ATK; Berzebub in MVP Cards for -30% cast)
+            24439: 60 # Hasty Shadow Weapon
+            24244: 60 # Reload Shadow Shield
+            24401: 60 # Kingbird Ancient Shadow Armor
+            24243: 60 # Reload Shadow Shoes
+            24339: 60 # Almighty Shadow Earring (+all stats)
+            24340: 60 # Almighty Shadow Pendant (+all stats)
+            # cheaper alternatives for the same build
+            400676: auto # Flaward Hat (upper: +20% Acid, STR/INT +3)
+            15375: auto # Old Eclipse Outfit (armor: -10% after-cast delay)
+            # FEATURED: Genetic Acid Demonstration (lv 100+)
+            22006: auto # Temporal Str Boots (3rd/4th classes)
+            460066: auto # Fake Alloy Pot-LT
+            590009: auto # Acid Cannon Booster Club
+            4496: 300 # Sealed Drake Card (weapon: +50% damage to all sizes, +75% at refine +15)
+            32355: auto # Estal
+            1334: auto # Grinder Axe
+            19453: auto # Jeje Cap
+            460030: auto # Bionic Aluminum Planter
+            500039: auto # Red Lotus Sword-LT
+    Hot:
+        note: "Melee: swords, axes, maces, katars, knuckles, spears - Knight, Crusader, Blacksmith, Assassin, Rogue, Monk, Ninja, Star Gladiator and their 3rd/4th classes"
+        items:
+            # 1st class: Swordman top set
+            13402: auto # Cutlus
+            28901: auto # Cursed Mad Bunny
+            18780: auto # RWC Champ Crown Second Place
+            18503: auto # Small Devil Horns
+            2856: auto # Half Megingjard
+            2910: auto # Bakunawa Agimat Tattoo
+            # 1st class: Merchant top set
+            1547: auto # Mace Of Madness
+            24251: auto # Merchant Shadow Pendant
+            28429: auto # Arquien's Necklace
+            # 2nd / transcendent: Knight / Lord Knight top set
+            1188: auto # Veteran Sword
+            400512: auto # Hat of Desert
+            2383: auto # Brynhild
+            20939: auto # Temporal Transcendence Manteau
+            490282: auto # Kenshi Gauntlet
+            5825: auto # Badge Of Order Grace
+            # 2nd / transcendent: Crusader / Paladin top set
+            28946: auto # Purified Knight's Shield
+            18823: auto # Imperial Feather
+            28372: auto # Imperial Ring
+            # 2nd / transcendent: Monk / Champion top set
+            490399: auto # Boxer Glove
+            # 2nd / transcendent: Assassin / Assassin Cross top set
+            2629: auto # Megingjard
+            # 2nd / transcendent: Rogue / Stalker top set
+            28379: auto # Shadow Ring
+            # 2nd / transcendent: Whitesmith top set
+            400500: auto # Gigant Helm
+            490295: auto # Armaia Belt
+            # 2nd / transcendent: Ninja top set
+            18948: auto # Orochimaru's Mask
+            28426: auto # Mercenary Ring Type B
+            # 3rd class, lv 100-174: Rune Knight - Ignition Break
+            21050: auto # Illusion Tae Goo Lyeon
+            400647: auto # Mighty Crown of Ashes
+            410342: auto # Purified Pigeon
+            420110: auto # Old Camouflage Scarf
+            450087: auto # Grace Knight Armor
+            480018: auto # Grace Attack Manteau
+            490019: auto # Grace Attack Ring
+            490113: auto # Jasper Ring
+            24589: auto # Rune Knight's Booster Shadow Weapon
+            # 3rd class, lv 100-174: Rune Knight - Dragon Breath
+            600004: auto # Dragonic Slayer
+            19116: auto # Red Baby Dragon
+            420329: auto # Twinhead Dragon Scale
+            450086: auto # Grace Breath Armor
+            480084: auto # Fafnir Breath
+            22007: auto # Temporal Vit Boots
+            490413: auto # Twin Head Dragon Ring
+            28594: auto # Temporal Ring
+            # 3rd class, lv 100-174: Royal Guard - Banishing Point / Cannon Spear
+            1433: auto # Imperial Spear
+            2153: auto # Imperial Guard
+            450088: auto # Grace Spear Armor
+            22207: auto # Imperial Boots
+            28551: auto # Imperial Glove
+            24590: auto # Royal Guard's Booster Shadow Weapon
+            # 3rd class, lv 100-174: Sura - Tiger Cannon
+            560002: auto # Ray Knuckle
+            19198: auto # Racing Cap (Sura)
+            5401: auto # Black Frame Glasses
+            420310: auto # Plastic Blue Rose
+            450097: auto # Grace Tiger Suit
+            470020: auto # Grace Attack Boots
+            2722: auto # Medal of Honor
+            24485: auto # Tiger Shadow Weapon
+            # 3rd class, lv 100-174: Sura - Rampage Blast / Lightning Ride
+            1847: auto # Iron Nail
+            410313: auto # Eye of the Storm
+            450096: auto # Grace Knuckle Suit
+            28503: auto # Keraunos
+            24476: auto # Rampage Shadow Armor
+            # 3rd class, lv 100-174: Guillotine Cross - Rolling Cutter / Cross Ripper Slasher
+            28007: auto # Crimson Katar
+            19191: auto # Racing Cap (Guillotine Cross)
+            410333: auto # Karasu Tengu Mask
+            19246: auto # Royal Guard Necklace
+            450102: auto # Grace Rolling Suit
+            28565: auto # Perverse Demon Mask
+            24536: auto # Rolling Shadow Armor
+            # 3rd class, lv 100-174: Guillotine Cross - Counter Slash
+            1298: auto # Shiver Katar
+            450103: auto # Grace Assassin Suit
+            24542: auto # Slash Shadow Armor
+            # 3rd class, lv 100-174: Shadow Chaser - Fatal Menace
+            510006: auto # Fatalist
+            5933: auto # Crow Tengu Mask
+            19112: auto # Tengu Scroll
+            490096: auto # Ring of Hunter
+            24530: auto # Menace Shadow Armor
+            # 3rd class, lv 100-174: Mechanic - Axe Tornado / Axe Boomerang
+            28130: auto # Avenger
+            5907: auto # Sea Captain Hat
+            420313: auto # Mysterious Red Plate
+            450098: auto # Grace Tornado Armor
+            490183: auto # Military Glove
+            24464: auto # Tornado Shadow Armor
+            # 3rd class, lv 100-174: Genetic - Cart Tornado
+            1326: auto # Illusion War Axe
+            450101: auto # Grace Cart Tornado Suit
+            490146: auto # Paracelsus Glove
+            24560: auto # Tornado Shadow Armor
+            # 3rd class, lv 100-174: Star Emperor - Solar
+            28631: auto # One Sky One Sun
+            19437: auto # Little Garden
+            450114: auto # Grace Sun Suit
+            24646: auto # Sunshine Shadow Weapon
+            # 3rd class, lv 100-174: Star Emperor - Lunar
+            450115: auto # Grace Moon Suit
+            22196: auto # Illusion Leg A-type
+            24649: auto # Moonlight Shadow Earring
+            # 3rd class, lv 100-174: Kagerou / Oboro - Cross Slash
+            28764: auto # Kiri no Tsuyu
+            28763: auto # Surudoi Kaze
+            19203: auto # Racing Cap (Ninja)
+            450116: auto # Grace Ninja Suit
+            24403: auto # Kagerou Shadow Armor
+            # 3rd class, lv 100-174: Expanded Super Novice - Melee
+            510070: auto # Blessed Knife
+            2183: auto # Advanced Angelic Guard
+            19204: auto # Racing Cap (Super Novice)
+            450125: auto # Grace Super Novice Suit
+            24619: auto # Super Power Shadow Weapon
+            # endgame, lv 175+: Rune Knight - Ignition Break
+            600016: auto # Thanatos Great Sword-AD
+            18971: auto # Old Rune Circlet
+            410362: auto # Exiled Ninja's Eyes
+            420236: auto # Loyal Servant of the Demon Lord Morroc
+            450127: auto # Automatic Armor Type A
+            480479: auto # Royal Prontera Cape
+            470087: auto # Gray Wolf Boots
+            490605: auto # Document Swordsman
+            # endgame, lv 175+: Rune Knight - Dragon Breath
+            600024: auto # Dragonic Slayer-LT
+            19474: auto # Temporal Circlet (Rune Knight)
+            450216: auto # Twinhead Dragon Mail
+            470274: auto # Twinhead Dragon Boots
+            490207: auto # Memento Mori
+            # endgame, lv 175+: Royal Guard - Banishing Point / Cannon Spear
+            530019: auto # Aquatic Spear-LT
+            18983: auto # Old Casket of Protection
+            450257: auto # Platinum Arbitrator
+            490600: auto # Imperial Glove
+            24289: auto # Royal Guard Shadow Weapon
+            # endgame, lv 175+: Sura - Tiger Cannon
+            560009: auto # Patent Ray Knuckle
+            460015: auto # Automatic Shield I
+            400180: auto # Helm of Faith (Sura)
+            480020: auto # Automatic Engine Wing Type A
+            470270: auto # Zodiac Boots (Acolyte)
+            490406: auto # Ring of Unknown Hero (Sura)
+            490025: auto # Automatic Booster L
+            # endgame, lv 175+: Sura - Rampage Blast / Lightning Ride
+            560008: auto # Patent Iron Nail
+            400181: auto # Helm of Faith II (Sura)
+            480149: auto # Battle Aura Manteau
+            22259: auto # Tohil's Shoes
+            490610: auto # Document Acolyte
+            # endgame, lv 175+: Guillotine Cross - Rolling Cutter / Cross Ripper Slasher
+            610008: auto # Patent Shiver Katar
+            400217: auto # Helm of Faith II (Guillotine Cross)
+            470272: auto # Zodiac Boots (Thief)
+            490464: auto # Ring of Unknown Hero (Guillotine)
+            490394: auto # Record of Thief 2
+            # endgame, lv 175+: Guillotine Cross - Counter Slash
+            400216: auto # Helm of Faith (Guillotine Cross)
+            # endgame, lv 175+: Shadow Chaser - Fatal Menace
+            510020: auto # Patent Fatalist
+            400191: auto # Helm of Faith (Shadow Chaser)
+            480081: auto # Glotoneria
+            470289: auto # Ancient Mechanic Greaves
+            490545: auto # Overdrive Rampage
+            # endgame, lv 175+: Mechanic - Axe Tornado / Axe Boomerang
+            620004: auto # Patent Avenger
+            400230: auto # Helm of Faith (Mechanic)
+            490531: auto # Ring of Unknown Hero (Mechanic)
+            # endgame, lv 175+: Genetic - Cart Tornado
+            590022: auto # Adulter Fides Hall
+            400234: auto # Helm of Faith II (Genetic)
+            # endgame, lv 175+: Star Emperor - Solar
+            540010: auto # Patent One Sky One Sun
+            19486: auto # Temporal Circlet (Star Emperor)
+            470022: auto # Automatic Leg Type A
+            490469: auto # Ring of Unknown Hero (Taekwon)
+            # endgame, lv 175+: Star Emperor - Lunar
+            400241: auto # Helm of Faith (Star Emperor)
+            # endgame, lv 175+: Kagerou / Oboro - Cross Slash
+            510022: auto # Patent Kiri no Tsuyu
+            19490: auto # Temporal Circlet (Kagerou)
+            490479: auto # Ring of Unknown Hero (Ninja)
+            # endgame, lv 175+: Expanded Super Novice - Melee
+            510071: auto # Patent Blessed Knife
+            19491: auto # Temporal Circlet (Super Novice)
+            490511: auto # Ring of Unknown Hero (Novice)
+    Limited:
+        note: "Ranged: bows, instruments, guns, cart cannon, kunai - Hunter, Bard/Dancer, Gunslinger, Shadow Chaser shots, Mechanic Arm Cannon, Genetic and their 3rd/4th classes"
+        items:
+            # 1st class: Archer top set
+            1744: auto # Bow Of Evil
+            490236: auto # Double Badge
+            # 2nd / transcendent: Hunter / Sniper top set
+            18985: auto # Falconer Flute
+            470067: auto # Paradise Boots
+            28321: auto # Falconer Claw
+            28322: auto # Falconer Glove
+            # 2nd / transcendent: Bard / Clown top set
+            28411: auto # Emerald Earrings
+            # 2nd / transcendent: Alchemist top set
+            # 2nd / transcendent: Creator top set
+            # 2nd / transcendent: Gunslinger top set
+            28425: auto # Mercenary Ring Type A
+            # 3rd class, lv 100-174: Ranger - Arrow Storm
+            18164: auto # Royal Bow
+            5898: auto # Autumn Headband
+            450090: auto # Grace Sharp Suit
+            22008: auto # Temporal Dex Boots
+            490145: auto # Ring of Ceryneian
+            24599: auto # Ranger's Booster Shadow Weapon
+            # 3rd class, lv 100-174: Ranger - Aimed Bolt
+            700003: auto # Scarlet Dragon Leather Bow
+            400203: auto # Wolf Officer Hat
+            450091: auto # Grace Aimed Suit
+            470007: auto # Sniping Shoes
+            # 3rd class, lv 100-174: Minstrel - Severe Rainstorm
+            18170: auto # Narcissus Bow
+            400648: auto # Crown of Ashes
+            450092: auto # Grace Severe Suit
+            470098: auto # Jade Crystal Boots
+            490430: auto # Record of Archer 2
+            24600: auto # Minstrel&Wanderer's Booster Shadow Weapon
+            # 3rd class, lv 100-174: Minstrel - Metallic Sound / Reverberation
+            570002: auto # Trumpet Shell
+            450093: auto # Grace Reverb Suit
+            2899: auto # Sound Amplification Device
+            # 3rd class, lv 100-174: Wanderer - Severe Rainstorm
+            5905: auto # Lyrica Hat
+            # 3rd class, lv 100-174: Wanderer - Metallic Sound / Reverberation
+            580002: auto # Barbed Wire Whip
+            # 3rd class, lv 100-174: Shadow Chaser - Triangle Shot
+            18145: auto # Vigilante Bow
+            5208: auto # Rideword Hat
+            5325: auto # Robo Eye
+            450104: auto # Grace Fatal Suit
+            28441: auto # Vigilante Badge
+            24524: auto # Triangle Shadow Armor
+            # 3rd class, lv 100-174: Mechanic - Arm Cannon
+            590002: auto # Meteor Striker
+            460004: auto # Illusion Shield I
+            19189: auto # Racing Cap (Mechanic)
+            450099: auto # Grace Vulcan Armor
+            2996: auto # Upgrade Part - Gun Barrel
+            24473: auto # Arm Shadow Weapon
+            # 3rd class, lv 100-174: Genetic - Cart Cannon
+            13485: auto # Red Lotus Sword
+            19190: auto # Racing Cap (Geneticist)
+            410254: auto # Ancient Morocc Noble Jewelry
+            450100: auto # Grace Cart Cannon Suit
+            32259: auto # Cannon Modifier
+            24563: auto # Cannon Cart Shadow Weapon
+            # 3rd class, lv 100-174: Kagerou / Oboro - Swirling Petal / Kunai
+            13345: auto # Huuma Shuriken Clearness
+            450117: auto # Grace Kunai Suit
+            32262: auto # Rasen Fuma's Orb
+            24622: auto # Kunai Shadow Weapon
+            # 3rd class, lv 100-174: Rebellion - Round Trip
+            32302: auto # Crimson Rose
+            19202: auto # Racing Cap (Gunslinger)
+            450108: auto # Grace Trip Suit
+            28353: auto # Vesper Gear 02
+            24613: auto # Trip Shadow Weapon
+            # 3rd class, lv 100-174: Rebellion - Dragon Tail / Hammer of God / Fire Dance
+            28255: auto # Master Soul Rifle
+            450109: auto # Grace Fire Rain Suit
+            24601: auto # Tail Dragon Shadow Weapon
+            # endgame, lv 175+: Ranger - Arrow Storm
+            700045: auto # Royal Bow-LT
+            19484: auto # Temporal Circlet (Ranger)
+            480504: auto # Royal Payon Cape
+            470329: auto # Ancient Ranger Shoes
+            490609: auto # Document Archer
+            # endgame, lv 175+: Ranger - Aimed Bolt
+            700046: auto # Scarlet Leather Dragon Bow-LT
+            400199: auto # Helm of Faith II (Ranger)
+            450251: auto # Assault Suits
+            480094: auto # Erymanthian Skin
+            490471: auto # Ring of Artemis
+            # endgame, lv 175+: Minstrel - Severe Rainstorm
+            700049: auto # Narcissus Bow-LT
+            18976: auto # Old Minstrel Song's Hat
+            450177: auto # Gray Wolf Suit
+            470269: auto # Jade Crystal Boots-LT
+            490427: auto # Ring of Storm
+            24299: auto # Maestro Shadow Weapon
+            # endgame, lv 175+: Minstrel - Metallic Sound / Reverberation
+            570027: auto # Trumpet Shell-LT
+            19485: auto # Temporal Circlet (Wanderer & Minstrel)
+            450258: auto # Loud Park
+            490141: auto # Metal Pick
+            # endgame, lv 175+: Wanderer - Severe Rainstorm
+            18981: auto # Old Dying Swan
+            24300: auto # Wanderer Shadow Weapon
+            # endgame, lv 175+: Wanderer - Metallic Sound / Reverberation
+            580027: auto # Barbed Wire Whip-LT
+            # endgame, lv 175+: Shadow Chaser - Triangle Shot
+            700018: auto # Patent Royal Bow
+            400192: auto # Helm of Faith II (Shadow Chaser)
+            480427: auto # Biolab Cape (Range)
+            490438: auto # Ring of Unknown Hero (Shadow Chaser)
+            490613: auto # Old Detachment Ring
+            # endgame, lv 175+: Mechanic - Arm Cannon
+            590011: auto # Patent Meteor Striker
+            18974: auto # Old Driver Band(Yellow)
+            450209: auto # Imp Powered Suit
+            470267: auto # Zodiac Boots (Merchant)
+            490607: auto # Document Merchant
+            490239: auto # Record of Merchant
+            # endgame, lv 175+: Genetic - Cart Cannon
+            500013: auto # Patent Red Lotus Sword
+            400233: auto # Helm of Faith (Genetic)
+            490515: auto # Ring of Unknown Hero (Genetic)
+            # endgame, lv 175+: Kagerou / Oboro - Swirling Petal / Kunai
+            650004: auto # Patent Huuma Shuriken Clearness
+            400235: auto # Helm of Faith (Kagerou & Oboro)
+            # endgame, lv 175+: Rebellion - Round Trip
+            800002: auto # Patent Crimson Rose
+            400238: auto # Helm of Faith II (Rebellion)
+            490498: auto # Ring of Unknown Hero (Rebellion)
+            # endgame, lv 175+: Rebellion - Dragon Tail / Hammer of God / Fire Dance
+            810001: auto # Patent Master Soul Rifle
+            400237: auto # Helm of Faith (Rebellion)
+    Rental:
+        note: "Magic and support: Wizard, Sage, Priest, Soul Linker, Oboro magic, Royal Guard Genesis Ray, Super Novice magic and their 3rd/4th classes"
+        items:
+            # 1st class: Mage top set
+            5628: auto # F Pecopeco Hairband
+            19139: auto # Survivor's Orb
+            20903: auto # Short-term Hunting Manteau
+            2907: auto # Bawaya Agimat Tattoo
+            2939: auto # RJC2012 Spell Necklace
+            # 1st class: Acolyte top set
+            19211: auto # Magical Feather
+            2607: auto # Clip
+            28432: auto # Spiritual Ring
+            # 2nd / transcendent: Wizard / High Wizard top set
+            470112: auto # Moaning of Evil Spirits
+            # 2nd / transcendent: Sage / Professor top set
+            5547: auto # RJC Katusa Flower
+            # 2nd / transcendent: Priest / High Priest top set
+            2626: auto # Rosary
+            # 3rd class, lv 100-174: bRO picks: Arch Bishop
+            22225: auto # Shoes of Punishment
+            20966: auto # Temporal Int Manteau
+            28564: auto # Valkyrie Drop
+            490118: auto # Ring of Adoramus
+            19469: auto # Sacred Crown
+            # 3rd class, lv 100-174: Royal Guard - Genesis Ray
+            500003: auto # Light Blade
+            28973: auto # Themis Balance
+            15892: auto # Themis Helm
+            19380: auto # Floating Ball
+            28502: auto # Mob Scarf
+            450089: auto # Grace Genesis Armor
+            480019: auto # Grace Magic Manteau
+            470021: auto # Grace Magic Boots
+            490020: auto # Grace Magic Ring
+            28538: auto # Magician's Gloves
+            # 3rd class, lv 100-174: Warlock - Crimson Rock
+            26168: auto # Crimson Rose Stick
+            28941: auto # Excelion Shield
+            400646: auto # Magic Crown of Ashes
+            450110: auto # Grace Crimson Robe
+            22009: auto # Temporal Int Boots
+            490098: auto # Ring of Pazuzu
+            24595: auto # Warlock's Booster Shadow Weapon
+            # 3rd class, lv 100-174: Warlock - Comet
+            2039: auto # Illusion Wizardry Staff
+            19252: auto # Kardui Ears
+            450226: auto # Four of a Kind
+            490029: auto # Geffenia Ice Magic Tool
+            # 3rd class, lv 100-174: Sorcerer - Psychic Wave
+            26118: auto # Shadow Staff
+            410067: auto # Professor's Mini Glasses
+            420182: auto # Book of Sorcery
+            450112: auto # Grace Psychic Robe
+            490038: auto # Sixth Sense Ring
+            24596: auto # Sorcerer's Booster Shadow Weapon
+            # 3rd class, lv 100-174: Sorcerer - Varetyr Spear
+            26169: auto # Psychic Spear Rod
+            19426: auto # King Of Spirit Circlet
+            450242: auto # Elemental Possession
+            22243: auto # Mamaragan
+            24310: auto # Sorcerer Shadow Shield
+            # 3rd class, lv 100-174: Arch Bishop - Adoramus
+            1631: auto # Holy Stick
+            2115: auto # Valkyrja's Shield
+            24491: auto # Adora Shadow Weapon
+            # 3rd class, lv 100-174: Arch Bishop - Full Support
+            1659: auto # Light of Recovery
+            2162: auto # Bible of Promise(2nd Vol.)
+            5747: auto # Mitra
+            410337: auto # Cherub Coronet
+            15384: auto # Ritual Robe
+            22189: auto # Pilgrim Shoes
+            28430: auto # Arch Bishop Ring
+            24292: auto # Arch Bishop Shadow Weapon
+            # 3rd class, lv 100-174: Soul Reaper - Curse Explosion
+            26154: auto # Spirit Pendulum
+            460077: auto # God-Devouring Demonic Shield
+            19272: auto # Garden of Eden
+            450119: auto # Grace Explosion Robe
+            2715: auto # Skull Ring
+            24658: auto # Evil Curse Shadow Earring
+            # 3rd class, lv 100-174: Soul Reaper - Eswhoo / Espa
+            450118: auto # Grace Eswhoo Robe
+            24655: auto # Es Shadow Weapon
+            # 3rd class, lv 100-174: Kagerou / Oboro - Magic Oboro
+            13078: auto # Mikacheuki
+            460014: auto # Illusion Shield II
+            18539: auto # Skull Cap
+            18676: auto # Hexagon Spectacles
+            28485: auto # Shinobi Sash H
+            24628: auto # First Exploding Draft Shadow Weapon
+            # 3rd class, lv 100-174: Expanded Super Novice - Magic
+            550080: auto # Freedom Stick
+            450126: auto # Grace Super Novice Robe
+            24616: auto # Super Magic Shadow Shield
+            # endgame, lv 175+: Royal Guard - Genesis Ray
+            500038: auto # Light Blade-LT
+            460092: auto # Ancient Prontera Book
+            400200: auto # Helm of Faith (Royal Guard)
+            450128: auto # Automatic Armor Type B
+            480520: auto # Royal Geffen Cape
+            470088: auto # Gray Wolf Shoes
+            490108: auto # Gray Wolf Earring
+            490109: auto # Gray Wolf Necklace
+            24302: auto # Royal Guard Shadow Shield
+            # endgame, lv 175+: Warlock - Crimson Rock
+            26158: auto # Crimson Rose Stick
+            18978: auto # Old Magic Stone Hat
+            470258: auto # Zodiac Boots (Mage)
+            490608: auto # Document Mage
+            490418: auto # Record of Mage 2
+            24296: auto # Warlock Shadow Weapon
+            # endgame, lv 175+: Warlock - Comet
+            640019: auto # Adulter Fides Two-Handed Staff
+            400179: auto # Helm of Faith II (Warlock)
+            450178: auto # Gray Wolf Robe
+            # endgame, lv 175+: Sorcerer - Psychic Wave
+            550045: auto # Shadow Staff-LT
+            19483: auto # Temporal Circlet (Sorcerer)
+            450179: auto # Celine's Dress
+            470192: auto # Fifth Element
+            24297: auto # Sorcerer Shadow Weapon
+            # endgame, lv 175+: Sorcerer - Varetyr Spear
+            26159: auto # Psychic Spear Rod
+            18980: auto # Old Wind Whisper
+            # endgame, lv 175+: Arch Bishop - Adoramus
+            550021: auto # Deus Ex Machina
+            400189: auto # Helm of Faith (Archbishop)
+            420187: auto # Sacred Lapel
+            450291: auto # Amazing Grace
+            470266: auto # Mythical Moonlight Paw
+            490488: auto # Ring of Unknown Hero (Archbishop)
+            24883: auto # Full Spell Shadow Armor
+            # endgame, lv 175+: Arch Bishop - Full Support
+            16099: auto # Rubber Hammer
+            460023: auto # Shield of Phoenix
+            18972: auto # Old Mitra
+            480224: auto # Shining Priest's Cloak
+            490244: auto # Cardinal Ring
+            # endgame, lv 175+: Soul Reaper - Curse Explosion
+            400697: auto # Full Faith Crown
+            32219: auto # Asteria's Ring
+            # endgame, lv 175+: Soul Reaper - Eswhoo / Espa
+            400239: auto # Helm of Faith (Soul Reaper)
+            # endgame, lv 175+: Kagerou / Oboro - Magic Oboro
+            510066: auto # Kuroiro-OSAD
+            19489: auto # Temporal Circlet (Oboro)
+            480021: auto # Automatic Engine Wing Type B
+            470023: auto # Automatic Leg Type B
+            # endgame, lv 175+: Expanded Super Novice - Magic
+            550081: auto # Patent Freedom Stick
+            # (brother) Arch Bishop shadow set
+            24305: auto # Archbishop Shadow Shield
+            24492: auto # Adora Shadow Pendant
+            24493: auto # Adora Shadow Earring
+            24260: auto # Priest Shadow Shoes
+            24273: auto # Priest Shadow Armor
+    Permanent:
+        note: "MVP Cards"
+        items:
+            4302: 300 # Tao Gunka Card
+            4131: 300 # Moonlight Flower Card
+            4143: 300 # Orc Hero Card
+            4135: 200 # Orc Lord Card
+            4146: 200 # Maya Card
+            4147: 250 # Baphomet Card
+            4142: 200 # Doppelganger Card
+            4144: 200 # Osiris Card
+            4137: 200 # Drake Card
+            4134: 200 # Dracula Card
+            4128: 250 # Golden Thief Bug Card
+            4121: 200 # Phreeoni Card
+            4123: 200 # Eddga Card
+            4132: 200 # Mistress Card
+            4148: 200 # Pharaoh Card
+            4145: 200 # Berzebub Card
+            4168: 200 # Dark Lord Card
+            4276: 200 # Lord of The Dead Card
+            4305: 200 # Turtle General Card
+            4318: 200 # Stormy Knight Card
+            4324: 200 # Hatii Card
+            4403: 200 # Kiel-D-01 Card
+            4374: 200 # Vesper Card
+            4419: 200 # Ktullanux Card
+            4425: 200 # Atroce Card
+            4399: 250 # Memory of Thanatos Card
+            4386: 200 # Detardeurus Card
+            4407: 250 # Randgris Card
+            4408: 200 # Gloom Under Night Card
+            4430: 200 # Ifrit Card
+            4441: 200 # Fallen Bishop Hibram Card
+            4372: 200 # White Lady Card
+            4376: 200 # Lady Tanee Card
+            4236: 200 # Amon Ra Card
+            4342: 200 # RSX-0806 Card
+            4263: 200 # Samurai Spector Card
+            4330: 200 # Evil Snake Lord Card
+            4352: 200 # General Egnigem Cenia Card
+    Scrolls:
+        note: "Refine: safe certificates (Refine Master, prontera 184,177), blessing, ores, enchant stones, shadow gear refining (Shadow Blacksmith, prontera 187,177)"
+        items:
+            6871: 300 # Safe to 14 Weapon Certificate
+            6877: 300 # Safe to 14 Armor Certificate
+            6864: 1500 # Safe to 19 Weapon Certificate
+            6865: 1500 # Safe to 19 Armor Certificate
+            6635: 20 # Blacksmith Blessing
+            6241: 15 # HD Elunium
+            6240: 15 # HD Oridecon
+            6225: 15 # HD Carnium
+            6226: 15 # HD Bradium
+            14629: 30 # Costume Enchant Stone Box
+            14681: 30 # Costume Enchant Stone Box 2
+            14695: 30 # Costume Enchant Stone Box 3
+            # shadow gear (Shadow Blacksmith next to the Refine Master): ores, and hammers used from the inventory
+            7619: 10 # Enriched Elunium
+            7620: 10 # Enriched Oridecon
+            23926: 120 # Shadow 9 Refine Hammer: shadow item up to +8 -> +9, no risk
+            23436: 40 # Shadow Refine Hammer: shadow item up to +9 -> random +1..+10
+            # newest gear ores: level-2 armor (Etherium) and level-5 weapons (Etherdeocon)
+            1000331: 15 # Etherium
+            1000333: 25 # Enriched Etherium
+            1000335: 25 # HD Etherium
+            1000332: 15 # Etherdeocon
+            1000334: 25 # Enriched Etherdeocon
+            1000336: 25 # HD Etherdeocon
+            # Temporal Boots: Old Glast Heim NPCs (glast_01 210,273) buy, upgrade and slot them with Temporal Crystals,
+            # and add bonuses with Coagulated Spells
+            6607: 5 # Temporal Crystal
+            6608: 3 # Coagulated Spell
+    Consumables:
+        note: "Items & Pets: event tickets, levelling, speed, stat foods, acid packs, supplies, homunculus, mercenaries, pets (eggs, food, accessories)"
+        items:
+            Special_Maps_Ticket: 1 # Ingresso dos Mapas Especiais
+            Cheffenia_Pass: 1 # Passe para Cheffenia
+            12208: 5 # Battle Manual
+            14545: 15 # Field Manual 300%
+            14606: 5 # JOB Battle Manual
+            12210: 5 # Bubble Gum
+            12212: 1 # Giant Fly Wing
+            7621: 5 # Token Of Siegfried
+            12214: 3 # Convex Mirror
+            12213: 30 # Neuralizer
+            12211: 1 # Kafra Card
+            12016: 2 # Speed Potion
+            12414: 3 # Guarana Candy
+            656: 2 # Awakening Potion
+            657: 3 # Berserk Potion
+            14616: 5 # Bar Cookie Of Strength
+            14618: 5 # Bar Cookie Of Agility
+            14617: 5 # Bar Cookie Of Vitality
+            14619: 5 # Bar Cookie Of Intelligence
+            14620: 5 # Bar Cookie Of Dexterity
+            14621: 5 # Bar Cookie Of Lucky
+            17070: 1 # Acidbomb Box500
+            # weapon element for 20 minutes (Ghost: custom, the game has no Ghost one)
+            12114: 2 # Elemental Converter (Fire)
+            12115: 2 # Elemental Converter (Water)
+            12116: 2 # Elemental Converter (Earth)
+            12117: 2 # Elemental Converter (Wind)
+            12020: 2 # Cursed Water (Dark)
+            990011: 3 # Ghost Converter (Ghost: x2 vs Ghost monsters like Beelzebub)
+            17069: 1 # Acidbomb Box100
+            607: 3 # Yggdrasil Berry
+            608: 2 # Yggdrasil Seed
+            14232: 25 # Yggdrasil Berry 10 Box
+            717: 1 # Blue Gemstone
+            716: 1 # Red Gemstone
+            715: 1 # Yellow Gemstone
+            12221: 2 # Megaphone
+            7142: 10 # Embryo
+            12040: 30 # Stone of Sage
+            100371: 3 # Homunculus Nutritional Supplement
+            12159: 5 # Bowman Scroll 7
+            12160: 8 # Bowman Scroll 8
+            12161: 10 # Bowman Scroll 9
+            12162: 15 # Bowman Scroll 10
+            12170: 8 # Fencer Scroll 8
+            12171: 10 # Fencer Scroll 9
+            12172: 15 # Fencer Scroll 10
+            12180: 8 # Spearman Scroll 8
+            12181: 10 # Spearman Scroll 9
+            12182: 15 # Spearman Scroll 10
+            # pets: eggs (already tamed), food, accessories
+            9024: 80 # Bapho Jr. Egg
+            518: 1 # Honey
+            10001: 20 # Skull Helm
+            9023: 60 # Deviruchi Egg
+            711: 1 # Shoot
+            10004: 20 # Pacifier
+            9055: 80 # Succubus Egg
+            6113: 1 # Vital Flower
+            10037: 20 # Black Butterfly Mask
+            9052: 80 # Incubus Egg
+            6110: 1 # Vital Flower
+            10034: 20 # Masked Ball
+            9020: 60 # Sohee Egg
+            10016: 20 # Golden Bell
+            9021: 60 # Isis Egg
+            10006: 20 # Queen's Hair Ornament
+            9027: 60 # Alice Egg
+            504: 1 # White Potion
+            9042: 60 # Loli Ruri Egg
+            6097: 1 # Pumpkin Pie
+            10024: 20 # Fashion Glasses
+            9049: 60 # Dullahan Egg
+            6107: 1 # Sunset On The Rock
+            10031: 20 # Ring Of Death
+            9054: 60 # Nightmare Terror Egg
+            6112: 1 # Fresh Plant
+            10036: 20 # Horn Of Hell
+            9050: 60 # Medusa Egg
+            6108: 1 # Apple Pudding
+            10032: 20 # Queen's Coronet
+            537: 1 # Pet Food
+            9112: 60 # Moonlight Egg
+            25377: 2 # Luxurious Pet Food
+            # more pets (favourites): egg, food, accessory
+            9088: 100 # Angeling Egg
+            9072: 120 # Orc Hero Egg
+            9073: 120 # Orc Lord Egg
+            9089: 80 # Am Mut Egg
+            9071: 80 # Grand Peco Peco Egg
+            9090: 80 # Little Isis Egg
+            9095: 100 # Nine Tail Egg
+            25231: 2 # Suspicious Bottle
+            9096: 80 # Cat o Nine Tail Egg
+            9099: 80 # Teddy Bear Egg
+            25233: 2 # Cotton Tufts
+            9041: 60 # Leaf Cat Egg
+            6096: 1 # Fish With Blue Back
+            10023: 20 # Green Jewel Bag
+            9043: 60 # Marionette Egg
+            6098: 1 # Small Snow Flower
+            10025: 20 # Hairband Of Stars
+            9045: 60 # Whisper Egg
+            6100: 1 # Damp Darkness
+            10027: 20 # Pet Soul Ring
+            9056: 80 # Imp Egg
+            6114: 1 # Flame Gemstone
+            10038: 20 # Horn Barrier
+            9053: 60 # Golem Egg
+            6111: 1 # Mystic Stone
+            10035: 20 # Spring
+            9187: 100 # Skeggiold Egg
+            6105: 1 # Morning Dew
+    Other:
+        note: "Visuals: ride (Reins Of Mount: the mount matches your class) and costumes (look only, no stats)"
+        items:
+            12622: 50 # Reins Of Mount
+            20509: 60 # Costume Wings of Uriel
+            31737: 60 # Costume Lucifer's Wings
+            20593: 60 # Costume: Ice Wings
+            20514: 60 # Costume Thanatos Sword
+            480107: 60 # Costume Kings Twin Sword
+            20507: 40 # Costume Poring Bag
+            20534: 40 # Costume Big White Cat
+            20598: 40 # Costume Big Black Cat
+            20584: 40 # Costume Fox Tail
+            20234: 60 # Costume Baphomet Hat
+            19836: 60 # Costume Majestic Goat
+            19840: 60 # Costume Hat of the Sun God
+            19546: 50 # Costume Valkyrie Helm
+            19587: 50 # Costume King Poring Hat
+            19782: 50 # Costume Refined Drooping Cat
+            19824: 50 # Costume Evil Druid Hat
+            19639: 40 # Costume Sakkat
+            19662: 40 # Costume Magician Hat
+            20093: 40 # Costume Wizard Hat
+            19620: 40 # Costume Detective Hat
+            20347: 40 # Costume Poring Pirate Hat
+            19843: 40 # Costume Kitty Band
+            19810: 40 # Costume Ifrit Ear
+            19550: 20 # Costume Blush
+            # back: wings
+            # head
+            19645: 60 # Costume Phoenix Crown
+            19751: 60 # Costume Light Darkness Crown
+            19786: 60 # Costume Crown of Mistress
+            19574: 60 # Costume Lord of Death
+            19575: 60 # Costume Ascension Black Dragon
+            19741: 50 # Costume Majestic Devil Horns
+            19808: 50 # Costume Blazing Sun
+            19642: 50 # Costume Moonlight Flower Hat
+            19903: 40 # Costume Witch's Hat
+            19618: 40 # Costume Kitsune Mask
+            19629: 40 # Costume Tiara
+            # face/mouth effects
+            20285: 40 # Costume Dancing Fallen Sakura
+            20497: 40 # Costume Umbala Spirit
+            5914: 30 # Costume Flutter Butterfly
+            # favourites and rare classics: head
+            20302: 60 # Costume Beelzebub Crown
+            20454: 60 # Costume Crown of Ancient Queen
+            19753: 60 # Costume Celestial Hat
+            20316: 60 # Costume Seraph Wing Helm
+            20386: 60 # Costume Victory Wing Helm
+            19731: 50 # Costume Evolved Evil Wing
+            20079: 50 # Costume Forgotten Angel Wing
+            31183: 50 # Costume Blessing of Fallen Angel
+            31201: 50 # Costume Royal Rabbit Crown
+            19848: 40 # Costume Angeling Hat
+            20236: 40 # Costume Arc Angeling Hat
+            19802: 40 # Costume Lazy Ninetail
+            19818: 40 # Costume Drooping Morooc Minion
+            19927: 40 # Costume Drooping Gray Kitty
+            19878: 40 # Costume Evolved Drooping Bunny
+            19842: 40 # Costume Puppy Hat
+            20178: 40 # Costume Puppy Love
+            20191: 40 # Costume Black Cat Ears Beret
+            19585: 40 # Costume Feather Beret
+            19720: 40 # Costume Romantic Gent
+            19537: 40 # Costume Gryphon Hat
+            19835: 40 # Costume Lif Doll Hat
+            19832: 30 # Costume Poring Hat
+            # favourites: face
+            20124: 40 # Costume Masquerade
+            20166: 40 # Costume Hockey Mask
+            19615: 40 # Costume Loki Mask
+            19924: 40 # Costume Odin Mask
+            20404: 40 # Costume Blessing of Angel
+            # rare wings and back
+            20737: 70 # Costume Kirin Wing
+            20746: 70 # Costume Rudra Wings
+            20765: 70 # Costume Archangel Wing
+            20764: 70 # Costume Fallen Angel Wing
+            20607: 70 # Costume Baldr Wing
+            20763: 50 # Costume Amistr Bag
+            # middle: masks, eyes, ears
+            20215: 40 # Costume Black Devil Mask
+            20430: 40 # Costume Loyal Servant of Devil Morocc
+            19563: 40 # Costume Dragon Arhat Mask
+            31118: 30 # Costume Scratch Mask
+            31106: 30 # Costume Eyepatch of Peace
+            31107: 30 # Costume Eyepatch of Prosperity
+            31120: 40 # Costume Vampire Familiar
+            31122: 30 # Costume Bloody Stop Bandage
+            31133: 30 # Costume Gambler Seal
+            31155: 30 # Costume Spinning Eyes
+            31167: 30 # Costume Hanging Black Lunatic Ears
+            31186: 40 # Costume Black Cat
+            31187: 40 # Costume War Princess Ribbon
+            31234: 40 # Costume Persica
+            31235: 40 # Costume Large Ribbon Muffler (Middle)
+            31243: 30 # Costume Tongue Mask (Middle)
+            31250: 40 # Costume Wonderful Beast Ears
+            31258: 30 # Costume Glowing White Blush
+            # lower: mouth, neck, back
+            31029: 30 # Costume Pig Nose
+            31045: 30 # Costume Blue Rear Ribbon
+            31055: 30 # Costume Poring Soap Pipe
+            31057: 40 # Costume: Eremes' Scarf (Black)
+            31087: 30 # Costume Dwarf Beard
+            31093: 40 # Costume: Lamp of Fairy
+            31121: 30 # Costume Stall Of Bat
+            31134: 40 # Costume Talkactive Parrot
+            31142: 40 # Costume Prison of Time
+            31152: 30 # Costume Piamette's Red Bow Tie
+            31162: 30 # Costume Shaving Foam
+            31164: 30 # Costume Brown Stole
+            31178: 40 # Costume Fire Muffler
+            31181: 30 # Costume Necklace Rosary
+            31189: 40 # Costume Red Cat Ears Cape
+            31199: 30 # Costume Weird Beard
+            31237: 30 # Costume Pale Yellow Ribbon (Lower)
+            31241: 40 # Costume Burning Sun (Lower)
+            31251: 30 # Costume Cat's Mouth
+            31257: 30 # Costume Poring Jars Of Clay
+    Sale:
+        note: "Keep empty: the client shows Sale items only during a timed sale (@sale), so nothing here is visible"
+        items: {}

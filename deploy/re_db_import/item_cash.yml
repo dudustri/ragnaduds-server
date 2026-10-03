@@ -5,123 +5,110 @@ Header:
   Version: 1
 
 Body:
-  # Beginner: Novice and 1st class rush gear (lv 1-60)
+  # Popular: best picks for every class + featured builds
   - Tab: New
     Items:
-      - Item: S_1Para_Weapon    # Paradise Shadow Weapon (24687)
-        Price: 40
-      - Item: S_1Para_Shield    # Paradise Shadow Shield (24688)
-        Price: 40
-      - Item: S_1Para_Armor    # Paradise Shadow Armor (24689)
-        Price: 40
-      - Item: S_1Para_Shoes    # Paradise Shadow Shoes (24690)
-        Price: 40
-      - Item: S_1Para_Earing    # Paradise Shadow Earring (24691)
-        Price: 40
-      - Item: S_1Para_Pendant    # Paradise Shadow Pendant (24692)
-        Price: 40
-      - Item: S_Beginner_Shoes    # Beginner Shadow Shoes (24210)
-        Price: 40
-      - Item: S_Beginner_Shield    # Beginner Shadow Shield (24211)
-        Price: 40
-      - Item: 1Para_Cap_A    # Paradise Cap (400137)
-        Price: 50
-      - Item: 1Para_Cap_B    # Paradise Hat (400138)
-        Price: 50
-      - Item: 1Para_Armor_A    # Paradise Suit (450183)
-        Price: 50
-      - Item: 1Para_Armor_B    # Paradise Robe (450184)
-        Price: 50
-      - Item: 1Para_Boots_A    # Paradise Boots (470067)
-        Price: 100
-      - Item: 1Para_Boots_B    # Paradise Shoes (470068)
-        Price: 100
-      - Item: 1Para_Manteau_A    # Paradise Manteau (480103)
-        Price: 100
-      - Item: 1Para_Manteau_B    # Paradise Muffler (480104)
-        Price: 50
-      - Item: 1Para_Acc_L_A    # Paradise Ring (490122)
-        Price: 50
-      - Item: 1Para_Acc_R_A    # Paradise Gloves (490123)
-        Price: 50
-      - Item: 1Para_Acc_L_B    # Paradise Magic Ring (490124)
-        Price: 50
-      - Item: 1Para_Acc_R_B    # Paradise Necklace (490125)
-        Price: 50
-      - Item: 1Para_Sword    # Paradise Sword (500032)
-        Price: 50
-      - Item: 1Para_Dagger    # Paradise Dagger (510035)
-        Price: 50
-      - Item: 1Para_Axe    # Paradise Axe (520010)
-        Price: 50
-      - Item: 1Para_Rod    # Paradise Staff (550032)
-        Price: 150
-      - Item: 1Para_Mace    # Paradise Mace (590025)
-        Price: 50
-      - Item: 1Para_Bow    # Paradise Bow (700036)
-        Price: 50
-      - Item: 1Para_Revolver    # Paradise Revolver (800004)
-        Price: 50
+      - Item: Duds_Ban_Hammer    # The Duds Ban Hammer (990010)
+        Price: 2000000000
+      - Item: CatharinaPawnBrad60    # Catherina Von Blood (19163)
+        Price: 200
       - Item: Fallen_Angel_Wing    # Fallen Angel Wing (2589)
-        Price: 100
-      - Item: Steam_Starter_Ring    # Steam Starter Ring (28324)
         Price: 100
       - Item: Mad_Bunny_K_    # Mad Bunny (28902)
         Price: 100
-      - Item: CatharinaPawnBrad60    # Catherina Von Blood (19163)
+      - Item: Steam_Starter_Ring    # Steam Starter Ring (28324)
+        Price: 100
+      - Item: Arbitrator_Shawl_US    # Arbitrator Shawl (420246)
+        Price: 100
+      - Item: Half_Brynhild    # Half Brynhild (15023)
+        Price: 100
+      - Item: Pollux_Shoes_J    # Pollux Shoes (2400)
+        Price: 100
+      - Item: Sleipnir    # Sleipnir (2410)
+        Price: 100
+      - Item: Brysinggamen    # Brisingamen (2630)
+        Price: 100
+      - Item: Light_Of_World_TW    # Light of the World Asprika (480115)
+        Price: 100
+      - Item: 2021RTC_Headset_1_TW    # 2021RTC Champion Gaming Headset (410100)
+        Price: 100
+      - Item: Abyss_Dress_BR    # Abyssal Dress (15254)
+        Price: 100
+      - Item: Temporal_Agi_Boots_    # Temporal Agi Boots (22010)
+        Price: 100
+      - Item: Temporal_Luk_Boots_    # Temporal Luk Boots (22011)
+        Price: 100
+      - Item: Magaleta_Card    # Margaretha Sorin Card (4364)
+        Price: 100
+      - Item: Real_Magaleta_Card    # True Margaretha Sorin Card (4685)
         Price: 200
-      - Item: Novice_Breast    # Novice Breastplate (2340)
-        Price: 30
-      - Item: Novice_Shield    # Novice Shield (2113)
-        Price: 30
-      - Item: Novice_Shoes    # Novice Shoes (2416)
-        Price: 30
-      - Item: Novice_Manteau    # Novice Manteau (2512)
-        Price: 30
-      - Item: Super_Novice_Hat    # Super Novice Hat (5112)
-        Price: 30
-      - Item: Novice_Armlet    # Novice Armlet (2628)
-        Price: 30
-      - Item: S_Rookie_Shoes    # Rookie Shadow Shoes (24212)
+      - Item: Gothic_HW_TW_LT    # Fallen Wing Hairpin-LT (400433)
+        Price: 100
+      - Item: H_B_Princess_Meer_Card    # Half Blood Princess Meer Card (300138)
+        Price: 300
+      - Item: SeraphimCoronet    # Seraphim Coronet (19138)
+        Price: 100
+      - Item: Chrome_Plate_Armor    # Chrome Metal Plate (450220)
+        Price: 100
+      - Item: Reginleif_Card    # Reginleif Card (300013)
+        Price: 300
+      - Item: Cancer_Axe_J    # Cancer Axe (1335)
+        Price: 150
+      - Item: ILL_Kraken_Card    # Abysmal Kraken Card (300151)
+        Price: 250
+      - Item: Alice_Pillow_US    # Alice Body Pillow (460084)
+        Price: 100
+      - Item: E_Rgan_Guardian_Card    # Jormungandr Sanctuary Guardian Card (300465)
+        Price: 150
+      - Item: Snow_Angel_Card    # Snowstorm Angel Card (300473)
+        Price: 250
+      - Item: Temporal_STR_Boots_ROC_    # Temporal Boots Str (470167)
+        Price: 100
+      - Item: Temporal_Dex_Boots_ROC_    # Temporal Boots Dex (470166)
+        Price: 100
+      - Item: MD_Geffen_Blut_Card    # Arena Blut Hase Card (300184)
+        Price: 100
+      - Item: Chemical_Glove_ROC    # Chemical Glove (490475)
+        Price: 100
+      - Item: L_Leizi_Card    # Secret Wing Leizi (Sign Stamp) Card (300502)
+        Price: 200
+      - Item: S_Hasty_Weapon    # Hasty Shadow Weapon (24439)
         Price: 60
-      - Item: S_Rookie_Shield    # Rookie Shadow Shield (24213)
+      - Item: S_Reload_Shield    # Reload Shadow Shield (24244)
         Price: 60
-      - Item: Para_Team_Armor    # Paradise Uniform IV (15031)
-        Price: 80
-      - Item: Para_Team_Boots4    # Eden Team Boots IV (2473)
-        Price: 80
-      - Item: Para_Team_Manteau2    # Eden Team Manteau II (2571)
-        Price: 80
-      - Item: Para_Team_Hat2    # Eden Team Hat II (18514)
-        Price: 80
-      - Item: P_Slayer3    # Eden Slayer III (1197)
-        Price: 80
-      - Item: P_Katar1    # Eden Katar I (1289)
-        Price: 80
-      - Item: P_Two_Handed_Axe1    # Eden Two-Handed Axe I (1391)
-        Price: 80
-      - Item: P_Sphere1    # Eden Spear I (1434)
-        Price: 80
-      - Item: P_Dic1    # Eden Book I (1583)
-        Price: 80
-      - Item: P_Staff3    # Eden Staff III (1658)
-        Price: 80
-      - Item: P_Knuckle1    # Eden Knuckle I (1831)
-        Price: 80
-      - Item: P_String_Inst1    # Eden Guitar I (1931)
-        Price: 80
-      - Item: P_Tail1    # Eden Tail I (1986)
-        Price: 80
-      - Item: P_Dagger3    # Eden Dagger III (13066)
-        Price: 80
-      - Item: P_Revolver3    # Eden Revolver III (13114)
-        Price: 80
-      - Item: P_Saber3    # Eden Saber III (13434)
-        Price: 80
-      - Item: P_Mace3    # Eden Mace III (16014)
-        Price: 80
-      - Item: P_Bow3    # Eden Bow III (18106)
-        Price: 80
+      - Item: S_KingbirdAncient_Armor    # Kingbird Ancient Shadow Armor (24401)
+        Price: 60
+      - Item: S_Reload_Shoes    # Reload Shadow Shoes (24243)
+        Price: 60
+      - Item: S_AllMighty_Earring    # Almighty Shadow Earring (24339)
+        Price: 60
+      - Item: S_AllMighty_Pendant    # Almighty Shadow Pendant (24340)
+        Price: 60
+      - Item: aegis_400676    # Flaward Hat (400676)
+        Price: 100
+      - Item: lunar_eclipse_Armor    # Old Eclipse Outfit (15375)
+        Price: 100
+      - Item: Temporal_Str_Boots_    # Temporal Str Boots (22006)
+        Price: 100
+      - Item: Fake_Alloy_Pot_LT    # Fake Alloy Pot-LT (460066)
+        Price: 200
+      - Item: AC_B_Club    # Acid Cannon Booster Club (590009)
+        Price: 300
+      - Item: Sealed_Drake_Card    # Sealed Drake Card (4496)
+        Price: 300
+      - Item: Estal_J    # Estal (32355)
+        Price: 300
+      - Item: Ein_1HAXE    # Grinder Axe (1334)
+        Price: 300
+      - Item: Jejecap_JP    # Jeje Cap (19453)
+        Price: 200
+      - Item: Fake_Alloy_Pot    # Bionic Aluminum Planter (460030)
+        Price: 200
+      - Item: Sword_Of_Bluefire_LT    # Red Lotus Sword-LT (500039)
+        Price: 900
+  # Melee: swords, axes, maces, katars, knuckles, spears - Knight, Crusader, Blacksmith, Assassin, Rogue, Monk, Ninja, Star Gladiator and their 3rd/4th classes
+  - Tab: Hot
+    Items:
       - Item: Cutlas_C    # Cutlus (13402)
         Price: 150
       - Item: Mad_Bunny_K    # Cursed Mad Bunny (28901)
@@ -130,39 +117,9 @@ Body:
         Price: 100
       - Item: Small_Horn_Of_Devil    # Small Devil Horns (18503)
         Price: 100
-      - Item: Arbitrator_Shawl_US    # Arbitrator Shawl (420246)
-        Price: 100
-      - Item: Half_Brynhild    # Half Brynhild (15023)
-        Price: 100
-      - Item: Pollux_Shoes_J    # Pollux Shoes (2400)
-        Price: 100
       - Item: Half_Megin    # Half Megingjard (2856)
         Price: 100
       - Item: Bakonawa_Tattoo    # Bakunawa Agimat Tattoo (2910)
-        Price: 100
-      - Item: Bloody_Knight_Shield__    # Purified Knight's Shield (28946)
-        Price: 100
-      - Item: F_Pecopeco_Hairband    # F Pecopeco Hairband (5628)
-        Price: 100
-      - Item: SurviveOrb    # Survivor's Orb (19139)
-        Price: 100
-      - Item: R_Hunting_Manteau    # Short-term Hunting Manteau (20903)
-        Price: 100
-      - Item: Buwaya_Tattoo    # Bawaya Agimat Tattoo (2907)
-        Price: 100
-      - Item: RJC_Spell    # RJC2012 Spell Necklace (2939)
-        Price: 100
-      - Item: Bow_Of_Evil    # Bow Of Evil (1744)
-        Price: 150
-      - Item: Double_Badge_ROC    # Double Badge (490236)
-        Price: 100
-      - Item: Badge_Of_Order_Grace    # Badge Of Order Grace (5825)
-        Price: 100
-      - Item: Magical_Feather_K    # Magical Feather (19211)
-        Price: 100
-      - Item: Clip    # Clip (2607)
-        Price: 100
-      - Item: Spiritual_Ring_    # Spiritual Ring (28432)
         Price: 100
       - Item: Mace_Of_Madness    # Mace Of Madness (1547)
         Price: 150
@@ -170,110 +127,13 @@ Body:
         Price: 100
       - Item: Arquien's_Necklace    # Arquien's Necklace (28429)
         Price: 100
-  # 2nd Class: 2nd / transcendent / expanded class full sets (lv 45-99)
-  - Tab: Hot
-    Items:
-      - Item: 2Para_Sword_CR    # Paradise Crusader Sword (500033)
-        Price: 150
-      - Item: 2Para_Sword_AM    # Paradise Alchemist Sword (500034)
-        Price: 120
-      - Item: 2Para_Sword_NV    # Paradise Super Novice Sword (500035)
-        Price: 120
-      - Item: 2Para_Dagger_RG    # Paradise Rogue Dagger (510036)
-        Price: 150
-      - Item: 2Para_Dagger_SL    # Paradise Soul Linker Dagger (510037)
-        Price: 120
-      - Item: 2Para_Axe_BS    # Paradise Blacksmith Axe (520011)
-        Price: 150
-      - Item: 2Para_Spear_CR    # Paradise Crusader Spear (530017)
-        Price: 120
-      - Item: 2Para_Book1_SA    # Paradise Sage Magic Book (540027)
-        Price: 150
-      - Item: 2Para_Book2_SA    # Paradise Sage Spellbook (540028)
-        Price: 120
-      - Item: 2Para_Book1_SG    # Paradise Taekwon Martial Arts Book (540029)
-        Price: 150
-      - Item: 2Para_Book2_SG    # Paradise Taekwon Power Book (540030)
-        Price: 120
-      - Item: 2Para_Staff_WZ    # Paradise Wizard Staff (550034)
-        Price: 150
-      - Item: 2Para_Wand_WZ    # Paradise Wizard Wand (550035)
-        Price: 120
-      - Item: 2Para_Rod_PR    # Paradise Priest Staff (550036)
-        Price: 120
-      - Item: 2Para_Rod_SL    # Paradise Soul Linker Staff (550037)
-        Price: 150
-      - Item: 2Para_Rod_NV    # Paradise Super Novice Staff (550040)
-        Price: 150
-      - Item: 2Para_Knuckle_MO    # Paradise Monk Knuckles (560022)
-        Price: 150
-      - Item: 2Para_Claw_MO    # Paradise Monk Claws (560023)
-        Price: 120
-      - Item: 2Para_Violin_BA    # Paradise Bard Violin (570021)
-        Price: 150
-      - Item: 2Para_Rope_DC    # Paradise Dancer Rope (580021)
-        Price: 150
-      - Item: 2Para_Mace_AM    # Paradise Alchemist Mace (590026)
-        Price: 150
-      - Item: 2Para_Mace_PR    # Paradise Priest Mace (590027)
-        Price: 120
-      - Item: 2Para_T_Sword_KN    # Paradise Knight Two-Handed Sword (600020)
-        Price: 120
-      - Item: 2Para_Katar1_AS    # Paradise Assassin Chakram (610024)
-        Price: 120
-      - Item: 2Para_Katar2_AS    # Paradise Assassin Katar (610025)
-        Price: 150
-      - Item: 2Para_T_Axe_BS    # Paradise Blacksmith Two-Handed Axe (620011)
-        Price: 120
-      - Item: 2Para_Lance_KN    # Paradise Knight Lance (630014)
-        Price: 120
-      - Item: 2Para_Humma1_NJ    # Paradise Ninja Punishment Shuriken (650010)
-        Price: 150
-      - Item: 2Para_Humma2_NJ    # Paradise Ninja Crucifixion Shuriken (650011)
-        Price: 120
-      - Item: 2Para_Bow_RG    # Paradise Rogue Bow (700037)
-        Price: 120
-      - Item: 2Para_Bow1_HT    # Paradise Hunter Bow (700038)
-        Price: 120
-      - Item: 2Para_Bow2_HT    # Paradise Hunter Crossbow (700039)
-        Price: 150
-      - Item: 2Para_Bow_BD    # Paradise Bard&Dancer Bow (700040)
-        Price: 120
-      - Item: 2Para_Revolver_GS    # Paradise Gunslinger Revolver (800005)
-        Price: 150
-      - Item: 2Para_Rifle_GS    # Paradise Gunslinger Rifle (810003)
-        Price: 120
-      - Item: Sleipnir    # Sleipnir (2410)
-        Price: 100
-      - Item: Brysinggamen    # Brisingamen (2630)
-        Price: 100
-      - Item: Asprika    # Asprika (2541)
-        Price: 100
-      - Item: Holy_Stick    # Holy Stick (1631)
-        Price: 150
-      - Item: Exorcism_Bible    # Exorcism Bible (2129)
-        Price: 100
-      - Item: Abyss_Dress_BR    # Abyssal Dress (15254)
-        Price: 100
-      - Item: Star_Eyepatch_JP_    # Star Eyepatch (19444)
-        Price: 150
-      - Item: Nergal_Shoes    # Fire Thunder Great Boots (22132)
-        Price: 150
-      - Item: Awakening_Nergal_Shoes    # Awakened Fire Thunder Great Boots (470047)
-        Price: 200
       - Item: Veteran_Sword    # Veteran Sword (1188)
         Price: 150
       - Item: aegis_400512    # Hat of Desert (400512)
         Price: 100
-      - Item: Small_Horn_Of_Devil    # Small Devil Horns (18503)
-        Price: 100
-      - Item: Arbitrator_Shawl_US    # Arbitrator Shawl (420246)
-        Price: 100
       - Item: Brynhild    # Brynhild (2383)
         Price: 100
       - Item: Time_Overload_Hood    # Temporal Transcendence Manteau (20939)
-        Price: 100
-      - Item: Pollux_Shoes_J    # Pollux Shoes (2400)
         Price: 100
       - Item: Kenshi_Gauntlet_ROC    # Kenshi Gauntlet (490282)
         Price: 100
@@ -281,79 +141,24 @@ Body:
         Price: 100
       - Item: Bloody_Knight_Shield__    # Purified Knight's Shield (28946)
         Price: 100
-      - Item: RWC_Champ_Crown_Blue    # RWC Champ Crown Second Place (18780)
-        Price: 100
       - Item: Imperial_Feather    # Imperial Feather (18823)
         Price: 100
       - Item: Imperial_Ring    # Imperial Ring (28372)
-        Price: 100
-      - Item: F_Pecopeco_Hairband    # F Pecopeco Hairband (5628)
-        Price: 100
-      - Item: SurviveOrb    # Survivor's Orb (19139)
-        Price: 100
-      - Item: Moaning_of_EvilSpirits    # Moaning of Evil Spirits (470112)
-        Price: 100
-      - Item: Buwaya_Tattoo    # Bawaya Agimat Tattoo (2907)
-        Price: 100
-      - Item: RJC_Spell    # RJC2012 Spell Necklace (2939)
-        Price: 100
-      - Item: RJC_Katusa    # RJC Katusa Flower (5547)
-        Price: 100
-      - Item: Falconer_Flute    # Falconer Flute (18985)
-        Price: 100
-      - Item: Fallen_Angel_Wing    # Fallen Angel Wing (2589)
-        Price: 100
-      - Item: 1Para_Boots_A    # Paradise Boots (470067)
-        Price: 100
-      - Item: Falconer_Claw    # Falconer Claw (28321)
-        Price: 100
-      - Item: Falconer_Glove    # Falconer Glove (28322)
-        Price: 100
-      - Item: Emerald_Earring    # Emerald Earrings (28411)
-        Price: 100
-      - Item: Rosary_    # Rosary (2626)
-        Price: 100
-      - Item: Spiritual_Ring_    # Spiritual Ring (28432)
         Price: 100
       - Item: aegis_490399    # Boxer Glove (490399)
         Price: 100
       - Item: Magingiorde    # Megingjard (2629)
         Price: 100
-      - Item: Mad_Bunny_K    # Cursed Mad Bunny (28901)
-        Price: 100
       - Item: Shadow_Ring    # Shadow Ring (28379)
-        Price: 100
-      - Item: S_Merchant_Pendant    # Merchant Shadow Pendant (24251)
-        Price: 100
-      - Item: Arquien's_Necklace    # Arquien's Necklace (28429)
         Price: 100
       - Item: aegis_400500    # Gigant Helm (400500)
         Price: 100
       - Item: Armaia_Belt_ROC    # Armaia Belt (490295)
         Price: 100
-      - Item: aegis_400676    # Flaward Hat (400676)
-        Price: 100
-      - Item: Chemical_Glove_ROC    # Chemical Glove (490475)
-        Price: 100
       - Item: Mask_Of_Orochimaru    # Orochimaru's Mask (18948)
         Price: 100
       - Item: Mercenary_Ring_B    # Mercenary Ring Type B (28426)
         Price: 100
-      - Item: Mercenary_Ring_A    # Mercenary Ring Type A (28425)
-        Price: 100
-  # 3rd Class: full sets per build, lv 100-160
-  - Tab: Limited
-    Items:
-      - Item: Shoes_Of_Punishment_    # Shoes of Punishment (22225)
-        Price: 200
-      - Item: Temporal_M_Int    # Temporal Int Manteau (20966)
-        Price: 200
-      - Item: Valkyrie_Drop    # Valkyrie Drop (28564)
-        Price: 200
-      - Item: RingOfAdoramus    # Ring of Adoramus (490118)
-        Price: 200
-      - Item: Crown_Of_Saint_Jp    # Sacred Crown (19469)
-        Price: 200
       - Item: Taegoolyeon_IL    # Illusion Tae Goo Lyeon (21050)
         Price: 300
       - Item: TiaraCrown_Melee_BR    # Mighty Crown of Ashes (400647)
@@ -366,8 +171,6 @@ Body:
         Price: 200
       - Item: Grace_Attack_Manteau    # Grace Attack Manteau (480018)
         Price: 200
-      - Item: Temporal_Str_Boots_    # Temporal Str Boots (22006)
-        Price: 100
       - Item: Grace_Attack_Ring    # Grace Attack Ring (490019)
         Price: 200
       - Item: Jasper_Ring    # Jasper Ring (490113)
@@ -394,8 +197,6 @@ Body:
         Price: 300
       - Item: Imperial_Guard    # Imperial Guard (2153)
         Price: 200
-      - Item: Arbitrator_Shawl_US    # Arbitrator Shawl (420246)
-        Price: 100
       - Item: Grace_Spear_Armor    # Grace Spear Armor (450088)
         Price: 200
       - Item: Imperial_Boots    # Imperial Boots (22207)
@@ -403,6 +204,474 @@ Body:
       - Item: Imperial_Glove    # Imperial Glove (28551)
         Price: 200
       - Item: S_LG_B_Weapon    # Royal Guard's Booster Shadow Weapon (24590)
+        Price: 200
+      - Item: Ray_Knuckle    # Ray Knuckle (560002)
+        Price: 300
+      - Item: Racing_C_Sura    # Racing Cap (Sura) (19198)
+        Price: 200
+      - Item: Black_Glasses    # Black Frame Glasses (5401)
+        Price: 100
+      - Item: Frozen_Flower_US    # Plastic Blue Rose (420310)
+        Price: 200
+      - Item: Grace_Tiger_Suit    # Grace Tiger Suit (450097)
+        Price: 200
+      - Item: Grace_Attack_Boots    # Grace Attack Boots (470020)
+        Price: 200
+      - Item: Medal_Acolyte    # Medal of Honor (2722)
+        Price: 100
+      - Item: S_TigerCannon_Weapon    # Tiger Shadow Weapon (24485)
+        Price: 100
+      - Item: Iron_Nail_K    # Iron Nail (1847)
+        Price: 300
+      - Item: Eye_Of_Storm_TH    # Eye of the Storm (410313)
+        Price: 200
+      - Item: Grace_Knuckle_Suit    # Grace Knuckle Suit (450096)
+        Price: 200
+      - Item: Keraunos    # Keraunos (28503)
+        Price: 200
+      - Item: S_Rampage_Armor    # Rampage Shadow Armor (24476)
+        Price: 100
+      - Item: Scarlet_Katar    # Crimson Katar (28007)
+        Price: 150
+      - Item: Racing_C_Cross    # Racing Cap (Guillotine Cross) (19191)
+        Price: 200
+      - Item: Karasu_TenguMask_    # Karasu Tengu Mask (410333)
+        Price: 200
+      - Item: Royalguard_Necklace    # Royal Guard Necklace (19246)
+        Price: 100
+      - Item: Grace_Rolling_Suit    # Grace Rolling Suit (450102)
+        Price: 200
+      - Item: Perverse_Demon_Mask    # Perverse Demon Mask (28565)
+        Price: 100
+      - Item: S_Rolling_Armor    # Rolling Shadow Armor (24536)
+        Price: 100
+      - Item: Shiver_Katar    # Shiver Katar (1298)
+        Price: 300
+      - Item: Grace_Assasin_Suit    # Grace Assassin Suit (450103)
+        Price: 200
+      - Item: S_Slash_Armor    # Slash Shadow Armor (24542)
+        Price: 100
+      - Item: Fatalist    # Fatalist (510006)
+        Price: 300
+      - Item: Crow_Tengu_Mask    # Crow Tengu Mask (5933)
+        Price: 100
+      - Item: Tengu_Scroll    # Tengu Scroll (19112)
+        Price: 100
+      - Item: Ring_Of_Hunter    # Ring of Hunter (490096)
+        Price: 200
+      - Item: S_Menace_Armor    # Menace Shadow Armor (24530)
+        Price: 100
+      - Item: Avenger    # Avenger (28130)
+        Price: 300
+      - Item: Sea_Captain_Hat_    # Sea Captain Hat (5907)
+        Price: 200
+      - Item: Pires_US    # Mysterious Red Plate (420313)
+        Price: 200
+      - Item: Grace_Tonado_Armor    # Grace Tornado Armor (450098)
+        Price: 200
+      - Item: Military_Glove    # Military Glove (490183)
+        Price: 200
+      - Item: S_Tornado_Armor    # Tornado Shadow Armor (24464)
+        Price: 100
+      - Item: War_Axe_IL    # Illusion War Axe (1326)
+        Price: 300
+      - Item: Grace_Kart_Suit2    # Grace Cart Tornado Suit (450101)
+        Price: 200
+      - Item: Paracelsus_Glove    # Paracelsus Glove (490146)
+        Price: 200
+      - Item: S_Cart_Tornado_Armor    # Tornado Shadow Armor (24560)
+        Price: 100
+      - Item: OneSkyOneSun    # One Sky One Sun (28631)
+        Price: 300
+      - Item: LittleGarden    # Little Garden (19437)
+        Price: 200
+      - Item: Grace_Sun_Suit    # Grace Sun Suit (450114)
+        Price: 200
+      - Item: S_Sunshine_Weapon    # Sunshine Shadow Weapon (24646)
+        Price: 100
+      - Item: Grace_Moon_Suit    # Grace Moon Suit (450115)
+        Price: 200
+      - Item: Illusion_Leg_A    # Illusion Leg A-type (22196)
+        Price: 200
+      - Item: S_Moonlight_Earring    # Moonlight Shadow Earring (24649)
+        Price: 100
+      - Item: Fog_Dew_Sword    # Kiri no Tsuyu (28764)
+        Price: 300
+      - Item: Sharp_Wind_Sword    # Surudoi Kaze (28763)
+        Price: 300
+      - Item: Racing_C_Ninja    # Racing Cap (Ninja) (19203)
+        Price: 200
+      - Item: Grace_Ninja_Suit    # Grace Ninja Suit (450116)
+        Price: 200
+      - Item: S_Kagerou_Armor    # Kagerou Shadow Armor (24403)
+        Price: 200
+      - Item: Blessed_Knife    # Blessed Knife (510070)
+        Price: 300
+      - Item: Impr_Angel's_Safeguard    # Advanced Angelic Guard (2183)
+        Price: 100
+      - Item: Racing_C_Super    # Racing Cap (Super Novice) (19204)
+        Price: 200
+      - Item: Grace_Snovice_Suit    # Grace Super Novice Suit (450125)
+        Price: 200
+      - Item: S_Super_Power_Weapon    # Super Power Shadow Weapon (24619)
+        Price: 100
+      - Item: Thanos_TSword_AD    # Thanatos Great Sword-AD (600016)
+        Price: 900
+      - Item: Old_Rune_Circlet    # Old Rune Circlet (18971)
+        Price: 400
+      - Item: Exiled_Ninja_US    # Exiled Ninja's Eyes (410362)
+        Price: 200
+      - Item: Moroc_Slave_TW    # Loyal Servant of the Demon Lord Morroc (420236)
+        Price: 200
+      - Item: Auto_Armor_A    # Automatic Armor Type A (450127)
+        Price: 200
+      - Item: Royal_Prontera_US    # Royal Prontera Cape (480479)
+        Price: 200
+      - Item: Gray_W_Boots    # Gray Wolf Boots (470087)
+        Price: 600
+      - Item: Document_Swordsman_TH    # Document Swordsman (490605)
+        Price: 200
+      - Item: Dragonic_Slayer_LT    # Dragonic Slayer-LT (600024)
+        Price: 900
+      - Item: S_Circlet_Of_Time_RK    # Temporal Circlet (Rune Knight) (19474)
+        Price: 400
+      - Item: Twinhead_dragon_Mail_J    # Twinhead Dragon Mail (450216)
+        Price: 200
+      - Item: Twinhead_dragon_Boots    # Twinhead Dragon Boots (470274)
+        Price: 200
+      - Item: Memento_Mori    # Memento Mori (490207)
+        Price: 200
+      - Item: Undine_Spear_K_LT    # Aquatic Spear-LT (530019)
+        Price: 900
+      - Item: Old_Protect_Of_Crown    # Old Casket of Protection (18983)
+        Price: 400
+      - Item: Platinum_Arbitrator    # Platinum Arbitrator (450257)
+        Price: 200
+      - Item: Imperial_Glove_TH    # Imperial Glove (490600)
+        Price: 400
+      - Item: S_Royalguard_Weapon    # Royal Guard Shadow Weapon (24289)
+        Price: 100
+      - Item: Up_Ray_Knuckle    # Patent Ray Knuckle (560009)
+        Price: 300
+      - Item: Auto_Shield_A    # Automatic Shield I (460015)
+        Price: 200
+      - Item: Viva_Adul_Hat_SR1    # Helm of Faith (Sura) (400180)
+        Price: 400
+      - Item: Auto_Engine_A    # Automatic Engine Wing Type A (480020)
+        Price: 200
+      - Item: Zodiac_Boots_AL    # Zodiac Boots (Acolyte) (470270)
+        Price: 200
+      - Item: Unknown_Hero_Ring_SR    # Ring of Unknown Hero (Sura) (490406)
+        Price: 200
+      - Item: Auto_B_L    # Automatic Booster L (490025)
+        Price: 200
+      - Item: Up_Iron_Nail_K    # Patent Iron Nail (560008)
+        Price: 300
+      - Item: Viva_Adul_Hat_SR2    # Helm of Faith II (Sura) (400181)
+        Price: 400
+      - Item: Battle_Aura_Manteau_TW    # Battle Aura Manteau (480149)
+        Price: 200
+      - Item: Tohil_Shoes_TH    # Tohil's Shoes (22259)
+        Price: 200
+      - Item: Document_Acolyte_TH    # Document Acolyte (490610)
+        Price: 200
+      - Item: Up_Shiver_Katar_K    # Patent Shiver Katar (610008)
+        Price: 300
+      - Item: Viva_Adul_Hat_GC2    # Helm of Faith II (Guillotine Cross) (400217)
+        Price: 400
+      - Item: Zodiac_Boots_TF    # Zodiac Boots (Thief) (470272)
+        Price: 200
+      - Item: Unknown_Hero_Ring_GC    # Ring of Unknown Hero (Guillotine) (490464)
+        Price: 200
+      - Item: Record_Thief2_TH    # Record of Thief 2 (490394)
+        Price: 200
+      - Item: Viva_Adul_Hat_GC1    # Helm of Faith (Guillotine Cross) (400216)
+        Price: 400
+      - Item: Up_Fatalist    # Patent Fatalist (510020)
+        Price: 300
+      - Item: Viva_Adul_Hat_SC1    # Helm of Faith (Shadow Chaser) (400191)
+        Price: 400
+      - Item: Glotoneria    # Glotoneria (480081)
+        Price: 200
+      - Item: Mecha_Greaves_US    # Ancient Mechanic Greaves (470289)
+        Price: 200
+      - Item: Overdrive_Rampage_    # Overdrive Rampage (490545)
+        Price: 600
+      - Item: Up_Avenger    # Patent Avenger (620004)
+        Price: 300
+      - Item: Viva_Adul_Hat_NC1    # Helm of Faith (Mechanic) (400230)
+        Price: 400
+      - Item: Unknown_Hero_Ring_NC    # Ring of Unknown Hero (Mechanic) (490531)
+        Price: 200
+      - Item: Adulter_F_Hall    # Adulter Fides Hall (590022)
+        Price: 600
+      - Item: Viva_Adul_Hat_GN2    # Helm of Faith II (Genetic) (400234)
+        Price: 400
+      - Item: Up_OneSkyOneSun    # Patent One Sky One Sun (540010)
+        Price: 300
+      - Item: S_Circlet_Of_Time_SJ    # Temporal Circlet (Star Emperor) (19486)
+        Price: 400
+      - Item: Auto_Leg_A    # Automatic Leg Type A (470022)
+        Price: 200
+      - Item: Unknown_Hero_Ring_TK    # Ring of Unknown Hero (Taekwon) (490469)
+        Price: 200
+      - Item: Viva_Adul_Hat_SJ1    # Helm of Faith (Star Emperor) (400241)
+        Price: 400
+      - Item: Up_Fog_Dew_Sword    # Patent Kiri no Tsuyu (510022)
+        Price: 300
+      - Item: S_Circlet_Of_Time_KG    # Temporal Circlet (Kagerou) (19490)
+        Price: 400
+      - Item: Unknown_Hero_Ring_NJ    # Ring of Unknown Hero (Ninja) (490479)
+        Price: 200
+      - Item: Up_Blessed_Knife    # Patent Blessed Knife (510071)
+        Price: 300
+      - Item: S_Circlet_Of_Time_NV    # Temporal Circlet (Super Novice) (19491)
+        Price: 400
+      - Item: Unknown_Hero_Ring_NV    # Ring of Unknown Hero (Novice) (490511)
+        Price: 200
+  # Ranged: bows, instruments, guns, cart cannon, kunai - Hunter, Bard/Dancer, Gunslinger, Shadow Chaser shots, Mechanic Arm Cannon, Genetic and their 3rd/4th classes
+  - Tab: Limited
+    Items:
+      - Item: Bow_Of_Evil    # Bow Of Evil (1744)
+        Price: 150
+      - Item: Double_Badge_ROC    # Double Badge (490236)
+        Price: 100
+      - Item: Falconer_Flute    # Falconer Flute (18985)
+        Price: 100
+      - Item: 1Para_Boots_A    # Paradise Boots (470067)
+        Price: 100
+      - Item: Falconer_Claw    # Falconer Claw (28321)
+        Price: 100
+      - Item: Falconer_Glove    # Falconer Glove (28322)
+        Price: 100
+      - Item: Emerald_Earring    # Emerald Earrings (28411)
+        Price: 100
+      - Item: Mercenary_Ring_A    # Mercenary Ring Type A (28425)
+        Price: 100
+      - Item: Royal_Bow_K    # Royal Bow (18164)
+        Price: 300
+      - Item: Autumn_Headband    # Autumn Headband (5898)
+        Price: 200
+      - Item: Grace_Sharp_Suit    # Grace Sharp Suit (450090)
+        Price: 200
+      - Item: Temporal_Dex_Boots_    # Temporal Dex Boots (22008)
+        Price: 100
+      - Item: Ring_Of_Ceryneian    # Ring of Ceryneian (490145)
+        Price: 200
+      - Item: S_RA_B_Weapon    # Ranger's Booster Shadow Weapon (24599)
+        Price: 200
+      - Item: Scalet_Dragon_L_Bow    # Scarlet Dragon Leather Bow (700003)
+        Price: 300
+      - Item: Wolf_Officer_Hat    # Wolf Officer Hat (400203)
+        Price: 200
+      - Item: Grace_Aim_Suit    # Grace Aimed Suit (450091)
+        Price: 200
+      - Item: Sniping_Shoes_J_    # Sniping Shoes (470007)
+        Price: 200
+      - Item: Narcis_Bow    # Narcissus Bow (18170)
+        Price: 300
+      - Item: TiaraCrown_Ranged_BR    # Crown of Ashes (400648)
+        Price: 200
+      - Item: Grace_Severe_Suit    # Grace Severe Suit (450092)
+        Price: 200
+      - Item: EC_Boots_TW    # Jade Crystal Boots (470098)
+        Price: 200
+      - Item: Record_Archer2_TH    # Record of Archer 2 (490430)
+        Price: 200
+      - Item: S_WM_B_Weapon    # Minstrel&Wanderer's Booster Shadow Weapon (24600)
+        Price: 200
+      - Item: Trumpet_Shell_K    # Trumpet Shell (570002)
+        Price: 300
+      - Item: Grace_Reverb_Suit    # Grace Reverb Suit (450093)
+        Price: 200
+      - Item: Sound_Amplifier    # Sound Amplification Device (2899)
+        Price: 100
+      - Item: Lyrica_Hat_    # Lyrica Hat (5905)
+        Price: 200
+      - Item: Barb_Wire_K    # Barbed Wire Whip (580002)
+        Price: 300
+      - Item: Vigilante_Bow    # Vigilante Bow (18145)
+        Price: 300
+      - Item: Rideword_Hat    # Rideword Hat (5208)
+        Price: 100
+      - Item: Robo_Eye    # Robo Eye (5325)
+        Price: 100
+      - Item: Grace_Fatal_Suit    # Grace Fatal Suit (450104)
+        Price: 200
+      - Item: Vigilante_Bedge    # Vigilante Badge (28441)
+        Price: 200
+      - Item: S_Triangle_Armor    # Triangle Shadow Armor (24524)
+        Price: 100
+      - Item: Meteor_Striker    # Meteor Striker (590002)
+        Price: 300
+      - Item: Illusion_Shield_A    # Illusion Shield I (460004)
+        Price: 200
+      - Item: Racing_C_Mecha    # Racing Cap (Mechanic) (19189)
+        Price: 200
+      - Item: Grace_Vulcan_Armor    # Grace Vulcan Armor (450099)
+        Price: 200
+      - Item: Upgrade_Part_Gun_Barrel    # Upgrade Part - Gun Barrel (2996)
+        Price: 200
+      - Item: S_Arms_Weapon    # Arm Shadow Weapon (24473)
+        Price: 100
+      - Item: Sword_Of_Bluefire    # Red Lotus Sword (13485)
+        Price: 300
+      - Item: Racing_C_Gene    # Racing Cap (Geneticist) (19190)
+        Price: 200
+      - Item: Old_Moroc_Acc    # Ancient Morocc Noble Jewelry (410254)
+        Price: 200
+      - Item: Grace_Kart_Suit    # Grace Cart Cannon Suit (450100)
+        Price: 200
+      - Item: CannonConverter_TW    # Cannon Modifier (32259)
+        Price: 200
+      - Item: S_Cannon_Cart_Weapon    # Cannon Cart Shadow Weapon (24563)
+        Price: 100
+      - Item: Humma_Clear    # Huuma Shuriken Clearness (13345)
+        Price: 300
+      - Item: Grace_Kunai_Suit    # Grace Kunai Suit (450117)
+        Price: 200
+      - Item: Ball_Of_RasenHuuma    # Rasen Fuma's Orb (32262)
+        Price: 200
+      - Item: S_Kunai_Weapon    # Kunai Shadow Weapon (24622)
+        Price: 100
+      - Item: Crimson_Rose    # Crimson Rose (32302)
+        Price: 300
+      - Item: Racing_C_Gunner    # Racing Cap (Gunslinger) (19202)
+        Price: 200
+      - Item: Grace_Trip_Suit    # Grace Trip Suit (450108)
+        Price: 200
+      - Item: VesperGear2    # Vesper Gear 02 (28353)
+        Price: 100
+      - Item: S_Trip_Weapon    # Trip Shadow Weapon (24613)
+        Price: 100
+      - Item: Master_Soul_Rifle    # Master Soul Rifle (28255)
+        Price: 300
+      - Item: Grace_Firerain_Suit    # Grace Fire Rain Suit (450109)
+        Price: 200
+      - Item: S_Tail_Dragon_Weapon    # Tail Dragon Shadow Weapon (24601)
+        Price: 100
+      - Item: Royal_Bow_K_LT    # Royal Bow-LT (700045)
+        Price: 900
+      - Item: S_Circlet_Of_Time_RA    # Temporal Circlet (Ranger) (19484)
+        Price: 400
+      - Item: Royal_Payon_US    # Royal Payon Cape (480504)
+        Price: 200
+      - Item: Ranger_Shoes_US    # Ancient Ranger Shoes (470329)
+        Price: 200
+      - Item: Document_Archer_TH    # Document Archer (490609)
+        Price: 200
+      - Item: Scalet_Dragon_L_Bow_LT    # Scarlet Leather Dragon Bow-LT (700046)
+        Price: 900
+      - Item: Viva_Adul_Hat_RA2    # Helm of Faith II (Ranger) (400199)
+        Price: 400
+      - Item: Assault_Suit    # Assault Suits (450251)
+        Price: 200
+      - Item: ErymanthianSkin    # Erymanthian Skin (480094)
+        Price: 200
+      - Item: Ring_of_Artemis    # Ring of Artemis (490471)
+        Price: 600
+      - Item: Narcis_Bow_LT    # Narcissus Bow-LT (700049)
+        Price: 900
+      - Item: Old_Minstrel_Song_Hat    # Old Minstrel Song's Hat (18976)
+        Price: 400
+      - Item: Gray_W_Suits    # Gray Wolf Suit (450177)
+        Price: 600
+      - Item: EC_Boots__LT_TW    # Jade Crystal Boots-LT (470269)
+        Price: 600
+      - Item: Ring_Of_Storm    # Ring of Storm (490427)
+        Price: 200
+      - Item: S_Minstrel_Weapon    # Maestro Shadow Weapon (24299)
+        Price: 100
+      - Item: Trumpet_Shell_K_LT    # Trumpet Shell-LT (570027)
+        Price: 900
+      - Item: S_Circlet_Of_Time_WM    # Temporal Circlet (Wanderer & Minstrel) (19485)
+        Price: 400
+      - Item: Loud_Park    # Loud Park (450258)
+        Price: 200
+      - Item: Metal_Pick    # Metal Pick (490141)
+        Price: 200
+      - Item: Old_Dying_Swan    # Old Dying Swan (18981)
+        Price: 400
+      - Item: S_Wanderer_Weapon    # Wanderer Shadow Weapon (24300)
+        Price: 100
+      - Item: Barb_Wire_K_LT    # Barbed Wire Whip-LT (580027)
+        Price: 900
+      - Item: Up_Royal_Bow_K    # Patent Royal Bow (700018)
+        Price: 300
+      - Item: Viva_Adul_Hat_SC2    # Helm of Faith II (Shadow Chaser) (400192)
+        Price: 400
+      - Item: Bio_CapeRange_TH    # Biolab Cape (Range) (480427)
+        Price: 400
+      - Item: Unknown_Hero_Ring_SC    # Ring of Unknown Hero (Shadow Chaser) (490438)
+        Price: 200
+      - Item: Old_DetachmentsRing_TH    # Old Detachment Ring (490613)
+        Price: 400
+      - Item: Up_Meteor_Striker    # Patent Meteor Striker (590011)
+        Price: 300
+      - Item: Old_Driver_Band_Y    # Old Driver Band(Yellow) (18974)
+        Price: 400
+      - Item: Imp_Powered_Suit    # Imp Powered Suit (450209)
+        Price: 200
+      - Item: Zodiac_Boots_MC    # Zodiac Boots (Merchant) (470267)
+        Price: 200
+      - Item: Document_Merchant_TH    # Document Merchant (490607)
+        Price: 200
+      - Item: Record_Merchant_TH    # Record of Merchant (490239)
+        Price: 200
+      - Item: Up_Sword_Of_Bluefire    # Patent Red Lotus Sword (500013)
+        Price: 300
+      - Item: Viva_Adul_Hat_GN1    # Helm of Faith (Genetic) (400233)
+        Price: 400
+      - Item: Unknown_Hero_Ring_GN    # Ring of Unknown Hero (Genetic) (490515)
+        Price: 200
+      - Item: Up_Humma_Clear    # Patent Huuma Shuriken Clearness (650004)
+        Price: 300
+      - Item: Viva_Adul_Hat_KO1    # Helm of Faith (Kagerou & Oboro) (400235)
+        Price: 400
+      - Item: Up_Crimson_Rose    # Patent Crimson Rose (800002)
+        Price: 300
+      - Item: Viva_Adul_Hat_RL2    # Helm of Faith II (Rebellion) (400238)
+        Price: 400
+      - Item: Unknown_Hero_Ring_RL    # Ring of Unknown Hero (Rebellion) (490498)
+        Price: 200
+      - Item: Up_Master_Soul_Rifle    # Patent Master Soul Rifle (810001)
+        Price: 300
+      - Item: Viva_Adul_Hat_RL1    # Helm of Faith (Rebellion) (400237)
+        Price: 400
+  # Magic and support: Wizard, Sage, Priest, Soul Linker, Oboro magic, Royal Guard Genesis Ray, Super Novice magic and their 3rd/4th classes
+  - Tab: Rental
+    Items:
+      - Item: F_Pecopeco_Hairband    # F Pecopeco Hairband (5628)
+        Price: 100
+      - Item: SurviveOrb    # Survivor's Orb (19139)
+        Price: 100
+      - Item: R_Hunting_Manteau    # Short-term Hunting Manteau (20903)
+        Price: 100
+      - Item: Buwaya_Tattoo    # Bawaya Agimat Tattoo (2907)
+        Price: 100
+      - Item: RJC_Spell    # RJC2012 Spell Necklace (2939)
+        Price: 100
+      - Item: Magical_Feather_K    # Magical Feather (19211)
+        Price: 100
+      - Item: Clip    # Clip (2607)
+        Price: 100
+      - Item: Spiritual_Ring_    # Spiritual Ring (28432)
+        Price: 100
+      - Item: Moaning_of_EvilSpirits    # Moaning of Evil Spirits (470112)
+        Price: 100
+      - Item: RJC_Katusa    # RJC Katusa Flower (5547)
+        Price: 100
+      - Item: Rosary_    # Rosary (2626)
+        Price: 100
+      - Item: Shoes_Of_Punishment_    # Shoes of Punishment (22225)
+        Price: 200
+      - Item: Temporal_M_Int    # Temporal Int Manteau (20966)
+        Price: 200
+      - Item: Valkyrie_Drop    # Valkyrie Drop (28564)
+        Price: 200
+      - Item: RingOfAdoramus    # Ring of Adoramus (490118)
+        Price: 200
+      - Item: Crown_Of_Saint_Jp    # Sacred Crown (19469)
         Price: 200
       - Item: Light_Blade    # Light Blade (500003)
         Price: 300
@@ -468,53 +737,9 @@ Body:
         Price: 200
       - Item: S_Sorcerer_Shield    # Sorcerer Shadow Shield (24310)
         Price: 100
-      - Item: Royal_Bow_K    # Royal Bow (18164)
-        Price: 300
-      - Item: Autumn_Headband    # Autumn Headband (5898)
-        Price: 200
-      - Item: Grace_Sharp_Suit    # Grace Sharp Suit (450090)
-        Price: 200
-      - Item: Temporal_Dex_Boots_    # Temporal Dex Boots (22008)
-        Price: 100
-      - Item: Ring_Of_Ceryneian    # Ring of Ceryneian (490145)
-        Price: 200
-      - Item: S_RA_B_Weapon    # Ranger's Booster Shadow Weapon (24599)
-        Price: 200
-      - Item: Scalet_Dragon_L_Bow    # Scarlet Dragon Leather Bow (700003)
-        Price: 300
-      - Item: Wolf_Officer_Hat    # Wolf Officer Hat (400203)
-        Price: 200
-      - Item: Grace_Aim_Suit    # Grace Aimed Suit (450091)
-        Price: 200
-      - Item: Sniping_Shoes_J_    # Sniping Shoes (470007)
-        Price: 200
-      - Item: Narcis_Bow    # Narcissus Bow (18170)
-        Price: 300
-      - Item: TiaraCrown_Ranged_BR    # Crown of Ashes (400648)
-        Price: 200
-      - Item: Grace_Severe_Suit    # Grace Severe Suit (450092)
-        Price: 200
-      - Item: EC_Boots_TW    # Jade Crystal Boots (470098)
-        Price: 200
-      - Item: Record_Archer2_TH    # Record of Archer 2 (490430)
-        Price: 200
-      - Item: S_WM_B_Weapon    # Minstrel&Wanderer's Booster Shadow Weapon (24600)
-        Price: 200
-      - Item: Trumpet_Shell_K    # Trumpet Shell (570002)
-        Price: 300
-      - Item: Grace_Reverb_Suit    # Grace Reverb Suit (450093)
-        Price: 200
-      - Item: Sound_Amplifier    # Sound Amplification Device (2899)
-        Price: 100
-      - Item: Lyrica_Hat_    # Lyrica Hat (5905)
-        Price: 200
-      - Item: Barb_Wire_K    # Barbed Wire Whip (580002)
-        Price: 300
       - Item: Holy_Stick    # Holy Stick (1631)
         Price: 150
       - Item: Valkyrja's_Shield    # Valkyrja's Shield (2115)
-        Price: 100
-      - Item: Abyss_Dress_BR    # Abyssal Dress (15254)
         Price: 100
       - Item: S_Adoramus_Weapon    # Adora Shadow Weapon (24491)
         Price: 100
@@ -534,132 +759,6 @@ Body:
         Price: 100
       - Item: S_Archbishop_Weapon    # Arch Bishop Shadow Weapon (24292)
         Price: 100
-      - Item: Ray_Knuckle    # Ray Knuckle (560002)
-        Price: 300
-      - Item: Racing_C_Sura    # Racing Cap (Sura) (19198)
-        Price: 200
-      - Item: Black_Glasses    # Black Frame Glasses (5401)
-        Price: 100
-      - Item: Frozen_Flower_US    # Plastic Blue Rose (420310)
-        Price: 200
-      - Item: Grace_Tiger_Suit    # Grace Tiger Suit (450097)
-        Price: 200
-      - Item: Grace_Attack_Boots    # Grace Attack Boots (470020)
-        Price: 200
-      - Item: Medal_Acolyte    # Medal of Honor (2722)
-        Price: 100
-      - Item: S_TigerCannon_Weapon    # Tiger Shadow Weapon (24485)
-        Price: 100
-      - Item: Iron_Nail_K    # Iron Nail (1847)
-        Price: 300
-      - Item: Eye_Of_Storm_TH    # Eye of the Storm (410313)
-        Price: 200
-      - Item: Grace_Knuckle_Suit    # Grace Knuckle Suit (450096)
-        Price: 200
-      - Item: Keraunos    # Keraunos (28503)
-        Price: 200
-      - Item: S_Rampage_Armor    # Rampage Shadow Armor (24476)
-        Price: 100
-      - Item: Scarlet_Katar    # Crimson Katar (28007)
-        Price: 150
-      - Item: Racing_C_Cross    # Racing Cap (Guillotine Cross) (19191)
-        Price: 200
-      - Item: Karasu_TenguMask_    # Karasu Tengu Mask (410333)
-        Price: 200
-      - Item: Royalguard_Necklace    # Royal Guard Necklace (19246)
-        Price: 100
-      - Item: Grace_Rolling_Suit    # Grace Rolling Suit (450102)
-        Price: 200
-      - Item: Perverse_Demon_Mask    # Perverse Demon Mask (28565)
-        Price: 100
-      - Item: S_Rolling_Armor    # Rolling Shadow Armor (24536)
-        Price: 100
-      - Item: Shiver_Katar    # Shiver Katar (1298)
-        Price: 300
-      - Item: Grace_Assasin_Suit    # Grace Assassin Suit (450103)
-        Price: 200
-      - Item: S_Slash_Armor    # Slash Shadow Armor (24542)
-        Price: 100
-      - Item: Vigilante_Bow    # Vigilante Bow (18145)
-        Price: 300
-      - Item: Rideword_Hat    # Rideword Hat (5208)
-        Price: 100
-      - Item: Robo_Eye    # Robo Eye (5325)
-        Price: 100
-      - Item: Grace_Fatal_Suit    # Grace Fatal Suit (450104)
-        Price: 200
-      - Item: Vigilante_Bedge    # Vigilante Badge (28441)
-        Price: 200
-      - Item: S_Triangle_Armor    # Triangle Shadow Armor (24524)
-        Price: 100
-      - Item: Fatalist    # Fatalist (510006)
-        Price: 300
-      - Item: Crow_Tengu_Mask    # Crow Tengu Mask (5933)
-        Price: 100
-      - Item: Tengu_Scroll    # Tengu Scroll (19112)
-        Price: 100
-      - Item: Ring_Of_Hunter    # Ring of Hunter (490096)
-        Price: 200
-      - Item: S_Menace_Armor    # Menace Shadow Armor (24530)
-        Price: 100
-      - Item: Meteor_Striker    # Meteor Striker (590002)
-        Price: 300
-      - Item: Illusion_Shield_A    # Illusion Shield I (460004)
-        Price: 200
-      - Item: Racing_C_Mecha    # Racing Cap (Mechanic) (19189)
-        Price: 200
-      - Item: Grace_Vulcan_Armor    # Grace Vulcan Armor (450099)
-        Price: 200
-      - Item: Upgrade_Part_Gun_Barrel    # Upgrade Part - Gun Barrel (2996)
-        Price: 200
-      - Item: S_Arms_Weapon    # Arm Shadow Weapon (24473)
-        Price: 100
-      - Item: Avenger    # Avenger (28130)
-        Price: 300
-      - Item: Sea_Captain_Hat_    # Sea Captain Hat (5907)
-        Price: 200
-      - Item: Pires_US    # Mysterious Red Plate (420313)
-        Price: 200
-      - Item: Grace_Tonado_Armor    # Grace Tornado Armor (450098)
-        Price: 200
-      - Item: Military_Glove    # Military Glove (490183)
-        Price: 200
-      - Item: S_Tornado_Armor    # Tornado Shadow Armor (24464)
-        Price: 100
-      - Item: Sword_Of_Bluefire    # Red Lotus Sword (13485)
-        Price: 300
-      - Item: Racing_C_Gene    # Racing Cap (Geneticist) (19190)
-        Price: 200
-      - Item: Old_Moroc_Acc    # Ancient Morocc Noble Jewelry (410254)
-        Price: 200
-      - Item: Grace_Kart_Suit    # Grace Cart Cannon Suit (450100)
-        Price: 200
-      - Item: CannonConverter_TW    # Cannon Modifier (32259)
-        Price: 200
-      - Item: S_Cannon_Cart_Weapon    # Cannon Cart Shadow Weapon (24563)
-        Price: 100
-      - Item: War_Axe_IL    # Illusion War Axe (1326)
-        Price: 300
-      - Item: Grace_Kart_Suit2    # Grace Cart Tornado Suit (450101)
-        Price: 200
-      - Item: Paracelsus_Glove    # Paracelsus Glove (490146)
-        Price: 200
-      - Item: S_Cart_Tornado_Armor    # Tornado Shadow Armor (24560)
-        Price: 100
-      - Item: OneSkyOneSun    # One Sky One Sun (28631)
-        Price: 300
-      - Item: LittleGarden    # Little Garden (19437)
-        Price: 200
-      - Item: Grace_Sun_Suit    # Grace Sun Suit (450114)
-        Price: 200
-      - Item: S_Sunshine_Weapon    # Sunshine Shadow Weapon (24646)
-        Price: 100
-      - Item: Grace_Moon_Suit    # Grace Moon Suit (450115)
-        Price: 200
-      - Item: Illusion_Leg_A    # Illusion Leg A-type (22196)
-        Price: 200
-      - Item: S_Moonlight_Earring    # Moonlight Shadow Earring (24649)
-        Price: 100
       - Item: SoulWeight    # Spirit Pendulum (26154)
         Price: 300
       - Item: GEMS_DarkBlood    # God-Devouring Demonic Shield (460077)
@@ -676,24 +775,6 @@ Body:
         Price: 200
       - Item: S_S_Weapon    # Es Shadow Weapon (24655)
         Price: 100
-      - Item: Fog_Dew_Sword    # Kiri no Tsuyu (28764)
-        Price: 300
-      - Item: Sharp_Wind_Sword    # Surudoi Kaze (28763)
-        Price: 300
-      - Item: Racing_C_Ninja    # Racing Cap (Ninja) (19203)
-        Price: 200
-      - Item: Grace_Ninja_Suit    # Grace Ninja Suit (450116)
-        Price: 200
-      - Item: S_Kagerou_Armor    # Kagerou Shadow Armor (24403)
-        Price: 200
-      - Item: Humma_Clear    # Huuma Shuriken Clearness (13345)
-        Price: 300
-      - Item: Grace_Kunai_Suit    # Grace Kunai Suit (450117)
-        Price: 200
-      - Item: Ball_Of_RasenHuuma    # Rasen Fuma's Orb (32262)
-        Price: 200
-      - Item: S_Kunai_Weapon    # Kunai Shadow Weapon (24622)
-        Price: 100
       - Item: Mikatsuki    # Mikacheuki (13078)
         Price: 300
       - Item: Illusion_Shield_B    # Illusion Shield II (460014)
@@ -706,88 +787,11 @@ Body:
         Price: 200
       - Item: S_Kamaenraku_Weapon    # First Exploding Draft Shadow Weapon (24628)
         Price: 100
-      - Item: Crimson_Rose    # Crimson Rose (32302)
-        Price: 300
-      - Item: Racing_C_Gunner    # Racing Cap (Gunslinger) (19202)
-        Price: 200
-      - Item: Grace_Trip_Suit    # Grace Trip Suit (450108)
-        Price: 200
-      - Item: VesperGear2    # Vesper Gear 02 (28353)
-        Price: 100
-      - Item: S_Trip_Weapon    # Trip Shadow Weapon (24613)
-        Price: 100
-      - Item: Master_Soul_Rifle    # Master Soul Rifle (28255)
-        Price: 300
-      - Item: Grace_Firerain_Suit    # Grace Fire Rain Suit (450109)
-        Price: 200
-      - Item: S_Tail_Dragon_Weapon    # Tail Dragon Shadow Weapon (24601)
-        Price: 100
-      - Item: Blessed_Knife    # Blessed Knife (510070)
-        Price: 300
-      - Item: Impr_Angel's_Safeguard    # Advanced Angelic Guard (2183)
-        Price: 100
-      - Item: Racing_C_Super    # Racing Cap (Super Novice) (19204)
-        Price: 200
-      - Item: Grace_Snovice_Suit    # Grace Super Novice Suit (450125)
-        Price: 200
-      - Item: S_Super_Power_Weapon    # Super Power Shadow Weapon (24619)
-        Price: 100
       - Item: Freedom_Stick    # Freedom Stick (550080)
         Price: 300
       - Item: Grace_Snovice_Robe    # Grace Super Novice Robe (450126)
         Price: 200
       - Item: S_Super_Magic_Shield    # Super Magic Shadow Shield (24616)
-        Price: 100
-  # Endgame: full sets per build, lv 175-200
-  - Tab: Rental
-    Items:
-      - Item: Thanos_TSword_AD    # Thanatos Great Sword-AD (600016)
-        Price: 900
-      - Item: Old_Rune_Circlet    # Old Rune Circlet (18971)
-        Price: 400
-      - Item: Exiled_Ninja_US    # Exiled Ninja's Eyes (410362)
-        Price: 200
-      - Item: Moroc_Slave_TW    # Loyal Servant of the Demon Lord Morroc (420236)
-        Price: 200
-      - Item: Auto_Armor_A    # Automatic Armor Type A (450127)
-        Price: 200
-      - Item: Royal_Prontera_US    # Royal Prontera Cape (480479)
-        Price: 200
-      - Item: Gray_W_Boots    # Gray Wolf Boots (470087)
-        Price: 600
-      - Item: Document_Swordsman_TH    # Document Swordsman (490605)
-        Price: 200
-      - Item: Jasper_Ring    # Jasper Ring (490113)
-        Price: 200
-      - Item: Dragonic_Slayer_LT    # Dragonic Slayer-LT (600024)
-        Price: 900
-      - Item: S_Circlet_Of_Time_RK    # Temporal Circlet (Rune Knight) (19474)
-        Price: 400
-      - Item: Twinhead_DragonScale_US    # Twinhead Dragon Scale (420329)
-        Price: 200
-      - Item: Twinhead_dragon_Mail_J    # Twinhead Dragon Mail (450216)
-        Price: 200
-      - Item: Fafnir_Manteau    # Fafnir Breath (480084)
-        Price: 200
-      - Item: Twinhead_dragon_Boots    # Twinhead Dragon Boots (470274)
-        Price: 200
-      - Item: Twin_Dragon_Ring_TH    # Twin Head Dragon Ring (490413)
-        Price: 200
-      - Item: Memento_Mori    # Memento Mori (490207)
-        Price: 200
-      - Item: Undine_Spear_K_LT    # Aquatic Spear-LT (530019)
-        Price: 900
-      - Item: Alice_Pillow_US    # Alice Body Pillow (460084)
-        Price: 100
-      - Item: Old_Protect_Of_Crown    # Old Casket of Protection (18983)
-        Price: 400
-      - Item: Arbitrator_Shawl_US    # Arbitrator Shawl (420246)
-        Price: 100
-      - Item: Platinum_Arbitrator    # Platinum Arbitrator (450257)
-        Price: 200
-      - Item: Imperial_Glove_TH    # Imperial Glove (490600)
-        Price: 400
-      - Item: S_Royalguard_Weapon    # Royal Guard Shadow Weapon (24289)
         Price: 100
       - Item: Light_Blade_LT    # Light Blade-LT (500038)
         Price: 900
@@ -795,8 +799,6 @@ Body:
         Price: 200
       - Item: Viva_Adul_Hat_LG1    # Helm of Faith (Royal Guard) (400200)
         Price: 400
-      - Item: Mob_Scarf    # Mob Scarf (28502)
-        Price: 200
       - Item: Auto_Armor_B    # Automatic Armor Type B (450128)
         Price: 200
       - Item: Royal_Geffen_US    # Royal Geffen Cape (480520)
@@ -813,8 +815,6 @@ Body:
         Price: 600
       - Item: Old_Magic_Stone_Hat    # Old Magic Stone Hat (18978)
         Price: 400
-      - Item: ScarfOfHero_J    # Old Camouflage Scarf (420110)
-        Price: 200
       - Item: Zodiac_Boots_MG    # Zodiac Boots (Mage) (470258)
         Price: 200
       - Item: Document_Mage_TH    # Document Mage (490608)
@@ -833,15 +833,9 @@ Body:
         Price: 900
       - Item: S_Circlet_Of_Time_SO    # Temporal Circlet (Sorcerer) (19483)
         Price: 400
-      - Item: Professor_MiniGlass_    # Professor's Mini Glasses (410067)
-        Price: 200
-      - Item: Book_of_Sorcery    # Book of Sorcery (420182)
-        Price: 200
       - Item: Celine_Dress    # Celine's Dress (450179)
         Price: 200
       - Item: Fifth_Element    # Fifth Element (470192)
-        Price: 200
-      - Item: Sixth_Sense_Ring    # Sixth Sense Ring (490038)
         Price: 200
       - Item: S_Sorcerer_Weapon    # Sorcerer Shadow Weapon (24297)
         Price: 100
@@ -849,62 +843,6 @@ Body:
         Price: 600
       - Item: Old_Wind_Whisper    # Old Wind Whisper (18980)
         Price: 400
-      - Item: Eye_Of_Storm_TH    # Eye of the Storm (410313)
-        Price: 200
-      - Item: Elemental_Possession    # Elemental Possession (450242)
-        Price: 200
-      - Item: S_Sorcerer_Shield    # Sorcerer Shadow Shield (24310)
-        Price: 100
-      - Item: Royal_Bow_K_LT    # Royal Bow-LT (700045)
-        Price: 900
-      - Item: S_Circlet_Of_Time_RA    # Temporal Circlet (Ranger) (19484)
-        Price: 400
-      - Item: Royal_Payon_US    # Royal Payon Cape (480504)
-        Price: 200
-      - Item: Ranger_Shoes_US    # Ancient Ranger Shoes (470329)
-        Price: 200
-      - Item: Document_Archer_TH    # Document Archer (490609)
-        Price: 200
-      - Item: Ring_Of_Ceryneian    # Ring of Ceryneian (490145)
-        Price: 200
-      - Item: Scalet_Dragon_L_Bow_LT    # Scarlet Leather Dragon Bow-LT (700046)
-        Price: 900
-      - Item: Viva_Adul_Hat_RA2    # Helm of Faith II (Ranger) (400199)
-        Price: 400
-      - Item: Assault_Suit    # Assault Suits (450251)
-        Price: 200
-      - Item: ErymanthianSkin    # Erymanthian Skin (480094)
-        Price: 200
-      - Item: Ring_of_Artemis    # Ring of Artemis (490471)
-        Price: 600
-      - Item: Narcis_Bow_LT    # Narcissus Bow-LT (700049)
-        Price: 900
-      - Item: Old_Minstrel_Song_Hat    # Old Minstrel Song's Hat (18976)
-        Price: 400
-      - Item: Gray_W_Suits    # Gray Wolf Suit (450177)
-        Price: 600
-      - Item: EC_Boots__LT_TW    # Jade Crystal Boots-LT (470269)
-        Price: 600
-      - Item: Ring_Of_Storm    # Ring of Storm (490427)
-        Price: 200
-      - Item: S_Minstrel_Weapon    # Maestro Shadow Weapon (24299)
-        Price: 100
-      - Item: Trumpet_Shell_K_LT    # Trumpet Shell-LT (570027)
-        Price: 900
-      - Item: S_Circlet_Of_Time_WM    # Temporal Circlet (Wanderer & Minstrel) (19485)
-        Price: 400
-      - Item: Loud_Park    # Loud Park (450258)
-        Price: 200
-      - Item: Metal_Pick    # Metal Pick (490141)
-        Price: 200
-      - Item: Sound_Amplifier    # Sound Amplification Device (2899)
-        Price: 100
-      - Item: Old_Dying_Swan    # Old Dying Swan (18981)
-        Price: 400
-      - Item: S_Wanderer_Weapon    # Wanderer Shadow Weapon (24300)
-        Price: 100
-      - Item: Barb_Wire_K_LT    # Barbed Wire Whip-LT (580027)
-        Price: 900
       - Item: Deus_Ex_Machina_JP    # Deus Ex Machina (550021)
         Price: 300
       - Item: Viva_Adul_Hat_AB1    # Helm of Faith (Archbishop) (400189)
@@ -917,8 +855,6 @@ Body:
         Price: 200
       - Item: Unknown_Hero_Ring_AB    # Ring of Unknown Hero (Archbishop) (490488)
         Price: 200
-      - Item: RingOfAdoramus    # Ring of Adoramus (490118)
-        Price: 200
       - Item: S_Full_Spell_Armor    # Full Spell Shadow Armor (24883)
         Price: 600
       - Item: Ein_1HHAMMER    # Rubber Hammer (16099)
@@ -927,184 +863,16 @@ Body:
         Price: 200
       - Item: Old_Mitra    # Old Mitra (18972)
         Price: 400
-      - Item: CherubCoronet_    # Cherub Coronet (410337)
-        Price: 200
       - Item: ROZ_FV_Cassock_Manteau    # Shining Priest's Cloak (480224)
-        Price: 200
-      - Item: Shoes_Of_Pilgrim    # Pilgrim Shoes (22189)
         Price: 200
       - Item: Cardinal_Ring    # Cardinal Ring (490244)
         Price: 600
-      - Item: S_Archbishop_Weapon    # Arch Bishop Shadow Weapon (24292)
-        Price: 100
-      - Item: Up_Ray_Knuckle    # Patent Ray Knuckle (560009)
-        Price: 300
-      - Item: Auto_Shield_A    # Automatic Shield I (460015)
-        Price: 200
-      - Item: Viva_Adul_Hat_SR1    # Helm of Faith (Sura) (400180)
-        Price: 400
-      - Item: Karasu_TenguMask_    # Karasu Tengu Mask (410333)
-        Price: 200
-      - Item: Frozen_Flower_US    # Plastic Blue Rose (420310)
-        Price: 200
-      - Item: Auto_Engine_A    # Automatic Engine Wing Type A (480020)
-        Price: 200
-      - Item: Zodiac_Boots_AL    # Zodiac Boots (Acolyte) (470270)
-        Price: 200
-      - Item: Unknown_Hero_Ring_SR    # Ring of Unknown Hero (Sura) (490406)
-        Price: 200
-      - Item: Auto_B_L    # Automatic Booster L (490025)
-        Price: 200
-      - Item: S_TigerCannon_Weapon    # Tiger Shadow Weapon (24485)
-        Price: 100
-      - Item: Up_Iron_Nail_K    # Patent Iron Nail (560008)
-        Price: 300
-      - Item: Viva_Adul_Hat_SR2    # Helm of Faith II (Sura) (400181)
-        Price: 400
-      - Item: Battle_Aura_Manteau_TW    # Battle Aura Manteau (480149)
-        Price: 200
-      - Item: Tohil_Shoes_TH    # Tohil's Shoes (22259)
-        Price: 200
-      - Item: Document_Acolyte_TH    # Document Acolyte (490610)
-        Price: 200
-      - Item: Keraunos    # Keraunos (28503)
-        Price: 200
-      - Item: S_Rampage_Armor    # Rampage Shadow Armor (24476)
-        Price: 100
-      - Item: Up_Shiver_Katar_K    # Patent Shiver Katar (610008)
-        Price: 300
-      - Item: Viva_Adul_Hat_GC2    # Helm of Faith II (Guillotine Cross) (400217)
-        Price: 400
-      - Item: Royalguard_Necklace    # Royal Guard Necklace (19246)
-        Price: 100
-      - Item: Zodiac_Boots_TF    # Zodiac Boots (Thief) (470272)
-        Price: 200
-      - Item: Unknown_Hero_Ring_GC    # Ring of Unknown Hero (Guillotine) (490464)
-        Price: 200
-      - Item: Record_Thief2_TH    # Record of Thief 2 (490394)
-        Price: 200
-      - Item: S_Rolling_Armor    # Rolling Shadow Armor (24536)
-        Price: 100
-      - Item: Viva_Adul_Hat_GC1    # Helm of Faith (Guillotine Cross) (400216)
-        Price: 400
-      - Item: S_Slash_Armor    # Slash Shadow Armor (24542)
-        Price: 100
-      - Item: Up_Royal_Bow_K    # Patent Royal Bow (700018)
-        Price: 300
-      - Item: Viva_Adul_Hat_SC2    # Helm of Faith II (Shadow Chaser) (400192)
-        Price: 400
-      - Item: Bio_CapeRange_TH    # Biolab Cape (Range) (480427)
-        Price: 400
-      - Item: Unknown_Hero_Ring_SC    # Ring of Unknown Hero (Shadow Chaser) (490438)
-        Price: 200
-      - Item: Old_DetachmentsRing_TH    # Old Detachment Ring (490613)
-        Price: 400
-      - Item: S_Triangle_Armor    # Triangle Shadow Armor (24524)
-        Price: 100
-      - Item: Up_Fatalist    # Patent Fatalist (510020)
-        Price: 300
-      - Item: Viva_Adul_Hat_SC1    # Helm of Faith (Shadow Chaser) (400191)
-        Price: 400
-      - Item: Crow_Tengu_Mask    # Crow Tengu Mask (5933)
-        Price: 100
-      - Item: Glotoneria    # Glotoneria (480081)
-        Price: 200
-      - Item: Mecha_Greaves_US    # Ancient Mechanic Greaves (470289)
-        Price: 200
-      - Item: Overdrive_Rampage_    # Overdrive Rampage (490545)
-        Price: 600
-      - Item: S_Menace_Armor    # Menace Shadow Armor (24530)
-        Price: 100
-      - Item: Up_Meteor_Striker    # Patent Meteor Striker (590011)
-        Price: 300
-      - Item: Old_Driver_Band_Y    # Old Driver Band(Yellow) (18974)
-        Price: 400
-      - Item: Imp_Powered_Suit    # Imp Powered Suit (450209)
-        Price: 200
-      - Item: Zodiac_Boots_MC    # Zodiac Boots (Merchant) (470267)
-        Price: 200
-      - Item: Document_Merchant_TH    # Document Merchant (490607)
-        Price: 200
-      - Item: Record_Merchant_TH    # Record of Merchant (490239)
-        Price: 200
-      - Item: S_Arms_Weapon    # Arm Shadow Weapon (24473)
-        Price: 100
-      - Item: Up_Avenger    # Patent Avenger (620004)
-        Price: 300
-      - Item: Viva_Adul_Hat_NC1    # Helm of Faith (Mechanic) (400230)
-        Price: 400
-      - Item: Pires_US    # Mysterious Red Plate (420313)
-        Price: 200
-      - Item: Unknown_Hero_Ring_NC    # Ring of Unknown Hero (Mechanic) (490531)
-        Price: 200
-      - Item: S_Tornado_Armor    # Tornado Shadow Armor (24464)
-        Price: 100
-      - Item: Up_Sword_Of_Bluefire    # Patent Red Lotus Sword (500013)
-        Price: 300
-      - Item: Viva_Adul_Hat_GN1    # Helm of Faith (Genetic) (400233)
-        Price: 400
-      - Item: Old_Moroc_Acc    # Ancient Morocc Noble Jewelry (410254)
-        Price: 200
-      - Item: Unknown_Hero_Ring_GN    # Ring of Unknown Hero (Genetic) (490515)
-        Price: 200
-      - Item: CannonConverter_TW    # Cannon Modifier (32259)
-        Price: 200
-      - Item: S_Cannon_Cart_Weapon    # Cannon Cart Shadow Weapon (24563)
-        Price: 100
-      - Item: Adulter_F_Hall    # Adulter Fides Hall (590022)
-        Price: 600
-      - Item: Viva_Adul_Hat_GN2    # Helm of Faith II (Genetic) (400234)
-        Price: 400
-      - Item: Paracelsus_Glove    # Paracelsus Glove (490146)
-        Price: 200
-      - Item: S_Cart_Tornado_Armor    # Tornado Shadow Armor (24560)
-        Price: 100
-      - Item: Up_OneSkyOneSun    # Patent One Sky One Sun (540010)
-        Price: 300
-      - Item: S_Circlet_Of_Time_SJ    # Temporal Circlet (Star Emperor) (19486)
-        Price: 400
-      - Item: Tengu_Scroll    # Tengu Scroll (19112)
-        Price: 100
-      - Item: Auto_Leg_A    # Automatic Leg Type A (470022)
-        Price: 200
-      - Item: Unknown_Hero_Ring_TK    # Ring of Unknown Hero (Taekwon) (490469)
-        Price: 200
-      - Item: S_Sunshine_Weapon    # Sunshine Shadow Weapon (24646)
-        Price: 100
-      - Item: Viva_Adul_Hat_SJ1    # Helm of Faith (Star Emperor) (400241)
-        Price: 400
-      - Item: S_Moonlight_Earring    # Moonlight Shadow Earring (24649)
-        Price: 100
       - Item: FullFaith_Crown_US    # Full Faith Crown (400697)
         Price: 200
       - Item: Astraea_Ring    # Asteria's Ring (32219)
         Price: 200
-      - Item: Skul_Ring_    # Skull Ring (2715)
-        Price: 100
-      - Item: S_Evilcurse_Earring    # Evil Curse Shadow Earring (24658)
-        Price: 100
       - Item: Viva_Adul_Hat_SP1    # Helm of Faith (Soul Reaper) (400239)
         Price: 400
-      - Item: S_S_Weapon    # Es Shadow Weapon (24655)
-        Price: 100
-      - Item: Up_Fog_Dew_Sword    # Patent Kiri no Tsuyu (510022)
-        Price: 300
-      - Item: Sharp_Wind_Sword    # Surudoi Kaze (28763)
-        Price: 300
-      - Item: S_Circlet_Of_Time_KG    # Temporal Circlet (Kagerou) (19490)
-        Price: 400
-      - Item: Unknown_Hero_Ring_NJ    # Ring of Unknown Hero (Ninja) (490479)
-        Price: 200
-      - Item: S_Kagerou_Armor    # Kagerou Shadow Armor (24403)
-        Price: 200
-      - Item: Up_Humma_Clear    # Patent Huuma Shuriken Clearness (650004)
-        Price: 300
-      - Item: Viva_Adul_Hat_KO1    # Helm of Faith (Kagerou & Oboro) (400235)
-        Price: 400
-      - Item: Ball_Of_RasenHuuma    # Rasen Fuma's Orb (32262)
-        Price: 200
-      - Item: S_Kunai_Weapon    # Kunai Shadow Weapon (24622)
-        Price: 100
       - Item: Kuroiro_AD    # Kuroiro-OSAD (510066)
         Price: 600
       - Item: S_Circlet_Of_Time_OB    # Temporal Circlet (Oboro) (19489)
@@ -1113,39 +881,17 @@ Body:
         Price: 200
       - Item: Auto_Leg_B    # Automatic Leg Type B (470023)
         Price: 200
-      - Item: Shinobi's_Sash_H    # Shinobi Sash H (28485)
-        Price: 200
-      - Item: S_Kamaenraku_Weapon    # First Exploding Draft Shadow Weapon (24628)
-        Price: 100
-      - Item: Up_Crimson_Rose    # Patent Crimson Rose (800002)
-        Price: 300
-      - Item: Viva_Adul_Hat_RL2    # Helm of Faith II (Rebellion) (400238)
-        Price: 400
-      - Item: Unknown_Hero_Ring_RL    # Ring of Unknown Hero (Rebellion) (490498)
-        Price: 200
-      - Item: Imperial_Glove    # Imperial Glove (28551)
-        Price: 200
-      - Item: S_Trip_Weapon    # Trip Shadow Weapon (24613)
-        Price: 100
-      - Item: Up_Master_Soul_Rifle    # Patent Master Soul Rifle (810001)
-        Price: 300
-      - Item: Viva_Adul_Hat_RL1    # Helm of Faith (Rebellion) (400237)
-        Price: 400
-      - Item: S_Tail_Dragon_Weapon    # Tail Dragon Shadow Weapon (24601)
-        Price: 100
-      - Item: Up_Blessed_Knife    # Patent Blessed Knife (510071)
-        Price: 300
-      - Item: S_Circlet_Of_Time_NV    # Temporal Circlet (Super Novice) (19491)
-        Price: 400
-      - Item: Unknown_Hero_Ring_NV    # Ring of Unknown Hero (Novice) (490511)
-        Price: 200
-      - Item: S_Super_Power_Weapon    # Super Power Shadow Weapon (24619)
-        Price: 100
       - Item: Up_Freedom_Stick    # Patent Freedom Stick (550081)
         Price: 300
-      - Item: Illusion_Shield_B    # Illusion Shield II (460014)
-        Price: 200
-      - Item: S_Super_Magic_Shield    # Super Magic Shadow Shield (24616)
+      - Item: S_Archbishop_Shield    # Archbishop Shadow Shield (24305)
+        Price: 100
+      - Item: S_Adoramus_Pendant    # Adora Shadow Pendant (24492)
+        Price: 100
+      - Item: S_Adoramus_Earing    # Adora Shadow Earring (24493)
+        Price: 100
+      - Item: S_Priest_Shoes    # Priest Shadow Shoes (24260)
+        Price: 100
+      - Item: S_Priest_Armor    # Priest Shadow Armor (24273)
         Price: 100
   # MVP Cards
   - Tab: Permanent
@@ -1226,7 +972,7 @@ Body:
         Price: 200
       - Item: B_Ygnizem_Card    # General Egnigem Cenia Card (4352)
         Price: 200
-  # Refine: safe certificates (Refine Master, prontera 184,177), blessing, ores, enchant stones
+  # Refine: safe certificates (Refine Master, prontera 184,177), blessing, ores, enchant stones, shadow gear refining (Shadow Blacksmith, prontera 187,177)
   - Tab: Scrolls
     Items:
       - Item: Guarantee_Weapon_14Up    # Safe to 14 Weapon Certificate (6871)
@@ -1253,7 +999,31 @@ Body:
         Price: 30
       - Item: Enchant_Stone_Box3    # Costume Enchant Stone Box 3 (14695)
         Price: 30
-  # Consumables: event tickets, levelling, speed, mount, stat foods, acid packs, supplies, homunculus, mercenaries
+      - Item: Enriched_Elunium    # Enriched Elunium (7619)
+        Price: 10
+      - Item: Enriched_Oridecon    # Enriched Oridecon (7620)
+        Price: 10
+      - Item: Shadow_9_Refine_Hammer    # Shadow 9 Refine Hammer (23926)
+        Price: 120
+      - Item: Shadow_Refine_Hammer    # Shadow Refine Hammer (23436)
+        Price: 40
+      - Item: Ethernium    # Etherium (1000331)
+        Price: 15
+      - Item: Enriched_Ethernium    # Enriched Etherium (1000333)
+        Price: 25
+      - Item: HD_Ethernium    # HD Etherium (1000335)
+        Price: 25
+      - Item: Etherdeocon    # Etherdeocon (1000332)
+        Price: 15
+      - Item: Enriched_Etherdeocon    # Enriched Etherdeocon (1000334)
+        Price: 25
+      - Item: HD_Etherdeocon    # HD Etherdeocon (1000336)
+        Price: 25
+      - Item: Temporal_Crystal    # Temporal Crystal (6607)
+        Price: 5
+      - Item: Coagulated_Spell    # Coagulated Spell (6608)
+        Price: 3
+  # Items & Pets: event tickets, levelling, speed, stat foods, acid packs, supplies, homunculus, mercenaries, pets (eggs, food, accessories)
   - Tab: Consumables
     Items:
       - Item: Special_Maps_Ticket    # Ingresso dos Mapas Especiais (990001)
@@ -1278,8 +1048,6 @@ Body:
         Price: 30
       - Item: Kafra_Card    # Kafra Card (12211)
         Price: 1
-      - Item: Boarding_Halter    # Reins Of Mount (12622)
-        Price: 50
       - Item: Speed_Up_Potion    # Speed Potion (12016)
         Price: 2
       - Item: Guarana_Candy    # Guarana Candy (12414)
@@ -1302,6 +1070,18 @@ Body:
         Price: 5
       - Item: Acidbomb_Box500    # Acidbomb Box500 (17070)
         Price: 1
+      - Item: Elemental_Fire    # Elemental Converter (12114)
+        Price: 2
+      - Item: Elemental_Water    # Elemental Converter (12115)
+        Price: 2
+      - Item: Elemental_Earth    # Elemental Converter (12116)
+        Price: 2
+      - Item: Elemental_Wind    # Elemental Converter (12117)
+        Price: 2
+      - Item: Water_Of_Darkness    # Cursed Water (12020)
+        Price: 2
+      - Item: Ghost_Converter    # Ghost Converter (990011)
+        Price: 3
       - Item: Acidbomb_Box100    # Acidbomb Box100 (17069)
         Price: 1
       - Item: Yggdrasilberry    # Yggdrasil Berry (607)
@@ -1344,9 +1124,6 @@ Body:
         Price: 10
       - Item: SpearMercenary_Scroll10    # Spearman Scroll 10 (12182)
         Price: 15
-  # Pets: eggs (already tamed), food, accessories
-  - Tab: Other
-    Items:
       - Item: Bapho_Jr._Egg    # Bapho Jr. Egg (9024)
         Price: 80
       - Item: Honey    # Honey (518)
@@ -1407,46 +1184,76 @@ Body:
         Price: 1
       - Item: Queen's_Coronet    # Queen's Coronet (10032)
         Price: 20
-      - Item: Poring_Egg    # Poring Egg (9001)
-        Price: 20
-      - Item: Apple_Juice    # Apple Juice (531)
-        Price: 1
-      - Item: Backpack    # Backpack (10013)
-        Price: 10
-      - Item: Lunatic_Egg    # Lunatic Egg (9004)
-        Price: 20
-      - Item: Carrot_Juice    # Carrot Juice (534)
-        Price: 1
-      - Item: Baby_Desert_Wolf_Egg    # Baby Desert Wolf Egg (9010)
-        Price: 30
       - Item: Pet_Food    # Pet Food (537)
         Price: 1
       - Item: Moonlight_Egg    # Moonlight Egg (9112)
         Price: 60
       - Item: High_Class_Pet_food    # Luxurious Pet Food (25377)
         Price: 2
-  # Visuals: costumes (look only, no stats)
-  - Tab: Sale
+      - Item: Angeling_Egg    # Angeling Egg (9088)
+        Price: 100
+      - Item: Orc_Hero_Egg    # Orc Hero Egg (9072)
+        Price: 120
+      - Item: Orc_Lord_Egg    # Orc Lord Egg (9073)
+        Price: 120
+      - Item: Ammut_Egg    # Am Mut Egg (9089)
+        Price: 80
+      - Item: Grand_Peco_Egg    # Grand Peco Peco Egg (9071)
+        Price: 80
+      - Item: Littleisis_Egg    # Little Isis Egg (9090)
+        Price: 80
+      - Item: Nine_Tail_Egg    # Nine Tail Egg (9095)
+        Price: 100
+      - Item: Suspicious_Bottle    # Suspicious Bottle (25231)
+        Price: 2
+      - Item: Cat_O_Nine_Tail_Egg    # Cat o Nine Tail Egg (9096)
+        Price: 80
+      - Item: Teddy_Bear_Egg    # Teddy Bear Egg (9099)
+        Price: 80
+      - Item: Wad_Of_Cotton    # Cotton Tufts (25233)
+        Price: 2
+      - Item: Leaf_Cat_Egg    # Leaf Cat Egg (9041)
+        Price: 60
+      - Item: Fish_With_Blue_Back    # Fish With Blue Back (6096)
+        Price: 1
+      - Item: Green_Lucky_Bag    # Green Jewel Bag (10023)
+        Price: 20
+      - Item: Marionette_Egg    # Marionette Egg (9043)
+        Price: 60
+      - Item: Small_Snow_Flower    # Small Snow Flower (6098)
+        Price: 1
+      - Item: Star_Hairband    # Hairband Of Stars (10025)
+        Price: 20
+      - Item: Whisper_Egg    # Whisper Egg (9045)
+        Price: 60
+      - Item: Damp_Darkness    # Damp Darkness (6100)
+        Price: 1
+      - Item: Spirit_Chain_    # Pet Soul Ring (10027)
+        Price: 20
+      - Item: Imp_Egg    # Imp Egg (9056)
+        Price: 80
+      - Item: Flame_Gemstone    # Flame Gemstone (6114)
+        Price: 1
+      - Item: Horn_Protector    # Horn Barrier (10038)
+        Price: 20
+      - Item: Golem_Egg    # Golem Egg (9053)
+        Price: 60
+      - Item: Mystic_Stone    # Mystic Stone (6111)
+        Price: 1
+      - Item: Windup_Spring    # Spring (10035)
+        Price: 20
+      - Item: Skeggiold_Egg    # Skeggiold Egg (9187)
+        Price: 100
+      - Item: Morning_Dew    # Morning Dew (6105)
+        Price: 1
+  # Visuals: ride (Reins Of Mount: the mount matches your class) and costumes (look only, no stats)
+  - Tab: Other
     Items:
+      - Item: Boarding_Halter    # Reins Of Mount (12622)
+        Price: 50
       - Item: C_Wings_of_Uriel    # Costume Wings of Uriel (20509)
         Price: 60
-      - Item: C_Wings_of_Michael    # Costume Wings of Michael (20516)
-        Price: 60
-      - Item: C_Wings_of_Gabriel    # Costume Wings of Gabriel (20530)
-        Price: 60
-      - Item: C_Wings_Of_Raguel    # Costume Raguel's Wings (20578)
-        Price: 60
-      - Item: C_Wings_Of_Raphael    # Costume Raphael's Wings (20579)
-        Price: 60
       - Item: C_Wings_Of_Lucifer    # Costume Lucifer's Wings (31737)
-        Price: 60
-      - Item: C_GreatDevilWing    # Costume Great Devil Wings (20762)
-        Price: 60
-      - Item: C_Valkyrie_Wing    # Costume Valkyrie Wings (20571)
-        Price: 60
-      - Item: C_Bloody_Wing    # Costume Crimson Wings (20525)
-        Price: 60
-      - Item: C_Sakura_Wing    # Costume: Sakura Wings (20599)
         Price: 60
       - Item: C_Ice_Wing    # Costume: Ice Wings (20593)
         Price: 60
@@ -1488,13 +1295,179 @@ Body:
         Price: 40
       - Item: C_Cat_Hairband    # Costume Kitty Band (19843)
         Price: 40
-      - Item: C_Heart_Wing_Hairband    # Costume Heart Wing Hairband (19573)
-        Price: 40
-      - Item: C_Ear_Of_Devils_Wing    # Costume Evil Wing Ear (19621)
-        Price: 40
-      - Item: C_Ear_Of_Angel's_Wing_    # Costume Angel Wing Ears (19781)
-        Price: 40
       - Item: C_Ifrit's_Ear    # Costume Ifrit Ear (19810)
         Price: 40
       - Item: C_Blush    # Costume Blush (19550)
         Price: 20
+      - Item: C_Chinese_Crown    # Costume Phoenix Crown (19645)
+        Price: 60
+      - Item: C_Light_Darkness_Crown    # Costume Light Darkness Crown (19751)
+        Price: 60
+      - Item: C_Mistress_Crown    # Costume Crown of Mistress (19786)
+        Price: 60
+      - Item: C_Lord_of_Death    # Costume Lord of Death (19574)
+        Price: 60
+      - Item: C_Rising_Black_Dragon    # Costume Ascension Black Dragon (19575)
+        Price: 60
+      - Item: C_Majestic_Evil_Horn    # Costume Majestic Devil Horns (19741)
+        Price: 50
+      - Item: C_Blazing_Sun    # Costume Blazing Sun (19808)
+        Price: 50
+      - Item: C_Moonlight_Flower_Hat    # Costume Moonlight Flower Hat (19642)
+        Price: 50
+      - Item: C_Witchs_Hat    # Costume Witch's Hat (19903)
+        Price: 40
+      - Item: C_Mask_Of_Fox    # Costume Kitsune Mask (19618)
+        Price: 40
+      - Item: C_Tiara    # Costume Tiara (19629)
+        Price: 40
+      - Item: C_Blossom_Fluttering    # Costume Dancing Fallen Sakura (20285)
+        Price: 40
+      - Item: C_Umbala_Spirit    # Costume Umbala Spirit (20497)
+        Price: 40
+      - Item: C_Flutter_Butterfly    # Costume Flutter Butterfly (5914)
+        Price: 30
+      - Item: C_Beelzebub_Crown    # Costume Beelzebub Crown (20302)
+        Price: 60
+      - Item: C_Headgear_Of_Queen    # Costume Crown of Ancient Queen (20454)
+        Price: 60
+      - Item: C_Celestial_Hat    # Costume Celestial Hat (19753)
+        Price: 60
+      - Item: C_Seraph_Wing_Helm    # Costume Seraph Wing Helm (20316)
+        Price: 60
+      - Item: C_Victory_Wing_Helm    # Costume Victory Wing Helm (20386)
+        Price: 60
+      - Item: C_Satanic_Chain    # Costume Evolved Evil Wing (19731)
+        Price: 50
+      - Item: C_Love_Daddy_2013    # Costume Forgotten Angel Wing (20079)
+        Price: 50
+      - Item: C_Fallen_Angel_Blessing    # Costume Blessing of Fallen Angel (31183)
+        Price: 50
+      - Item: C_Royal_Rabbit_Crown    # Costume Royal Rabbit Crown (31201)
+        Price: 50
+      - Item: C_Angeling_Hat    # Costume Angeling Hat (19848)
+        Price: 40
+      - Item: C_Hellomother_Hat    # Costume Arc Angeling Hat (20236)
+        Price: 40
+      - Item: C_Drooping_Nine_Tail    # Costume Lazy Ninetail (19802)
+        Price: 40
+      - Item: C_Droop_Morocc_Minion    # Costume Drooping Morooc Minion (19818)
+        Price: 40
+      - Item: C_Gray_Drooping_Kitty    # Costume Drooping Gray Kitty (19927)
+        Price: 40
+      - Item: C_Drooping_Bunny    # Costume Evolved Drooping Bunny (19878)
+        Price: 40
+      - Item: C_Puppy_Hat    # Costume Puppy Hat (19842)
+        Price: 40
+      - Item: C_Puppy_Love    # Costume Puppy Love (20178)
+        Price: 40
+      - Item: C_Black_Cat_Ears_Beret    # Costume Black Cat Ears Beret (20191)
+        Price: 40
+      - Item: C_Feather_Beret    # Costume Feather Beret (19585)
+        Price: 40
+      - Item: C_Oldman's_Romance    # Costume Romantic Gent (19720)
+        Price: 40
+      - Item: C_Gryphon_Hat    # Costume Gryphon Hat (19537)
+        Price: 40
+      - Item: C_Lif_Doll_Hat    # Costume Lif Doll Hat (19835)
+        Price: 40
+      - Item: C_Poring_Hat    # Costume Poring Hat (19832)
+        Price: 30
+      - Item: C_Masquerade    # Costume Masquerade (20124)
+        Price: 40
+      - Item: C_Hockey_Mask    # Costume Hockey Mask (20166)
+        Price: 40
+      - Item: C_Loki_Mask    # Costume Loki Mask (19615)
+        Price: 40
+      - Item: C_Odin_Mask    # Costume Odin Mask (19924)
+        Price: 40
+      - Item: C_Blessing_Of_Angels    # Costume Blessing of Angel (20404)
+        Price: 40
+      - Item: C_Kirin_Wing    # Costume Kirin Wing (20737)
+        Price: 70
+      - Item: C_Rudra_Wing    # Costume Rudra Wings (20746)
+        Price: 70
+      - Item: C_Archangel_Wing    # Costume Archangel Wing (20765)
+        Price: 70
+      - Item: C_Fallen_Angel_Wing    # Costume Fallen Angel Wing (20764)
+        Price: 70
+      - Item: C_Baldr_Wing_TW    # Costume Baldr Wing (20607)
+        Price: 70
+      - Item: C_Amistr_Bag    # Costume Amistr Bag (20763)
+        Price: 50
+      - Item: C_Black_Devil_Mask    # Costume Black Devil Mask (20215)
+        Price: 40
+      - Item: C_Morocc_Kid_Servant    # Costume Loyal Servant of Devil Morocc (20430)
+        Price: 40
+      - Item: C_Dragon_Arhat_Mask    # Costume Dragon Arhat Mask (19563)
+        Price: 40
+      - Item: C_Assassin_Skull_Mask    # Costume Scratch Mask (31118)
+        Price: 30
+      - Item: Eye_Patch_Blue    # Costume Eyepatch of Peace (31106)
+        Price: 30
+      - Item: Eye_Patch_Red    # Costume Eyepatch of Prosperity (31107)
+        Price: 30
+      - Item: C_Vampire_Familiar    # Costume Vampire Familiar (31120)
+        Price: 40
+      - Item: C_Bloody_Stop_Bandage    # Costume Bloody Stop Bandage (31122)
+        Price: 30
+      - Item: C_Gambler_Seal    # Costume Gambler Seal (31133)
+        Price: 30
+      - Item: C_Spinning_Eyes    # Costume Spinning Eyes (31155)
+        Price: 30
+      - Item: C_Lunatic_Ear_Black    # Costume Hanging Black Lunatic Ears (31167)
+        Price: 30
+      - Item: C_Black_Cat    # Costume Black Cat (31186)
+        Price: 40
+      - Item: C_War_Princess_Ribbon    # Costume War Princess Ribbon (31187)
+        Price: 40
+      - Item: C_Persika_J    # Costume Persica (31234)
+        Price: 40
+      - Item: C_Large_Ribbonmuffler_V    # Costume Large Ribbon Muffler (Middle) (31235)
+        Price: 40
+      - Item: C_Tongue_Mask_V    # Costume Tongue Mask (Middle) (31243)
+        Price: 30
+      - Item: C_Wonderful_Beast_Ear    # Costume Wonderful Beast Ears (31250)
+        Price: 40
+      - Item: C_White_Clay_Filler    # Costume Glowing White Blush (31258)
+        Price: 30
+      - Item: C_Pig_Nose    # Costume Pig Nose (31029)
+        Price: 30
+      - Item: C_Blue_Rear_Ribbon    # Costume Blue Rear Ribbon (31045)
+        Price: 30
+      - Item: C_Poring_Soap_Pipe    # Costume Poring Soap Pipe (31055)
+        Price: 30
+      - Item: C_Eremes_Scarf_Black    # Costume: Eremes' Scarf (Black) (31057)
+        Price: 40
+      - Item: C_Dwarf_Beard    # Costume Dwarf Beard (31087)
+        Price: 30
+      - Item: C_Underlamp    # Costume: Lamp of Fairy (31093)
+        Price: 40
+      - Item: C_Stall_Of_Bat    # Costume Stall Of Bat (31121)
+        Price: 30
+      - Item: C_Chatty_Parrot    # Costume Talkactive Parrot (31134)
+        Price: 40
+      - Item: C_Time_Accessory_J    # Costume Prison of Time (31142)
+        Price: 40
+      - Item: C_Piamette_BowTie_Red    # Costume Piamette's Red Bow Tie (31152)
+        Price: 30
+      - Item: C_Shaving_Foam    # Costume Shaving Foam (31162)
+        Price: 30
+      - Item: C_Brown_Stall    # Costume Brown Stole (31164)
+        Price: 30
+      - Item: C_Flame_Muffler    # Costume Fire Muffler (31178)
+        Price: 40
+      - Item: C_Necklace_Rosary    # Costume Necklace Rosary (31181)
+        Price: 30
+      - Item: C_Cat_Ears_Cape_Red    # Costume Red Cat Ears Cape (31189)
+        Price: 40
+      - Item: C_Weird_Goatee    # Costume Weird Beard (31199)
+        Price: 30
+      - Item: C_Pope_Ribbon_V    # Costume Pale Yellow Ribbon (Lower) (31237)
+        Price: 30
+      - Item: C_Blazing_Sun_V    # Costume Burning Sun (Lower) (31241)
+        Price: 40
+      - Item: C_Cat_Mouth    # Costume Cat's Mouth (31251)
+        Price: 30
+      - Item: C_Clay_Poring_Jar    # Costume Poring Jars Of Clay (31257)
+        Price: 30

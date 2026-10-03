@@ -88,6 +88,12 @@ def icon_bmp(item_id):
     return _bmp(png, (24, 24)) if png else None
 
 
+def card_bmp(item_id):
+    """Big card picture (right-click a card), like the client's own data/texture/<UI>/cardbmp files."""
+    png = _get(f"https://static.divine-pride.net/images/items/cards/{item_id}.png", os.path.join(DP, f"{item_id}_card.png"))
+    return _bmp(png, (300, 400)) if png else None
+
+
 def collection_bmp(item_id):
     png = _get(f"https://static.divine-pride.net/images/items/collection/{item_id}.png", os.path.join(DP, f"{item_id}_col.png"))
     return _bmp(png, (75, 100)) if png else None
