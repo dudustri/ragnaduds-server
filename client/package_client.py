@@ -20,7 +20,7 @@ Mir AI Mod preset to hunt by itself, /hoai in game) in every AI*/USER_AI, with d
 sclientinfo.xml pointing at <server-address>. Your installed folder is not modified.
 Icons/pictures come from client/installer/ (generate them with build/installer/make_assets.py).
 """
-import hashlib, json, os, re, sys, tempfile, zipfile
+import hashlib, json, os, re, sys, tempfile, time, zipfile
 
 import grf
 
@@ -33,7 +33,8 @@ CLIENTS = {
                 edition="Pre-Renewal · classic 2021 client", shortcut="RagnaDuds Pre-Renewal"),
     "re":  dict(src=f"{HOME}/games/kro2026/wine/drive_c/Gravity/kRO2026", exe="ragexe_2026_patched.exe",
                 args="1rag1", port=6901, web_port=8888, zipname="duds-renewal.zip", folder="Renewal",
-                edition="Renewal · 2026 client", shortcut="RagnaDuds Renewal"),
+                edition="Renewal · 2026 client", shortcut="RagnaDuds Renewal",
+                arial=True),    # exe patched to Arial + Western charset (WARP2026/rAthena_Font.yml): Linux installs real Arial
 }
 SKIP_DIRS = {"savedata", "_backup_before_english", "USER_AI_before_mirai"}
 HOMUN_AI = os.path.join(HERE, "homunculus_ai")
@@ -224,6 +225,69 @@ def build_game_zip(c, edition, addr, path):
         {"ini": ini_name, "grfs": logins}
 
 
+# Auto-update (the launcher, see installer/launch.ps1 and linux_install.py --launch): every game file, unpacked,
+# in <out_dir>/patch/<edition>/ + patch.json with [path, size, sha256] for each. Only changed files are rewritten,
+# so "./duds.sh files" (rsync) uploads only those. Players' launchers download just the files whose checksum changed.
+# Also the launcher scripts themselves (self-update), marked "win" / "linux".
+PATCH_EXTRA = {"launch.ps1": "win", "uninstall.ps1": "win", "duds_ok_bg.png": "win", "PressStart2P-Regular.ttf": "win",
+               ".installer/linux_install.py": "linux", ".installer/duds_ok_bg.png": "linux",
+               ".installer/PressStart2P-Regular.ttf": "linux"}
+
+
+def build_patch(game_zip, edition, out_dir):
+    """Returns {path: (size, sha256)} of the game files."""
+    root = os.path.join(out_dir, "patch", edition)
+    index_path = os.path.join(root, "patch.json")
+    old = {}
+    if os.path.exists(index_path):
+        for p, size, sha, *_ in json.load(open(index_path))["files"]:
+            old[p] = (size, sha)
+    files, written = {}, 0
+    with zipfile.ZipFile(game_zip) as z:
+        for e in z.infolist():
+            if e.is_dir(): continue
+            h = hashlib.sha256()
+            with z.open(e) as f:
+                while chunk := f.read(8 << 20): h.update(chunk)
+            sha = h.hexdigest(); files[e.filename] = (e.file_size, sha)
+            target = os.path.join(root, *e.filename.split("/"))
+            if old.get(e.filename) == (e.file_size, sha) and os.path.exists(target) and os.path.getsize(target) == e.file_size:
+                continue
+            os.makedirs(os.path.dirname(target), exist_ok=True)
+            with z.open(e) as src, open(target + ".part", "wb") as out:
+                while chunk := src.read(8 << 20): out.write(chunk)
+            os.replace(target + ".part", target); written += 1
+    extra = []
+    for rel, osname in PATCH_EXTRA.items():
+        src = os.path.join(INSTALLER, os.path.basename(rel))
+        data = open(src, "rb").read()
+        target = os.path.join(root, *rel.split("/")); os.makedirs(os.path.dirname(target), exist_ok=True)
+        if not os.path.exists(target) or open(target, "rb").read() != data:
+            open(target, "wb").write(data); written += 1
+        extra.append([rel, len(data), hashlib.sha256(data).hexdigest(), osname])
+    for p in set(old) - set(files) - set(PATCH_EXTRA):              # files the new version doesn't have
+        t = os.path.join(root, *p.split("/"))
+        if os.path.exists(t): os.remove(t)
+    index = {"version": time.strftime("%Y-%m-%d %H:%M:%S"), "edition": edition,
+             "files": [[p, s, h] for p, (s, h) in sorted(files.items())] + extra}
+    json.dump(index, open(index_path + ".part", "w")); os.replace(index_path + ".part", index_path)
+    print(f"Patch files: {written} changed, {len(files)} game files in {root}")
+    return files
+
+
+def web_settings():
+    """(site url, login token) for the launcher's downloads, from deploy/hosts/vm/.env."""
+    env = {}
+    p = os.path.join(HERE, "..", "deploy", "hosts", "vm", ".env")
+    if os.path.exists(p):
+        for line in open(p):
+            if "=" in line and not line.lstrip().startswith("#"):
+                k, v = line.split("=", 1); env[k.strip()] = v.split("#")[0].strip().strip('"')
+    site = env.get("SITE_ADDRESS", "")
+    url = f"https://{site}" if site and not site.startswith(":") else ""
+    return url, env.get("DL_TOKEN", "")
+
+
 def main():
     if len(sys.argv) < 3 or sys.argv[1] not in CLIENTS:
         sys.exit(__doc__)
@@ -240,7 +304,7 @@ def main():
     top = f"RagnaDuds-{c['folder']}"
     cfg = {"title": f"RagnaDuds {c['folder']}", "edition": c["edition"], "folder": c["folder"],
            "shortcut": c["shortcut"], "exe": c["exe"], "args": c["args"], "server": f"{addr}:{c['port']}",
-           "host": addr, "port": c["port"]}
+           "host": addr, "port": c["port"], "arial": c.get("arial", False)}
     readme = (f"RagnaDuds · {c['edition']}\r\nServer: {addr}:{c['port']}\r\n\r\n"
               "WINDOWS: double-click 'Install RagnaDuds.bat'. A 'RagnaDuds' icon appears on your desktop.\r\n"
               "  If Windows warns ('Windows protected your PC'): More info -> Run anyway.\r\n"
@@ -259,6 +323,11 @@ def main():
     game_tmp = out + ".game.part"; tmp = out + ".part"
     print(f"Packing game files from {c['src']} …")
     n, size, manifest, login_pics = build_game_zip(c, sys.argv[1], addr, game_tmp)
+    patch = build_patch(game_tmp, sys.argv[1], out_dir)
+    manifest["files"] = [[p, sz, patch[p][1]] for p, sz in manifest["files"]]     # + sha256: the launcher's starting point
+    site, token = web_settings()
+    if site and token:
+        cfg["patch"] = {"url": f"{site}/files/patch/{sys.argv[1]}/", "token": token}
     print("Adding installer …")
     with zipfile.ZipFile(tmp, "w", allowZip64=True) as z:
         z.writestr(f"{top}/Install RagnaDuds.bat",

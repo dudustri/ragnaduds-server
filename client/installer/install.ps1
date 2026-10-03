@@ -171,7 +171,7 @@ $timer.Start()
 # ---------- reinstall on top of an existing install ----------
 # kept on reinstall: settings, screenshots, chat logs (not in game.zip) + our own files in the game folder
 $keepDirs = @('savedata', 'screenshot', 'chat', 'replay')
-$keepFiles = @('ragnaduds.ico', 'launch.ps1', 'uninstall.ps1', 'ragnaduds-install.json')
+$keepFiles = @('ragnaduds.ico', 'launch.ps1', 'uninstall.ps1', 'ragnaduds-install.json', 'ragnaduds-patch.json', 'duds_ok_bg.png', 'pressstart2p-regular.ttf')
 function Test-Installed($d) {
   try { $d = [IO.Path]::GetFullPath($d) } catch { return $false }
   (Test-Path -LiteralPath (Join-Path $d 'ragnaduds-install.json')) -or (Test-Path -LiteralPath (Join-Path $d $cfg.exe))
@@ -219,7 +219,7 @@ function Install-Gulim {
   return (Test-Gulim)
 }
 
-# the game starts through launch.ps1 (in the game folder): it puts a random login picture in place first
+# the game starts through launch.ps1 (in the game folder): update check, PLAY button, next login picture
 function Get-LaunchArgs($dest) { "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$(Join-Path $dest 'launch.ps1')`"" }
 function Invoke-Game($dest) {
   $psExe = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
@@ -301,8 +301,12 @@ $go.Add_Click({
 
     $status.Text = 'Creating shortcuts...'
     Copy-Item (Join-Path $here 'ragnaduds.ico') (Join-Path $dest 'ragnaduds.ico') -Force
-    # launcher (random login picture, then the game) + uninstaller, with the config + where the game is
-    foreach ($f in @('launch.ps1', 'uninstall.ps1')) { Copy-Item (Join-Path $here $f) (Join-Path $dest $f) -Force }
+    # launcher (checks for updates, PLAY button, login picture) + uninstaller, with the config + where the game is
+    foreach ($f in @('launch.ps1', 'uninstall.ps1', 'duds_ok_bg.png', 'PressStart2P-Regular.ttf')) { Copy-Item (Join-Path $here $f) (Join-Path $dest $f) -Force }
+    # auto-update starting point: what was just installed (path -> sha256, from the package's file list)
+    $state = New-Object PSObject
+    foreach ($p in $list) { if ($p.Count -ge 3) { $state | Add-Member -NotePropertyName $p[0] -NotePropertyValue $p[2] -Force } }
+    [IO.File]::WriteAllText((Join-Path $dest 'ragnaduds-patch.json'), ($state | ConvertTo-Json -Compress), (New-Object Text.UTF8Encoding($false)))
     $cfg | Add-Member -NotePropertyName dest -NotePropertyValue $dest -Force
     [IO.File]::WriteAllText((Join-Path $dest 'ragnaduds-install.json'), ($cfg | ConvertTo-Json -Depth 5), (New-Object Text.UTF8Encoding($false)))
     $psExe = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'

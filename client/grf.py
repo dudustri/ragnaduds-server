@@ -23,7 +23,7 @@ def entries(path):
         j = tbl.index(b"\0", i)
         csize, casize, size, flags = struct.unpack_from("<IIIB", tbl, j + 1)
         pos = struct.unpack_from("<Q" if ver >= 0x300 else "<I", tbl, j + 14)[0]
-        out[tbl[i:j]] = (casize, size, flags, pos)
+        out[tbl[i:j]] = (max(csize, casize), size, flags, pos)   # some 0x300 entries: casize < csize
         i = j + (22 if ver >= 0x300 else 18)
     return f, out
 
@@ -32,7 +32,7 @@ def read(f, e):
     if flags != 1:  # 1 = plain file; others are folders or encrypted
         return None
     f.seek(46 + pos)
-    return zlib.decompress(f.read(casize))[:size]
+    return zlib.decompressobj().decompress(f.read(casize))[:size]   # ignores alignment padding
 
 def write(path, files):
     """Write a GRF 0x200 (zlib, no encryption) with {name inside the grf: data}. Names are client paths

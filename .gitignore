@@ -4,6 +4,7 @@ deploy/hosts/*/
 
 # ---- built client zips and database dumps ----
 deploy/files/*.zip
+deploy/files/patch/
 backups/
 
 # ---- caches ----

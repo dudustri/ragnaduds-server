@@ -10,6 +10,7 @@ Options: --dest DIR    install somewhere else
          --no-fonts    skip the winetricks font download
          --text        force the terminal progress bar
          --uninstall   remove this edition (game folder, Wine setup, launchers)
+         --launch      the launcher (menu / desktop entries): download changed files, then PLAY
 """
 import hashlib, json, os, re, shutil, socket, subprocess, sys, threading, zipfile
 
@@ -27,7 +28,8 @@ LAUNCHER = f"ragnaduds-{CFG['folder'].lower()}"               # .desktop file na
 FONT_DIR = os.path.expanduser("~/.local/share/fonts/ragnaduds")   # shared by both editions
 # kept on reinstall: Wine (with its fonts), settings, screenshots, chat logs + our own files in the game folder
 KEEP_DIRS = {"wine", "savedata", "screenshot", "chat", "replay", ".installer"}
-KEEP_FILES = {"ragnaduds.png", "ragnaduds.sh", "ragnaduds-install.json"}
+KEEP_FILES = {"ragnaduds.png", "ragnaduds.sh", "ragnaduds-install.json", "ragnaduds-patch.json"}
+PATCH_STATE = "ragnaduds-patch.json"     # auto-update: path -> sha256 of what is installed (see update())
 
 
 # ---------------- errors: the whole text, so friends can copy it and send it ----------------
@@ -98,15 +100,22 @@ def install(report):
                                f"  Install winetricks, then run: WINEPREFIX=\"{PREFIX}\" winetricks -q cjkfonts")
     # the game's own font is Gulim (Microsoft, can't be shipped). With it the text looks like the original game;
     # without it Wine uses a look-alike (blurrier). Taken from next to install.sh or the user's font folders.
-    gulim = find_gulim()
-    if gulim:
+    gulim = None if CFG.get("arial") else find_gulim()
+    if CFG.get("arial"):
+        fonts = os.path.join(PREFIX, "drive_c", "windows", "Fonts"); os.makedirs(fonts, exist_ok=True)
+        if install_arial(fonts, env):
+            RESULT["notes"].append("✔ game font: Arial (like bRO)")
+        else:
+            RESULT["notes"].append("⚠ couldn't download Microsoft Arial: using Wine's look-alike (text a bit blurrier).\n"
+                                   "  Run the installer again when online to fix it.")
+    elif gulim:
         fonts = os.path.join(PREFIX, "drive_c", "windows", "Fonts"); os.makedirs(fonts, exist_ok=True)
         shutil.copy(gulim, os.path.join(fonts, "gulim.ttc"))
         for name in ("Gulim", "GulimChe", "Dotum", "DotumChe"):       # drop cjkfonts' look-alike aliases
             subprocess.run(["wine", "reg", "delete", r"HKCU\Software\Wine\Fonts\Replacements", "/v", name, "/f"],
                            env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         RESULT["notes"].append("✔ game font: Gulim (original look)")
-    else:
+    elif not CFG.get("arial"):
         RESULT["notes"].append("⚠ original game font (Gulim) not found: using a look-alike.\n"
                                "  For the original look: copy gulim.ttc from a Windows PC with Korean fonts\n"
                                "  (C:\\Windows\\Fonts\\gulim.ttc) next to install.sh and run it again.")
@@ -122,11 +131,12 @@ def install(report):
     with open(launcher, "w") as f:
         f.write("#!/bin/sh\n# Start RagnaDuds with its own Wine prefix\n"
                 f'cd "{DEST}" || exit 1\n' + pick +
-                f'export WINEPREFIX="{PREFIX}" WINEDEBUG="${{WINEDEBUG:--all}}"\n'
+                "# classic TrueType hinting: crisp small text, like on Windows\n"
+                f'export FREETYPE_PROPERTIES="truetype:interpreter-version=35" WINEPREFIX="{PREFIX}" WINEDEBUG="${{WINEDEBUG:--all}}"\n'
                 f'exec wine {CFG["exe"]} {CFG["args"]}\n')
     os.chmod(launcher, 0o755)
     desktop = (f"[Desktop Entry]\nType=Application\nName={CFG['shortcut']}\nComment={CFG['title']}\n"
-               f"Exec=\"{launcher}\"\nPath={DEST}\nIcon={os.path.join(DEST, 'ragnaduds.png')}\n"
+               f"Exec=python3 \"{os.path.join(DEST, '.installer', 'linux_install.py')}\" --launch\nPath={DEST}\nIcon={os.path.join(DEST, 'ragnaduds.png')}\n"
                "Terminal=false\nCategories=Game;\n")
     os.makedirs(APPS, exist_ok=True)
     for d in [APPS, desktop_dir()]:
@@ -138,7 +148,10 @@ def install(report):
     # uninstaller: this script + config kept in the game folder, and an "Uninstall …" entry in the app menu
     keep = os.path.join(DEST, ".installer"); os.makedirs(keep, exist_ok=True)
     if os.path.realpath(HERE) != os.path.realpath(keep):
-        for f in ("linux_install.py", "config.json"): shutil.copy(os.path.join(HERE, f), keep)
+        for f in ("linux_install.py", "config.json", "duds_ok_bg.png", "PressStart2P-Regular.ttf", "ragnaduds.png"):
+            if os.path.exists(os.path.join(HERE, f)): shutil.copy(os.path.join(HERE, f), keep)
+    if RESULT["shas"]:
+        json.dump(RESULT["shas"], open(os.path.join(DEST, PATCH_STATE), "w"))
     with open(os.path.join(DEST, "ragnaduds-install.json"), "w") as f: json.dump(dict(CFG, dest=DEST), f, indent=2)
     with open(os.path.join(APPS, f"{LAUNCHER}-uninstall.desktop"), "w") as f:
         f.write(f"[Desktop Entry]\nType=Application\nName=Uninstall {CFG['shortcut']}\nComment=Remove {CFG['title']}\n"
@@ -149,7 +162,7 @@ def install(report):
     report(100, f"Done! Start '{CFG['shortcut']}' from your desktop or app menu.")
 
 
-RESULT = {"notes": []}          # sanity-check summary, shown at the end
+RESULT = {"notes": [], "shas": {}}          # sanity-check summary, shown at the end; installed file checksums
 
 
 def verify(report):
@@ -157,7 +170,9 @@ def verify(report):
     exactly the packaged one, the client points at our server, and the server answers."""
     man = json.load(open(os.path.join(HERE, "manifest.json")))
     files = man["files"]; bad = []
-    files = list(files.items()) if isinstance(files, dict) else [tuple(x) for x in files]   # old dict / new list
+    if not isinstance(files, dict):
+        RESULT["shas"] = {x[0]: x[2] for x in files if len(x) >= 3}            # auto-update starting point
+    files = list(files.items()) if isinstance(files, dict) else [tuple(x[:2]) for x in files]   # old dict / new list
     for i, (rel, size) in enumerate(files):
         p = os.path.join(DEST, rel)
         if not os.path.isfile(p) or os.path.getsize(p) != size:
@@ -194,6 +209,38 @@ def find_gulim():
                 if f.lower() == "gulim.ttc" and "wine" not in root.split(os.sep):
                     return os.path.join(root, f)
     return None
+
+
+# Real Microsoft Arial for the renewal client (its exe is patched to draw text in Arial, like bRO; Wine's own
+# "Arial" is a look-alike that blurs small bold text such as character names). Microsoft's free core fonts package,
+# the same file winetricks uses. Unpacked with cabextract when installed, else by the package itself under Wine
+# (/Q /T:<folder> /C: extract only, nothing is installed).
+ARIAL_URL = "https://downloads.sourceforge.net/corefonts/arial32.exe"
+ARIAL_SHA = "85297a4d146e9c87ac6f74822734bdee5f4b2a722d7eaa584b7f2cbf76f478f6"
+
+
+def install_arial(fonts, env):
+    """Put Microsoft's Arial (.ttf) in the game's Wine fonts folder. Returns True when done."""
+    import tempfile, urllib.request
+    cache = os.path.join(DEST, ".installer", "arial32.exe")
+    try:
+        if not (os.path.exists(cache) and hashlib.sha256(open(cache, "rb").read()).hexdigest() == ARIAL_SHA):
+            os.makedirs(os.path.dirname(cache), exist_ok=True)
+            with urllib.request.urlopen(ARIAL_URL, timeout=60) as r: data = r.read()
+            if hashlib.sha256(data).hexdigest() != ARIAL_SHA: return False
+            open(cache, "wb").write(data)
+        with tempfile.TemporaryDirectory() as tmp:
+            if shutil.which("cabextract"):
+                subprocess.run(["cabextract", "-q", "-d", tmp, cache], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            else:
+                subprocess.run(["wine", cache, "/Q", f"/T:Z:{tmp}", "/C"], env=env, timeout=120,
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            for f in os.listdir(tmp):
+                if f.lower().endswith(".ttf"):
+                    shutil.copy(os.path.join(tmp, f), os.path.join(fonts, f.lower()))
+        return os.path.exists(os.path.join(fonts, "arial.ttf"))
+    except Exception:
+        return False
 
 
 def installed():
@@ -365,22 +412,7 @@ def run_tk():
     return 1 if state["err"] else 0
 
 
-def run_gtk():
-    """Window with the whole duds_ok photo on top; progress, notes and the start button in a retro panel below it.
-    GTK 3 via PyGObject is installed on most desktops (Fedora Workstation, Ubuntu, GNOME, KDE with GTK apps)."""
-    # the website's pixel font: put it in the user's font folder so GTK can use it (free, OFL)
-    font = os.path.join(HERE, "PressStart2P-Regular.ttf")
-    fdir = os.path.expanduser("~/.local/share/fonts/ragnaduds")
-    if os.path.exists(font) and not os.path.exists(os.path.join(fdir, "PressStart2P-Regular.ttf")):
-        try:
-            os.makedirs(fdir, exist_ok=True); shutil.copy(font, fdir)
-            subprocess.run(["fc-cache", "-f", fdir], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        except Exception: pass
-    import gi
-    gi.require_version("Gtk", "3.0"); gi.require_version("Gdk", "3.0")
-    from gi.repository import Gdk, GdkPixbuf, GLib, Gtk
-    css = Gtk.CssProvider()                  # same look as the website: wooden frame, gold, pixel font
-    css.load_from_data(b"""
+GTK_CSS = b"""
       window { background-color: #14121f; }
       .panel { background-color: rgba(34, 29, 51, 0.93); border: 4px solid #6b4f2a; margin: 8px 10px 10px;
                box-shadow: inset 0 0 0 4px #000, inset 0 0 0 7px #c9a25b, 5px 5px 0 #000; padding: 16px 18px; }
@@ -402,7 +434,25 @@ def run_gtk():
       scrolledwindow.err { border: 2px solid #444; }
       button.copy { font-family: "Press Start 2P", monospace; font-size: 8px; color: #000; background-image: none;
                background-color: #ff8fb1; border: 2px solid #000; border-radius: 0; padding: 6px; }
-    """)
+    """
+
+
+def run_gtk():
+    """Window with the whole duds_ok photo on top; progress, notes and the start button in a retro panel below it.
+    GTK 3 via PyGObject is installed on most desktops (Fedora Workstation, Ubuntu, GNOME, KDE with GTK apps)."""
+    # the website's pixel font: put it in the user's font folder so GTK can use it (free, OFL)
+    font = os.path.join(HERE, "PressStart2P-Regular.ttf")
+    fdir = os.path.expanduser("~/.local/share/fonts/ragnaduds")
+    if os.path.exists(font) and not os.path.exists(os.path.join(fdir, "PressStart2P-Regular.ttf")):
+        try:
+            os.makedirs(fdir, exist_ok=True); shutil.copy(font, fdir)
+            subprocess.run(["fc-cache", "-f", fdir], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except Exception: pass
+    import gi
+    gi.require_version("Gtk", "3.0"); gi.require_version("Gdk", "3.0")
+    from gi.repository import Gdk, GdkPixbuf, GLib, Gtk
+    css = Gtk.CssProvider()                  # same look as the website: wooden frame, gold, pixel font
+    css.load_from_data(GTK_CSS)
     Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     win = Gtk.Window(title=f"{CFG['title']} - Setup"); win.set_resizable(False)
@@ -521,8 +571,147 @@ def run_text():
         return 1
 
 
+# ---------------- launcher: auto-update, then PLAY (the menu / desktop entries run "linux_install.py --launch") ----------------
+def update(report):
+    """Download the files that changed on the website (patch.json: [path, size, sha256(, os)]). Returns a summary."""
+    import urllib.request, urllib.parse
+    patch = CFG.get("patch") or {}
+    if not patch.get("url"):
+        return "This install has no auto-update (install once more from the website to get it)."
+    if game_running():
+        return "The game is already open: updates are checked next time."
+    def get(rel):
+        req = urllib.request.Request(patch["url"] + "/".join(urllib.parse.quote(x) for x in rel.split("/")),
+                                     headers={"Cookie": f"rd_auth={patch['token']}", "User-Agent": "RagnaDuds-Launcher"})
+        return urllib.request.urlopen(req, timeout=20)
+    report(2, "Checking for updates…")
+    with get("patch.json") as r:
+        if r.geturl().rstrip("/").endswith("login.html"):
+            raise RuntimeError("The website refused the update (login changed?). Install once more from the website.")
+        remote = json.load(r)
+    state_path = os.path.join(DEST, PATCH_STATE)
+    state = json.load(open(state_path)) if os.path.exists(state_path) else {}
+    first = not state
+    files = [e for e in remote["files"] if len(e) < 4 or e[3] == "linux"]
+    todo = []
+    for i, e in enumerate(files):
+        rel, size, sha = e[0], e[1], e[2]
+        local = os.path.join(DEST, rel)
+        have = os.path.isfile(local) and os.path.getsize(local) == size
+        if have and first:                     # first run: check the disk once (big archives: size is enough)
+            if size < 64 << 20:
+                h = hashlib.sha256()
+                with open(local, "rb") as f:
+                    while chunk := f.read(8 << 20): h.update(chunk)
+                have = h.hexdigest() == sha
+            if have: state[rel] = sha
+        if i % 40 == 0: report(2 + 8 * i / max(1, len(files)), f"Checking files… {i} / {len(files)}")
+        if not have or state.get(rel) != sha: todo.append((rel, size, sha))
+    names = {e[0] for e in remote["files"]}
+    removed = 0
+    for rel in [k for k in state if k not in names]:      # files the new version doesn't have any more
+        p = os.path.join(DEST, rel)
+        if os.path.isfile(p): os.remove(p); removed += 1
+        state.pop(rel)
+    def save():
+        json.dump(state, open(state_path + ".part", "w")); os.replace(state_path + ".part", state_path)
+    if first or removed: save()
+    if not todo:
+        report(100, f"Up to date ({remote.get('version', '')}).")
+        return ""
+    total = sum(t[1] for t in todo) or 1; done = 0
+    tmp = os.path.join(DEST, ".patch"); os.makedirs(tmp, exist_ok=True)
+    for n, (rel, size, sha) in enumerate(todo, 1):
+        part = os.path.join(tmp, os.path.basename(rel) + ".part"); h = hashlib.sha256()
+        with get(rel) as r, open(part, "wb") as out:
+            while chunk := r.read(1 << 20):
+                out.write(chunk); h.update(chunk); done += len(chunk)
+                report(10 + 90 * done / total, f"Updating {n} / {len(todo)}: {rel}   {done / 1048576:.1f} / {total / 1048576:.1f} MB")
+        if h.hexdigest() != sha:
+            os.remove(part); raise RuntimeError(f"Damaged download: {rel} (try again)")
+        target = os.path.join(DEST, rel); os.makedirs(os.path.dirname(target), exist_ok=True)
+        os.replace(part, target)
+        if rel.endswith(".sh") or rel.endswith("linux_install.py"): os.chmod(target, 0o755)
+        state[rel] = sha; save()
+    shutil.rmtree(tmp, ignore_errors=True)
+    report(100, f"Updated! ({remote.get('version', '')})")
+    return f"Updated {len(todo)} file(s), {total / 1048576:.1f} MB" + (f", removed {removed} old file(s)" if removed else "")
+
+
+def launch_gtk():
+    import gi
+    gi.require_version("Gtk", "3.0"); gi.require_version("Gdk", "3.0")
+    from gi.repository import Gdk, GdkPixbuf, GLib, Gtk
+    css = Gtk.CssProvider(); css.load_from_data(GTK_CSS + b"""
+      button.play { font-family: "Press Start 2P", monospace; font-size: 12px; color: #10131f; background-image: none;
+               background-color: #7ee081; border: 4px solid #000; border-radius: 0; padding: 12px 18px;
+               box-shadow: inset -4px -4px 0 #5cbf5f, 4px 4px 0 #000; }
+      button.play:hover { background-color: #9af09c; }
+      button.play:disabled { background-color: #555; color: #999; box-shadow: 4px 4px 0 #000; }
+    """)
+    Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+    win = Gtk.Window(title=CFG["title"]); win.set_resizable(False)
+    for icon in (os.path.join(HERE, "ragnaduds.png"), os.path.join(DEST, "ragnaduds.png")):
+        if os.path.exists(icon):
+            try: win.set_icon_from_file(icon); break
+            except Exception: pass
+    column = Gtk.Box(orientation=Gtk.Orientation.VERTICAL); win.add(column)
+    bg = next((p for p in (os.path.join(HERE, "duds_ok_bg.png"), os.path.join(HERE, "duds_ok.png")) if os.path.exists(p)), None)
+    if bg:
+        h = 420
+        try: h = max(220, min(420, Gdk.Display.get_default().get_monitor(0).get_workarea().height - 360))
+        except Exception: pass
+        column.pack_start(Gtk.Image.new_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file_at_scale(bg, -1, h, True)), False, False, 0)
+    panel = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6); panel.get_style_context().add_class("panel")
+    def label(text, cls):
+        l = Gtk.Label(label=text, xalign=0); l.get_style_context().add_class(cls); l.set_line_wrap(True); l.set_max_width_chars(46)
+        panel.pack_start(l, False, False, 0); return l
+    label("RAGNADUDS", "title"); label(CFG["edition"], "text")
+    msg = label("Checking for updates…", "text")
+    bar = Gtk.ProgressBar(); panel.pack_start(bar, False, False, 4)
+    notes = label("", "notes")
+    row = Gtk.Box(spacing=10)
+    play = Gtk.Button(label="PLAY"); play.get_style_context().add_class("play"); play.set_sensitive(False)
+    close = Gtk.Button(label="CLOSE"); close.get_style_context().add_class("start")
+    row.pack_start(play, True, True, 0); row.pack_start(close, False, False, 0)
+    panel.pack_start(row, False, False, 6); column.pack_start(panel, True, True, 0)
+    state = {"p": 0, "m": "Checking for updates…", "done": False, "note": "", "err": None}
+    def worker():
+        try: state["note"] = update(lambda p, m: state.update(p=p, m=m))
+        except Exception as e: state["err"] = str(e) or e.__class__.__name__
+        state["done"] = True
+    def poll():
+        bar.set_fraction(min(1.0, state["p"] / 100)); msg.set_text(state["m"])
+        if not state["done"]: return True
+        if state["err"]:
+            msg.set_text("Couldn't update right now. You can still play.")
+            notes.set_text(state["err"]); play.set_label("PLAY ANYWAY")
+        else:
+            notes.set_text(state["note"]); bar.set_fraction(1.0)
+        play.set_sensitive(True); play.grab_focus()
+        return False
+    play.connect("clicked", lambda _: (start_game(), win.destroy()))
+    close.connect("clicked", lambda _: win.destroy())
+    win.connect("destroy", Gtk.main_quit); win.show_all()
+    threading.Thread(target=worker, daemon=True).start(); GLib.timeout_add(150, poll); Gtk.main()
+    return 0
+
+
+def launch():
+    if (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")) and "--text" not in ARGS:
+        try: return launch_gtk()
+        except (ImportError, ValueError): pass
+    try:                                                  # no GTK: update with a terminal bar, then play
+        note = update(lambda p, m: sys.stdout.write(f"\r[{'#' * int(p / 2.5):<40}] {m[:60]:<60}"))
+        print("\n" + note)
+    except Exception as e:
+        print(f"\nCouldn't update right now ({e}). Starting the game anyway.")
+    start_game(); return 0
+
+
 if __name__ == "__main__":
     if "--uninstall" in ARGS: sys.exit(uninstall())
+    if "--launch" in ARGS: sys.exit(launch())
     gui = os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")
     if "--text" in ARGS or not gui: sys.exit(run_text())
     try:                                   # 1st choice: GTK window with the photo as background
