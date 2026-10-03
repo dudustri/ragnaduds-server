@@ -1,10 +1,10 @@
 //===== RagnaDuds: cash points by playing ======================================
 //= Cash points (#CASHPOINTS, shared by all characters of the account) buy items in the Cash Shop
 //= (deploy/re_db_import/item_cash.yml). Players earn them by playing:
-//=   +10  first login of the day (per account)
-//=   +5   every hour played (idle minutes, 10+ min without doing anything, don't count)
-//=   +20  every MVP killed (the one who lands the last hit)
-//=   +2   every PvP kill (not the same victim twice within 10 minutes)
+//=   +1000 first login of the day (per account)
+//=   +500  every hour played (idle minutes, 10+ min without doing anything, don't count)
+//=   +5000 every MVP killed (the one who lands the last hit)
+//=   +3000 every PvP kill (not the same victim twice within 10 minutes)
 //= GMs can give points: !cash "<character name>" <amount>   (@cash <amount> for yourself)
 //= Players see their points and how to earn more with @points.
 //= Loaded on the renewal server (hosts/<host>/renewal/import/map_conf.txt).
@@ -12,13 +12,19 @@
 
 -	script	DudsCashPoints	-1,{
 OnInit:
-	.daily = 10;
-	.hourly = 5;
-	.mvp = 20;
-	.pvp = 2;
+	.daily = 1000;
+	.hourly = 500;
+	.mvp = 5000;
+	.pvp = 3000;
 	.idle = 600;		// seconds without activity = AFK
 	.pvp_repeat = 600;	// seconds before the same victim gives points again
 	bindatcmd "points", strnpcinfo(3) + "::OnPoints", 0, 99;
+	// after @reloadscript: the players' minute timers died with the old script, start them again
+	// (addrid runs the lines below once per online player; the NPC itself has no player and skips them)
+	if (getusers(1) && addrid(0) && playerattached()) {
+		deltimer strnpcinfo(3) + "::OnMinute";
+		addtimer 60000, strnpcinfo(3) + "::OnMinute";
+	}
 	end;
 
 OnPoints:
@@ -47,8 +53,8 @@ OnMinute:	// once a minute per player: count active minutes, pay every 60
 	addtimer 60000, strnpcinfo(3) + "::OnMinute";
 	end;
 
-OnNPCKillEvent:
-	if (getmonsterinfo(killedrid, MOB_MVPEXP) > 0)
+OnNPCKillEvent:	// not in the Private MVP Rooms (06guild_01-08): MVPs summoned there on demand would be endless points
+	if (getmonsterinfo(killedrid, MOB_MVPEXP) > 0 && compare(strcharinfo(3), "06guild_0") == 0)
 		callsub S_Give, .mvp, "MVP " + getmonsterinfo(killedrid, MOB_NAME);
 	end;
 
@@ -66,4 +72,81 @@ S_Give:	// getarg(0) = points, getarg(1) = reason
 	#CASHPOINTS += getarg(0);
 	dispbottom "[Cash] +" + getarg(0) + " points (" + getarg(1) + "). Total: " + #CASHPOINTS + ". Type @points for more.";
 	return;
+}
+
+//===== Shadow Blacksmith next to the Refine Master ==============================
+//= Opens the game's Refine window (feature.refineui is on: it refines shadow gear too, with ores, like Basta in
+//= itemmall, which players can't reach). Standalone on purpose: official scripts load after this file, so a
+//= duplicate() of theirs fails. Cash Shop "Refine" tab sells the ores and Shadow Refine Hammers.
+prontera,187,177,4	script	Shadow Blacksmith#duds	4_F_JOB_BLACKSMITH,{
+	mes "[Shadow Blacksmith]";
+	mes "Shadow gear, regular gear, I refine it all.";
+	mes "Shadow gear is safe up to +4. From +5 a failure breaks it, unless you use HD ores: then it only drops one level.";
+	mes "For a sure +9 on shadow gear, use a Shadow 9 Refine Hammer (Cash Shop, Refine tab).";
+	close2;
+	refineui();
+	end;
+}
+
+//===== Item Disposal next to the Homunculus Trainer ==============================
+//= Destroys items players can't drop or sell (Paradise starter gear, Mace of Madness, other bound items).
+//= Scripts can't read an item's trade flags, so it lists every unequipped item and asks before destroying.
+prontera,193,177,4	script	Item Disposal#duds	4_M_REPAIR,{
+	mes "[Item Disposal]";
+	mes "I destroy items you can't drop or sell: starter gear, bound items, anything.";
+	mes "Equipped items are not shown. Take off what you want to destroy first.";
+	mes "^FF0000Destroyed items are gone for good.^000000";
+	next;
+	getinventorylist;
+	.@n = 0;
+	for (.@i = 0; .@i < @inventorylist_count; .@i++) {
+		if (@inventorylist_equip[.@i])
+			continue;
+		.@idx[.@n] = @inventorylist_idx[.@i];
+		.@id[.@n] = @inventorylist_id[.@i];
+		.@amt[.@n] = @inventorylist_amount[.@i];
+		.@label$[.@n] = (@inventorylist_refine[.@i] ? "+" + @inventorylist_refine[.@i] + " " : "")
+			+ replacestr(getitemname(.@id[.@n]), ":", " ") + (.@amt[.@n] > 1 ? " x" + .@amt[.@n] : "");
+		.@menu$ += .@label$[.@n] + ":";
+		.@n++;
+	}
+	if (!.@n) {
+		mes "[Item Disposal]";
+		mes "You have nothing I can destroy.";
+		close;
+	}
+	.@s = select(.@menu$ + "Cancel") - 1;
+	if (.@s == .@n)
+		close;
+	.@amount = 1;
+	if (.@amt[.@s] > 1) {
+		mes "[Item Disposal]";
+		mes "How many " + getitemname(.@id[.@s]) + "? (1 - " + .@amt[.@s] + ")";
+		next;
+		if (input(.@amount, 1, .@amt[.@s]) != 0) {
+			mes "[Item Disposal]";
+			mes "That's not a valid amount.";
+			close;
+		}
+	}
+	mes "[Item Disposal]";
+	mes "Destroy ^FF0000" + .@amount + " x " + .@label$[.@s] + "^000000?";
+	next;
+	if (select("Yes, destroy it:No") == 2)
+		close;
+	// the inventory may have changed while the menu was open: the same item must still be there, unequipped
+	getinventorylist;
+	for (.@i = 0; .@i < @inventorylist_count; .@i++)
+		if (@inventorylist_idx[.@i] == .@idx[.@s])
+			break;
+	if (.@i == @inventorylist_count || @inventorylist_id[.@i] != .@id[.@s] || @inventorylist_equip[.@i]
+			|| @inventorylist_amount[.@i] < .@amount || !delitemidx(.@idx[.@s], .@amount)) {
+		mes "[Item Disposal]";
+		mes "That item isn't in your inventory any more (or it's equipped). Nothing was destroyed.";
+		close;
+	}
+	logmes "Item Disposal: destroyed " + .@amount + " x " + .@id[.@s];
+	mes "[Item Disposal]";
+	mes "Done. " + .@amount + " x " + getitemname(.@id[.@s]) + " destroyed.";
+	close;
 }

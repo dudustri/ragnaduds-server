@@ -87,9 +87,9 @@ confirm_if_online() {
 sync_vm() {
     [[ -f "$DEPLOY/hosts/vm/.env" ]] || die "missing deploy/hosts/vm/.env (copy deploy/hosts/.env.example)"
     ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/files"
-    rsync -av --delete --exclude 'hosts/local/' --exclude 'files/' --exclude 'accounts.txt' \
+    rsync -av --inplace --delete --exclude 'hosts/local/' --exclude 'files/' --exclude 'accounts.txt' \
         "$DEPLOY/compose.yml" "$DEPLOY/gm_commands.txt" "$DEPLOY/special_maps.txt" "$DEPLOY/re_db_import" \
-        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" \
+        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" "$DEPLOY/homunculus_room.txt" "$DEPLOY/ticket_refiner.txt" \
         "$DEPLOY/hosts" "$SSH_HOST:$REMOTE_DIR/"
 }
 
@@ -225,7 +225,10 @@ EOF
     steps 1; step "Upload client zips to the VM (resumable)"
     ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/files"
     rsync -avP "$DEPLOY"/files/*.zip "$SSH_HOST:$REMOTE_DIR/files/"
-    finish "Zips uploaded";;
+    if [[ -d "$DEPLOY/files/patch" ]]; then     # the launcher's per-file updates (only changed files travel)
+      rsync -a --delete --info=stats1 "$DEPLOY/files/patch/" "$SSH_HOST:$REMOTE_DIR/files/patch/"
+    fi
+    finish "Zips and patch files uploaded";;
   backup)
     host="${1:-}"; need_host "$host"; out="$ROOT/backups/$host"; mkdir -p "$out"; stamp=$(date +%F-%H%M)
     steps 2

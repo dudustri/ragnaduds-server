@@ -1,0 +1,26 @@
+# RagnaDuds (renewal): no EXP penalty for the level difference between you and the monster.
+# The official table (db/re/level_penalty.yml) lowers EXP for monsters 16+ levels above you (40%) and for monsters
+# 6+ levels below you (95% down to 10%). Those rows are set to 100% here; the official BONUS for monsters 3-15 levels
+# above you (105-140%) is kept. Every difference not listed takes the value of the nearest listed one, so the
+# whole range is now 100% or more. Drops keep the official table.
+Header:
+  Type: PENALTY_DB
+  Version: 1
+
+Body:
+  - Type: Exp
+    LevelDifferences:
+      - Difference: 16
+        Rate: 100
+      - Difference: -6
+        Rate: 100
+      - Difference: -11
+        Rate: 100
+      - Difference: -16
+        Rate: 100
+      - Difference: -21
+        Rate: 100
+      - Difference: -26
+        Rate: 100
+      - Difference: -31
+        Rate: 100

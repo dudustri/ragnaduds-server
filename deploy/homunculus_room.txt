@@ -1,0 +1,138 @@
+//===== RagnaDuds: Homunculus Room (renewal) =========================================
+//= NPC "Homunculus Trainer", Prontera (190,177), right of the Refine Master and the Shadow Blacksmith.
+//= Alchemist line only (Alchemist, Creator, Genetic, Biolo and babies). Each player gets a private room:
+//= a copy of the round arena 1@dime (instance "Homunculus Room", Id 915 in re_db_import/instance_db.yml).
+//= You enter in the middle; 30 monsters of the set you pick stand in a 24x23 box around you (at most 12 cells
+//= away) and don't walk, so they never scatter and the homunculus reaches all of them (our homunculus AI
+//= chases up to 14 cells from its owner). Killed monsters come back within 3 seconds. Talk to the Trainer
+//= again (or to the Guide inside) to change the set. The room closes 15 minutes after you leave it.
+//= Loaded via "npc: npc/custom/duds_homunculus_room.txt" in hosts/<host>/renewal/import/map_conf.txt.
+//====================================================================================
+
+prontera,190,177,4	script	Homunculus Trainer	4_M_ALCHE_A,{
+	callfunc "F_DudsHomRoom", 1;
+	end;
+}
+
+// Inside every room (copied with the map): change the set, or leave.
+1@dime,80,79,4	script	Homunculus Guide#hr	4_M_ALCHE_A,{
+	mes "[Homunculus Guide]";
+	mes "Want different monsters, or are you done?";
+	switch (select("Change monsters:Leave the room:Stay")) {
+	case 1:
+		close2;
+		callfunc "F_DudsHomRoom", 0;
+		end;
+	case 2:
+		close2;
+		warp "prontera", 189, 174;
+		end;
+	}
+	close;
+}
+
+// getarg(0): 1 = from the Trainer in Prontera (enters the room), 0 = from inside (only changes the set)
+function	script	F_DudsHomRoom	{
+	.@npc$ = "HomunRoom";
+	mes "[Homunculus Trainer]";
+	if (!((eaclass() & EAJ_BASEMASK) == EAJ_MERCHANT && (eaclass() & EAJL_2_2))) {
+		mes "This training room is only for";
+		mes "^0055FFAlchemists^000000 and their successors.";
+		close;
+	}
+	mes "Train your homunculus in a private room.";
+	mes "The monsters stand still around you, so";
+	mes "your homunculus can reach every one of them.";
+	if (checkhomcall() != 0)
+		mes "^FF0000Call your homunculus before you start!^000000";
+	next;
+	mes "[Homunculus Trainer]";
+	mes "Which monsters? (pick by your homunculus' level)";
+	for (.@s = 1; .@s <= getvariableofnpc(.sets, .@npc$); .@s++)
+		.@menu$ += getvariableofnpc(.title$[.@s], .@npc$) + ":";
+	.@s = select(.@menu$ + "Never mind");
+	if (.@s > getvariableofnpc(.sets, .@npc$))
+		close;
+	close2;
+
+	.@inst = instance_id(IM_CHAR);
+	if (.@inst <= 0 || instance_live_info(ILI_NAME, .@inst) != "Homunculus Room") {
+		.@inst = instance_create("Homunculus Room", IM_CHAR);
+		if (.@inst <= 0) {
+			dispbottom "The training room is not available right now (error " + .@inst + "). Tell Duds!";
+			end;
+		}
+	}
+	.@m$ = instance_mapname("1@dime", .@inst);
+	setmapflag .@m$, MF_NOMEMO;
+	setmapflag .@m$, MF_NOEXPPENALTY;
+	killmonster .@m$, .@npc$ + "::OnKill";
+	callfunc "F_DudsHomFill", .@m$, .@s;
+	// remember the room for the refill timer
+	.@n = getarraysize($@HR_map$);
+	for (.@i = 0; .@i < .@n; .@i++)
+		if ($@HR_map$[.@i] == .@m$) break;
+	$@HR_map$[.@i] = .@m$;
+	$@HR_set[.@i] = .@s;
+	$@HR_inst[.@i] = .@inst;
+	if (getarg(0) && instance_enter("Homunculus Room", -1, -1, getcharid(0), .@inst) != IE_OK) {
+		dispbottom "Couldn't enter the training room. Tell Duds!";
+		end;
+	}
+	dispbottom "Homunculus Room: " + getvariableofnpc(.title$[.@s], .@npc$) + ". Talk to the Guide to change monsters or leave.";
+	end;
+}
+
+// Tops the room up to 30 monsters of set getarg(1), standing still in the box around the entrance.
+function	script	F_DudsHomFill	{
+	.@m$ = getarg(0);
+	.@missing = 30 - mobcount(.@m$, "HomunRoom::OnKill");
+	explode(.@mobs$, getvariableofnpc(.mobs$[getarg(1)], "HomunRoom"), ",");
+	.@kinds = getarraysize(.@mobs$);
+	for (.@i = 0; .@i < .@missing; .@i++) {
+		areamonster .@m$, 69, 65, 92, 87, "--ja--", atoi(.@mobs$[.@i % .@kinds]), 1, "HomunRoom::OnKill";
+		.@gid = $@mobid[0];
+		.@mode = getunitdata(.@gid, UMOB_MODE);
+		setunitdata .@gid, UMOB_MODE, .@mode & ~MD_CANMOVE;	// stands still: never scatters
+	}
+	return;
+}
+
+-	script	HomunRoom	-1,{
+OnInit:
+	// monster sets by homunculus level: title (no ":" in it, it splits menu options), mob ids
+	// (good base EXP per HP for the level, no bosses)
+	.sets = 9;
+	setarray .title$[1], "Lv 1-15 - Poring, Lunatic, Fabre, Pupa, Chonchon",
+		"Lv 15-30 - Spore, Rocker, Thief Bug, Picky, Condor",
+		"Lv 30-45 - Poison Spore, Smokie, Muka, Hornet, Wolf",
+		"Lv 45-60 - Deniro, Piere, Andre, Vitata, Horn",
+		"Lv 60-75 - Orc Zombie, Jakk, Horong, Dustiness, Hunter Fly",
+		"Lv 75-90 - Baby Leopard, Wild Rose, Brilight, Banaspaty",
+		"Lv 90-105 - Marionette, Novus, Anopheles, Roween",
+		"Lv 105-120 - Explosion, Gig, Beholder",
+		"Lv 120+ - Beholder, Imp, Creepy Demon";
+	setarray .mobs$[1], "1002,1063,1007,1008,1011", "1014,1052,1051,1049,1009", "1077,1056,1055,1004,1013",
+		"1105,1160,1095,1176,1128", "1153,1130,1129,1114,1035", "1415,1261,1211,2154",
+		"1143,1715,1627,1782", "1383,1387,1633", "1633,1837,2992";
+	initnpctimer;
+	end;
+
+OnKill:
+	end;
+
+OnTimer3000:	// refill the open rooms; forget the closed ones
+	freeloop(1);
+	for (.@i = getarraysize($@HR_map$) - 1; .@i >= 0; .@i--) {
+		if (instance_live_info(ILI_NAME, $@HR_inst[.@i]) != "Homunculus Room") {
+			deletearray $@HR_map$[.@i], 1;
+			deletearray $@HR_set[.@i], 1;
+			deletearray $@HR_inst[.@i], 1;
+			continue;
+		}
+		callfunc "F_DudsHomFill", $@HR_map$[.@i], $@HR_set[.@i];
+	}
+	freeloop(0);
+	initnpctimer;
+	end;
+}

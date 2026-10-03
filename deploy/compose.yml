@@ -41,6 +41,7 @@ services:
         command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./map-server"
         volumes:
             - "${HOST_DIR}/pre_renewal/import:/rathena/conf/import:z"
+            - "${HOST_DIR}/pre_renewal/import/scripts_custom.conf:/rathena/npc/scripts_custom.conf:ro,z"   # our NPCs: survive @reloadscript
             - "./gm_commands.txt:/rathena/npc/custom/duds_gm_commands.txt:ro,z"   # @god / @nocooldown
             - "./welcome.txt:/rathena/npc/custom/duds_welcome.txt:ro,z"   # random welcome line
             - "./buffer.txt:/rathena/npc/custom/duds_buffer.txt:ro,z"     # Agente VIP at the bRO spots
@@ -87,16 +88,21 @@ services:
         command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./map-server"
         volumes:
             - "${HOST_DIR}/renewal/import:/rathena/conf/import:z"
+            - "${HOST_DIR}/renewal/import/scripts_custom.conf:/rathena/npc/scripts_custom.conf:ro,z"   # our NPCs: survive @reloadscript
             - "./gm_commands.txt:/rathena/npc/custom/duds_gm_commands.txt:ro,z"
             - "./welcome.txt:/rathena/npc/custom/duds_welcome.txt:ro,z"   # random welcome line
             - "./buffer.txt:/rathena/npc/custom/duds_buffer.txt:ro,z"     # Agente VIP at the bRO spots
             - "./motd.txt:/rathena/conf/motd.txt:ro,z"
             - "./cash_points.txt:/rathena/npc/custom/duds_cash_points.txt:ro,z"   # cash points by playing (@points)
+            - "./homunculus_room.txt:/rathena/npc/custom/duds_homunculus_room.txt:ro,z"   # private homunculus training rooms (alchemists)
+            - "./ticket_refiner.txt:/rathena/npc/custom/duds_ticket_refiner.txt:ro,z"   # Refine Master: certificates also for level 2 armor / level 5 weapons
             # bRO special maps (Mapas Especiais, Cheffenia, Turn In): script + rooms, tickets, cash shop
             - "./special_maps.txt:/rathena/npc/custom/duds_special_maps.txt:ro,z"
             - "./re_db_import/instance_db.yml:/rathena/db/import/instance_db.yml:ro,z"
             - "./re_db_import/item_db.yml:/rathena/db/import/item_db.yml:ro,z"
             - "./re_db_import/item_cash.yml:/rathena/db/import/item_cash.yml:ro,z"
+            - "./re_db_import/level_penalty.yml:/rathena/db/import/level_penalty.yml:ro,z"   # no EXP level penalty
+            - "./re_db_import/skill_db.yml:/rathena/db/import/skill_db.yml:ro,z"   # Call Homunculus: no 30-minute limit
         ports: ["5122:5122"]
         networks: { re: { aliases: [map] } }
         depends_on: [re-char]

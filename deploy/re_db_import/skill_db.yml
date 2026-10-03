@@ -1,0 +1,10 @@
+# RagnaDuds (renewal): changes to db/re/skill_db.yml. Only the fields listed are changed.
+Header:
+  Type: SKILL_DB
+  Version: 4
+
+Body:
+  # Call Homunculus: official renewal sends the homunculus to rest after 30 minutes (status Homun_Time).
+  # Here it lasts ~23 days (the longest time the server takes) and restarts at every login: in practice forever.
+  - Id: 243
+    Duration1: 2000000000

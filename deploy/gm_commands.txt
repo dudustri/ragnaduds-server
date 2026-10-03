@@ -3,9 +3,11 @@
 //= @nocooldown  : toggle zero cooldown + zero after-cast delay for the
 //=                skills you currently know (re-run after learning skills)
 //= Monsters are free-for-all (no KS protection).
-//= Parties: everything shared. Every 30 s (and at login) all parties are set to
-//= EXP Even Share + item Party Share + Even Share distribution (party_share_level
+//= Parties: everything shared. Every 10 s, parties not set yet get EXP Even Share + item Party Share +
+//= Even Share distribution, one option at a time (each change pops the party window once) (party_share_level
 //= in inter_conf.txt lifts the level-gap limit).
+//= Homunculi: every minute, any called homunculus below 75 fullness is fed back to 100 (never starves, never
+//= runs away). With homunculus_auto_vapor: 0 (battle_conf) it also stays out when its owner dies.
 //= Both need GM level 99 (Admin). !god <player> / !nocooldown <player> (our charcommand symbol is !)
 //= work on another player.
 //= Loaded via "npc: npc/custom/duds_gm_commands.txt" in import/map_conf.txt.
@@ -45,12 +47,21 @@ OnInit:
 	initnpctimer;
 	end;
 
-OnTimer30000:   // parties: force "everything shared"
-	.@n = query_sql("SELECT `party_id` FROM `party`", .@pid);
+OnTimer10000:   // parties: "everything shared", changed only when not set yet (every change pops the
+	// client's party setup window). One option per party per pass: the server's option calls overwrite each
+	// other when sent together. A new party gets its 3 options within ~30 s; after that nothing is sent.
+	.@n = query_sql("SELECT `party_id`, `exp`, `item` FROM `party` WHERE `exp` <> 1 OR `item` <> 3", .@pid, .@exp, .@item);
 	for (.@i = 0; .@i < .@n; .@i++) {
-		party_changeoption .@pid[.@i], 0, 1;   // EXP: Even Share
-		party_changeoption .@pid[.@i], 1, 1;   // item pickup: Party Share
-		party_changeoption .@pid[.@i], 2, 1;   // item distribution: Even Share
+		if (getpartyname(.@pid[.@i]) == "null") continue;   // nobody of that party online: not loaded here
+		if (.@exp[.@i] != 1)        party_changeoption .@pid[.@i], 0, 1;   // EXP: Even Share
+		else if (!(.@item[.@i] & 1)) party_changeoption .@pid[.@i], 1, 1;   // item pickup: Party Share
+		else                        party_changeoption .@pid[.@i], 2, 1;   // item distribution: Even Share
+	}
+	// homunculi: kept fed (checked every minute), so they never starve, lose intimacy and run away
+	if (.tick++ % 6 == 0 && addrid(0) && playerattached()) {
+		if (checkhomcall() == 0 && gethominfo(4) < 75)
+			setunitdata gethominfo(7), UHOM_HUNGER, 100;
+		end;
 	}
 	initnpctimer;
 	end;
@@ -88,9 +99,6 @@ OnNoCooldown:
 
 OnPCLoginEvent:
 	NOCD_ON = 0;   // the bonus is removed on logout, keep the toggle in sync
-	if (getcharid(1)) {        // already in a party: share everything right away
-		party_changeoption getcharid(1), 0, 1; party_changeoption getcharid(1), 1, 1; party_changeoption getcharid(1), 2, 1;
-	}
 	end;
 }
 

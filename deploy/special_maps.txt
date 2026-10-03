@@ -10,7 +10,7 @@
 //=                   bRO didn't publish amounts: 300 per monster type, doubled (.mult = 2).
 //= Every room is a shared instance (IM_NONE): its own copy of the map, reachable only through these NPCs;
 //= the normal maps stay untouched. Rooms are (re)created when the map server starts.
-//= Tickets (Cash Shop, 1 point each; the daily login gives 10 points, see deploy/cash_points.txt):
+//= Tickets (Cash Shop, 1 point each; the daily login gives 1000 points, see deploy/cash_points.txt):
 //=   Ingresso dos Mapas Especiais (990001), Passe para Cheffenia (990002). Not consumed when entering.
 //= Instances: db/import/instance_db.yml (Ids 900-914). Items: db/import/item_db.yml + item_cash.yml.
 //==================================================================================

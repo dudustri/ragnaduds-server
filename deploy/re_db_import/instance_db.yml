@@ -125,3 +125,13 @@ Body:
       Map: abyss_01
       X: 150
       Y: 150
+  - Id: 915
+    Name: Homunculus Room
+    TimeLimit: 0
+    IdleTimeout: 900
+    NoNpc: false
+    Destroyable: false
+    Enter:
+      Map: 1@dime
+      X: 80
+      Y: 76
