@@ -25,6 +25,7 @@
 
 	handle {
 		encode zstd gzip
+		try_files {path} {path}.html	# /features -> features.html
 		file_server
 	}
 }

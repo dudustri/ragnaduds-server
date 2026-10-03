@@ -145,7 +145,7 @@
   .slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin: 18px 0; scroll-margin-top: 12px; }
   .slots > .frame { margin: 0; }   /* one spacing rule: 18px between every card */
   .cta { text-align: center; margin: 0 0 4px; }
-  .cta .btn { font-size: 11px; padding: 10px 14px; }
+  .cta .btn { font-size: 11px; padding: 10px 14px; margin: 4px; }
   html { scroll-behavior: smooth; }
   .slot { position: relative; transition: transform .15s ease; }
   .slot:hover { transform: translate(-2px,-2px); }
@@ -203,7 +203,7 @@
   <h1>RAGNADUDS</h1>
   <p class="tagline"><span data-i18n="tag1"></span> · <span class="flag"><svg viewBox="0 0 37 28"><rect width="37" height="28" fill="#c8102e"/><rect x="12" width="4" height="28" fill="#fff"/><rect y="12" width="37" height="4" fill="#fff"/></svg></span> × <span class="flag"><svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#009c3b"/><polygon points="10,1.6 18.4,7 10,12.4 1.6,7" fill="#ffdf00"/><circle cx="10" cy="7" r="3.4" fill="#002776"/><path d="M6.7 6.3 Q10 5.4 13.3 7.6" stroke="#fff" stroke-width=".7" fill="none"/></svg></span> · <span data-i18n="tag2"></span></p>
 
-  <p class="cta"><a class="btn" href="#downloads" data-i18n="cta"></a></p>
+  <p class="cta"><a class="btn" href="#downloads" data-i18n="cta"></a> <a class="btn" href="/features" data-i18n="featurescta"></a></p>
 
   <div class="frame stage" id="stage" tabindex="0" aria-label="Mini game: Duds vs the Orc">
     <div class="killfeed" id="killfeed"></div>
@@ -306,7 +306,7 @@ const T = {
     npcname: "[RagnaDuds, Kafra intern]", click: "▼ click", clickme: "click to continue",
     pretext: "The classic. 2004 vibes, 99/70 cap, zero bullshit. For veterans and people who cry at the Prontera theme.",
     retext: "Modern RO. 3rd &amp; 4th jobs, level 275, forty skills per button. For masochists who read patch notes for fun.",
-    download: "▶ DOWNLOAD", cta: "▼ DOWNLOAD THE GAME", statustitle: "SERVER STATUS", playerson: "players online", totals: "{a} accounts · {c} characters · checked {t}", hoftitle: "HALL OF FAME", hofrich: "RICHEST", hofmvp: "MVP SLAYERS", hofempty: "Nobody here yet.", hofname: "NAME", lvtip: "base level / job level", killstip: "MVPs killed · players slain in PvP", online: "● ONLINE", offline: "● OFFLINE", starting: "● STARTING", livetip: "Server status, checked every 15 s", notyet: "Not uploaded yet. Duds is probably still zipping. Or drunk.", updated: "updated",
+    download: "▶ DOWNLOAD", cta: "▼ DOWNLOAD THE GAME", featurescta: "★ SERVER FEATURES", statustitle: "SERVER STATUS", playerson: "players online", totals: "{a} accounts · {c} characters · checked {t}", hoftitle: "HALL OF FAME", hofrich: "RICHEST", hofmvp: "MVP SLAYERS", hofempty: "Nobody here yet.", hofname: "NAME", lvtip: "base level / job level", killstip: "MVPs killed · players slain in PvP", online: "● ONLINE", offline: "● OFFLINE", starting: "● STARTING", livetip: "Server status, checked every 15 s", notyet: "Not uploaded yet. Duds is probably still zipping. Or drunk.", updated: "updated",
     dk: "Denmark", br: "Brasil", you: "★ You",
     lagnote: "Denmark/Brasil = measured data-center averages. <b>You</b> = your real ping to this server, live, every 5 s. Server lives in US East, so nobody gets to blame the lag.",
     howto: "HOW TO INSTALL",
@@ -339,7 +339,7 @@ const T = {
     npcname: "[RagnaDuds, estagiário da Kafra]", click: "▼ clica", clickme: "clica pra continuar",
     pretext: "O clássico. Vibe de 2004, cap 99/70, zero frescura. Pra veterano e pra quem chora ouvindo a música de Prontera.",
     retext: "RO moderno. Classes 3 e 4, nível 275, quarenta skills por botão. Pra masoquista que lê patch note por diversão.",
-    download: "▶ BAIXAR", cta: "▼ BAIXAR O JOGO", statustitle: "STATUS DOS SERVIDORES", playerson: "jogadores online", totals: "{a} contas · {c} personagens · conferido {t}", hoftitle: "HALL DA FAMA", hofrich: "MAIS RICOS", hofmvp: "CAÇADORES DE MVP", hofempty: "Ninguém aqui ainda.", hofname: "NOME", lvtip: "nível de base / nível de classe", killstip: "MVPs mortos · jogadores mortos no PvP", online: "● ONLINE", offline: "● DESLIGADO", starting: "● LIGANDO", livetip: "Status do servidor, conferido a cada 15 s", notyet: "Ainda não subiu. O Duds tá zipando. Ou bêbado.", updated: "atualizado",
+    download: "▶ BAIXAR", cta: "▼ BAIXAR O JOGO", featurescta: "★ O QUE TEM NO SERVER", statustitle: "STATUS DOS SERVIDORES", playerson: "jogadores online", totals: "{a} contas · {c} personagens · conferido {t}", hoftitle: "HALL DA FAMA", hofrich: "MAIS RICOS", hofmvp: "CAÇADORES DE MVP", hofempty: "Ninguém aqui ainda.", hofname: "NOME", lvtip: "nível de base / nível de classe", killstip: "MVPs mortos · jogadores mortos no PvP", online: "● ONLINE", offline: "● DESLIGADO", starting: "● LIGANDO", livetip: "Status do servidor, conferido a cada 15 s", notyet: "Ainda não subiu. O Duds tá zipando. Ou bêbado.", updated: "atualizado",
     dk: "Dinamarca", br: "Brasil", you: "★ Você",
     lagnote: "Dinamarca/Brasil = média medida entre data centers. <b>Você</b> = teu ping real pro servidor, ao vivo, a cada 5 s. O servidor fica no leste dos EUA, então ninguém culpa o lag.",
     howto: "COMO INSTALAR",
@@ -376,7 +376,7 @@ const T = {
     pretext: "Klassikeren. 2004-vibes, 99/70 cap, nul pis. For veteraner og folk, der græder til Prontera-musikken.",
     retext: "Moderne RO. 3. og 4. jobs, level 275, fyrre skills per knap. For masochister, der læser patch notes for sjov.",
     download: "▶ DOWNLOAD",
-    cta: "▼ HENT SPILLET",
+    cta: "▼ HENT SPILLET", featurescta: "★ SERVERENS FEATURES",
     statustitle: "SERVERSTATUS",
     playerson: "spillere online",
     totals: "{a} konti · {c} karakterer · tjekket {t}",
