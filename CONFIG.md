@@ -49,7 +49,7 @@ Accounts: `hosts/vm/accounts.txt` → `./duds.sh accounts vm`, or `./duds.sh add
 ## Common changes (`battle_conf.txt`, `100` = 1x)
 ```
 base_exp_rate: 1000     job_exp_rate: 1000      // 10x EXP
-item_rate_common: 300   item_rate_card: 300     // 3x drops (also _heal _use _equip _boss _mvp)
+item_rate_common: 1000  item_rate_card: 1000    // 10x drops (renewal; also _heal _use _equip _boss _mvp)
 death_penalty_base: 100                         // % EXP lost on death (100 = 1%)
 item_auto_get: yes                              // all loot straight to inventory
 show_mob_info: 6                                // monster HP % + level

@@ -116,8 +116,8 @@ For every item in the renewal server DB:
 
 | Problem found | Fix |
 |---|---|
-| client has no entry | full entry in `itemInfo_RD.lua`: English name, official English description (divine-pride; a short one from the server data if divine-pride only has Korean), slots, look |
-| client entry still in Korean | partial entry: English name / description only |
+| client has no entry | full entry in `itemInfo_RD.lua`: English name, official English description (divine-pride), slots, look. When divine-pride has no English (Korean/Japanese text, or its placeholder "Item #… on Divine Pride"), the description is written from the server's item script by `script_desc.py`: every bonus in English, with refine/skill/level conditions ("Refine +7 or higher:", "+5 per refine level") |
+| client entry still in Korean / Japanese | partial entry: English name / description only |
 | no icon or floor sprite | real icon + big picture from divine-pride (converted to BMP); floor sprite **copied** from an item of the same kind (a made-up sprite could crash the game). Cards use the client's generic card icon |
 | headgear / garment / costume / weapon look the client can't draw | server `View` changed in the generated block of `deploy/re_db_import/item_db.yml`: to the look named in `shop.yml` `looks:`, otherwise `0` (not drawn: no error) |
 
@@ -171,7 +171,16 @@ loaded in the renewal `map_conf.txt`).
 
 - **No web pages**: every `http(s)://…` in the exe is zero-filled (same length) and every URL line in
   `msgstringtable.txt` emptied, so nothing opens on exit or from the Cash Shop "Charging" button.
-- **Font**: the game's font is Gulim (Microsoft, can't be shipped). The Windows installer offers to install
+- **Font (renewal)**: the exe is patched to draw all text in **Arial with the Western charset**, like bRO (bRO's
+  own exe: servicetype brazil → font slot 6 = "Arial", code page 1252). WARP session
+  `~/games/kro2026/WARP2026/rAthena_Font.yml` = `rAthena_Session.yml` + `CustomFontName` (Arial) +
+  `CustomFontCharset` (ANSI); re-patch with
+  `wine win32/WARP_console.exe -using rAthena_Font.yml -from ../2026-01-07_Ragexe_1767686776_VHL_clientinfo_fixed.exe -to ../ragexe_2026_patched.exe`
+  (don't use WARP's font height patches from the console: it reads the value wrong, +2 became +32).
+  Windows has Arial. The Linux installer puts Microsoft's real Arial in the game's Wine prefix (core fonts
+  `arial32.exe`, sha256-checked; Wine's own "Arial" blurs small bold text like character names) and starts the
+  game with classic TrueType hinting (`FREETYPE_PROPERTIES=truetype:interpreter-version=35`).
+- **Font (pre-renewal)**: Gulim (Microsoft, can't be shipped). The Windows installer offers to install
   Microsoft's Korean fonts; the Linux installer uses a `gulim.ttc` placed next to `install.sh`.
 - **Screens**: `build/installer/make_assets.py` makes `client/login/` (entrance.bmp, 1.jpg/.bmp, 2.jpg/.bmp) from
   the photos in `build/` (git-ignored).

@@ -62,3 +62,41 @@ You can repeat it once every 24 h, with one hunt at a time, and cancel it anytim
 | client `System/itemInfo_C.lua` | ticket names/descriptions in the renewal client |
 
 All mounted into `re-map` by `deploy/compose.yml`. Changing the script or monster amounts only needs `./duds.sh up <host> re-map`, with no image rebuild. After a start, the map server log shows one `RagnaDuds: ... ready, N monsters` line per room.
+
+## Homunculus Room (alchemists)
+NPC **Homunculus Trainer**, Prontera (190,177). Alchemist line only (Alchemist, Creator, Genetic, Biolo, babies).
+Each player gets a private copy of the round arena `1@dime` (instance "Homunculus Room", Id 915; closes 15 minutes
+after you leave). You start in the middle; 30 monsters of the chosen set stand still within 12 cells of you (our
+homunculus AI chases up to 14 cells from its owner), and come back within 3 seconds when killed. The Guide inside
+changes the set or takes you back to Prontera.
+
+| Set (homunculus level) | Monsters |
+|---|---|
+| 1-15 | Poring, Lunatic, Fabre, Pupa, Chonchon |
+| 15-30 | Spore, Rocker, Thief Bug, Picky, Condor |
+| 30-45 | Poison Spore, Smokie, Muka, Hornet, Wolf |
+| 45-60 | Deniro, Piere, Andre, Vitata, Horn |
+| 60-75 | Orc Zombie, Jakk, Horong, Dustiness, Hunter Fly |
+| 75-90 | Baby Leopard, Wild Rose, Brilight, Banaspaty |
+| 90-105 | Marionette, Novus, Anopheles, Roween |
+| 105-120 | Explosion, Gig, Beholder |
+| 120+ | Beholder, Imp, Creepy Demon |
+
+Script: `deploy/homunculus_room.txt` (sets are in its OnInit). Homunculi everywhere (both servers): kept fed by
+`deploy/gm_commands.txt` (never starve or run away) and not sent to rest when their owner dies
+(`homunculus_auto_vapor: 0` in the hosts' battle_conf).
+
+## Item Disposal (renewal)
+NPC **Item Disposal**, Prontera (193,177), right of the Homunculus Trainer. Destroys items players can't drop or
+sell: the Paradise starter shadow set, Mace of Madness and other bound items. Scripts can't read an item's trade
+flags, so it lists every **unequipped** item (asks how many for stacks) and asks again before destroying. Each
+destroyed item is written to the map server's script log (`logmes`). Script: end of `deploy/cash_points.txt`.
+
+## Other NPCs (renewal, rAthena's ready-made scripts, enabled in hosts/<host>/renewal/import/map_conf.txt)
+| NPC | Where | What |
+|---|---|---|
+| Reset Girl | prontera 150,193 | resets stats and/or skills (zeny) |
+| Platinum Skill NPC | prontera 128,200 | quest skills of your class (the Job Master also gives them on job change) |
+| Stylist | prontera 170,180 | hair style / hair colour / clothes colour |
+| Private MVP Room | prontera 148,174 | rent a room (100k zeny, 60 min, party/guild/account) and summon MVPs (100k) or bosses (50k). MVPs killed there give **no** cash points (deploy/cash_points.txt) |
+| Marriage (Vomars, Happy Marry, Sister Lisa) | prt_church (Prontera church) | weddings |
