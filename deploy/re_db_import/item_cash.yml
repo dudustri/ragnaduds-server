@@ -106,6 +106,42 @@ Body:
         Price: 200
       - Item: Sword_Of_Bluefire_LT    # Red Lotus Sword-LT (500039)
         Price: 900
+      - Item: Dragonic_Slayer    # Dragonic Slayer (600004)
+        Price: 300
+      - Item: P_Archer_Skeleton_Card    # Enhanced Archer Skeleton Card (4633)
+        Price: 150
+      - Item: Red_Baby_Dragon    # Red Baby Dragon (19116)
+        Price: 100
+      - Item: Bungisngis_Card    # Bungisngis Card (4582)
+        Price: 100
+      - Item: Twinhead_DragonScale_US    # Twinhead Dragon Scale (420329)
+        Price: 200
+      - Item: Twinhead_dragon_Mail_J    # Twinhead Dragon Mail (450216)
+        Price: 200
+      - Item: Fafnir_Manteau    # Fafnir Breath (480084)
+        Price: 200
+      - Item: Rune_Greave_JP_    # Rune Greaves (470085)
+        Price: 200
+      - Item: Ferus__Card    # Green Ferus Card (4381)
+        Price: 100
+      - Item: Twin_Dragon_Ring_TH    # Twin Head Dragon Ring (490413)
+        Price: 200
+      - Item: YSF01_Ring    # Y.S.F. Ring (490319)
+        Price: 200
+      - Item: Dragon_Zilant_Card    # Ancient Dragon Zilant Card (27345)
+        Price: 300
+      - Item: S_RK_B_Weapon    # Rune Knight's Booster Shadow Weapon (24589)
+        Price: 200
+      - Item: S_Booster_Armor    # Booster Shadow Armor (24584)
+        Price: 60
+      - Item: S_Booster_Shield    # Booster Shadow Shield (24585)
+        Price: 60
+      - Item: S_Booster_Shoes    # Booster Shadow Shoes (24586)
+        Price: 60
+      - Item: S_Booster_Earing    # Booster Shadow Earring (24587)
+        Price: 60
+      - Item: S_Booster_Pandent    # Booster Shadow Pendant (24588)
+        Price: 60
   # Melee: swords, axes, maces, katars, knuckles, spears - Knight, Crusader, Blacksmith, Assassin, Rogue, Monk, Ninja, Star Gladiator and their 3rd/4th classes
   - Tab: Hot
     Items:
@@ -175,22 +211,10 @@ Body:
         Price: 200
       - Item: Jasper_Ring    # Jasper Ring (490113)
         Price: 200
-      - Item: S_RK_B_Weapon    # Rune Knight's Booster Shadow Weapon (24589)
-        Price: 200
-      - Item: Dragonic_Slayer    # Dragonic Slayer (600004)
-        Price: 300
-      - Item: Red_Baby_Dragon    # Red Baby Dragon (19116)
-        Price: 100
-      - Item: Twinhead_DragonScale_US    # Twinhead Dragon Scale (420329)
-        Price: 200
       - Item: Grace_Breath_Armor    # Grace Breath Armor (450086)
-        Price: 200
-      - Item: Fafnir_Manteau    # Fafnir Breath (480084)
         Price: 200
       - Item: Temporal_Vit_Boots_    # Temporal Vit Boots (22007)
         Price: 100
-      - Item: Twin_Dragon_Ring_TH    # Twin Head Dragon Ring (490413)
-        Price: 200
       - Item: Temporal_Ring    # Temporal Ring (28594)
         Price: 200
       - Item: Imperial_Spear    # Imperial Spear (1433)
@@ -335,8 +359,6 @@ Body:
         Price: 900
       - Item: S_Circlet_Of_Time_RK    # Temporal Circlet (Rune Knight) (19474)
         Price: 400
-      - Item: Twinhead_dragon_Mail_J    # Twinhead Dragon Mail (450216)
-        Price: 200
       - Item: Twinhead_dragon_Boots    # Twinhead Dragon Boots (470274)
         Price: 200
       - Item: Memento_Mori    # Memento Mori (490207)

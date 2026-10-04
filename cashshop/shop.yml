@@ -98,6 +98,30 @@ tabs:
             19453: auto # Jeje Cap
             460030: auto # Bionic Aluminum Planter
             500039: auto # Red Lotus Sword-LT
+            # FEATURED: Rune Knight Dragon Breath (lv 100-120+). Damage = HP/50 + SP/4 (x skill level x base level),
+            # then only Max HP/SP %, Dragon Breath % and ranged % count: no ATK %, race, size or class cards.
+            # Max Dragon Breath, Dragon Breath - Water, Dragon Training and Dragon Howling; DEX 125 for the ring.
+            600004: auto # Dragonic Slayer (weapon, +11: HP/SP +15%, Dragon Breath +15%, ranged +10%, delay -10%)
+            4633: 150 # Enhanced Archer Skeleton Card (weapon x2: ranged +12% each)
+            19116: auto # Red Baby Dragon (upper, +8: Dragon Breath +45%)
+            4582: 100 # Bungisngis Card (upper: HP +1% per 2 refines)
+            # (middle: Purified Pigeon, Melee tab, with Kiel-D-01 from MVP Cards: after-cast delay -30%)
+            420329: auto # Twinhead Dragon Scale (lower: HP +15%, ranged +15%)
+            450216: auto # Twinhead Dragon Mail (armor: HP/SP +50%, Dragon Breath +100%, ranged +70% at max skills)
+            # (armor card: Tao Gunka, MVP Cards tab: HP +100%)
+            480084: auto # Fafnir Breath (garment: Dragon Breath +20%, HP/SP +20% with Dragon Training 5)
+            # (garment card: Snowstorm Angel, above: ranged +30%)
+            470085: auto # Rune Greaves (shoes: all stats +45 at max Dragon Breaths, move speed +25%)
+            4381: 100 # Green Ferus Card (shoes: HP +10%)
+            490413: auto # Twin Head Dragon Ring (right: HP/SP +15%, delay -15%, Dragon Breath +50%)
+            490319: auto # Y.S.F. Ring (left: VIT +20, HP +15%, ranged +10%, Dragon Breath +60% at lv 120)
+            27345: 300 # Ancient Dragon Zilant Card (accessory x2: HP +50% each, Dragon Breath +50% on the left)
+            24589: auto # Rune Knight's Booster Shadow Weapon (full Booster set: ignore 70% DEF)
+            24584: 60 # Booster Shadow Armor
+            24585: 60 # Booster Shadow Shield
+            24586: 60 # Booster Shadow Shoes
+            24587: 60 # Booster Shadow Earring
+            24588: 60 # Booster Shadow Pendant
     Hot:
         note: "Melee: swords, axes, maces, katars, knuckles, spears - Knight, Crusader, Blacksmith, Assassin, Rogue, Monk, Ninja, Star Gladiator and their 3rd/4th classes"
         items:
@@ -144,15 +168,9 @@ tabs:
             480018: auto # Grace Attack Manteau
             490019: auto # Grace Attack Ring
             490113: auto # Jasper Ring
-            24589: auto # Rune Knight's Booster Shadow Weapon
             # 3rd class, lv 100-174: Rune Knight - Dragon Breath
-            600004: auto # Dragonic Slayer
-            19116: auto # Red Baby Dragon
-            420329: auto # Twinhead Dragon Scale
             450086: auto # Grace Breath Armor
-            480084: auto # Fafnir Breath
             22007: auto # Temporal Vit Boots
-            490413: auto # Twin Head Dragon Ring
             28594: auto # Temporal Ring
             # 3rd class, lv 100-174: Royal Guard - Banishing Point / Cannon Spear
             1433: auto # Imperial Spear
@@ -239,7 +257,6 @@ tabs:
             # endgame, lv 175+: Rune Knight - Dragon Breath
             600024: auto # Dragonic Slayer-LT
             19474: auto # Temporal Circlet (Rune Knight)
-            450216: auto # Twinhead Dragon Mail
             470274: auto # Twinhead Dragon Boots
             490207: auto # Memento Mori
             # endgame, lv 175+: Royal Guard - Banishing Point / Cannon Spear
