@@ -187,32 +187,35 @@ CARD_TABLE = "data\\num2cardillustnametable.txt"   # card id -> picture name (da
 
 def fix_card_pictures(fixer, cards):
     """Shop cards whose big picture the client lacks ("resource file loading fail" on right-click): ship the
-    divine-pride picture (or the closest card's, e.g. Sealed Drake -> Drake) in our GRF, and our copy of the
-    card table when the card has no (or an empty) entry in it."""
-    text = fixer.grfs.get(CARD_TABLE).decode("cp949", "replace")
-    table = {int(p[0]): p[1] for p in (l.split("#") for l in text.splitlines()) if len(p) >= 2 and p[0].strip().isdigit()}
+    divine-pride picture (or the closest card's, e.g. Sealed Drake -> Drake) in our GRF. A card with no line in
+    the card table gets one APPENDED to the client's own table, byte for byte otherwise: rewriting existing lines
+    (e.g. Meer's "300138#", which has no picture name) or adding a final line break crashes the 2026 client at
+    start. Cards whose line exists with an empty name are left alone."""
+    raw = fixer.grfs.get(CARD_TABLE)
+    table = {int(p[0]): p[1] for p in (l.split("#") for l in raw.decode("cp949", "replace").splitlines())
+             if len(p) >= 2 and p[0].strip().isdigit()}
     pre = f"data\\texture\\{UI}\\cardbmp\\".lower()
     have = {k[len(pre):-4] for k in fixer.grfs.idx if k.startswith(pre) and k.endswith(".bmp")}
     new_rows = {}
     for item in cards:
-        iid, name = item["Id"], table.get(item["Id"]) or ""
-        if name and name.lower() in have:
+        iid = item["Id"]
+        if iid in table and not table[iid]:
+            continue                                   # empty name in the client's table: can't fix safely
+        name = table.get(iid) or f"duds_card_{iid}"
+        if name.lower() in have:
             continue
-        if not name:
-            name = f"duds_card_{iid}"; new_rows[iid] = name
         bmp = item_assets.card_bmp(iid)
         if not bmp:
             donor = max((h for h in have if name.lower().endswith(h) and len(h) >= 4 and h != name.lower()), key=len, default=None)
             bmp = fixer.grfs.get(f"{pre}{donor}.bmp") if donor else None
-        if bmp:
-            fixer.files[f"data\\texture\\{UI}\\cardbmp\\{name}.bmp"] = bmp
-            fixer.log.append(f"{iid:>7} {item.get('Name', '')[:38]:38} card picture")
-        else:
-            new_rows.pop(iid, None)
+        if not bmp:
+            continue
+        fixer.files[f"data\\texture\\{UI}\\cardbmp\\{name}.bmp"] = bmp
+        fixer.log.append(f"{iid:>7} {item.get('Name', '')[:38]:38} card picture")
+        if iid not in table:
+            new_rows[iid] = name
     if new_rows:
-        lines = [l for l in text.splitlines() if not (l.split("#")[0].strip().isdigit() and int(l.split("#")[0]) in new_rows)]
-        lines += [f"{i}#{n}#" for i, n in sorted(new_rows.items())]
-        fixer.files[CARD_TABLE] = ("\r\n".join(lines) + "\r\n").encode("cp949", "replace")
+        fixer.files[CARD_TABLE] = raw.rstrip(b"\r\n") + b"".join(f"\r\n{i}#{n}#".encode("cp949") for i, n in sorted(new_rows.items()))
 
 
 def write_outputs(fixer, tabs_out):
