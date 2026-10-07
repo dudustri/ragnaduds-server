@@ -5,11 +5,12 @@
 const NPCS = [   // [name, where, servers, { en, pt, da } what]
   ["Warper", "Prontera 159,192 · 45 towns", "both", { en: "Teleports to towns, fields and dungeons", pt: "Teleporta pra cidades, campos e cavernas", da: "Teleporterer til byer, marker og dungeons" }],
   ["Healer", "Prontera 162,193 · 36 towns", "both", { en: "Full heal", pt: "Cura total", da: "Fuld heal" }],
-  ["Job Master", "Prontera 153,193", "both", { en: "Instant job change, quest skills included", pt: "Troca de classe na hora, com as skills de quest", da: "Jobskift med det samme, quest-skills inkluderet" }],
+  ["Job Master", "Prontera 153,193", "both", { en: "Instant job change, quest skills included. Renewal: 4th classes too (any 3rd class, base 200 / job 70)", pt: "Troca de classe na hora, com as skills de quest. Renewal: classes 4 também (qualquer classe 3, base 200 / classe 70)", da: "Jobskift med det samme, quest-skills inkluderet. Renewal: også 4. klasser (enhver 3. klasse, base 200 / job 70)" }],
   ["Agente VIP", "36 spots · Prontera 146,93", "both", { en: "Free Blessing + Increase AGI Lv 10 (bRO's VIP spots)", pt: "Bênção + Aumentar Agilidade Lv 10 grátis (os lugares do VIP do bRO)", da: "Gratis Blessing + Increase AGI Lv 10 (bRO's VIP-steder)" }],
   ["Reset Girl", "Prontera 150,193", "re", { en: "Reset stats and/or skills", pt: "Reseta status e/ou skills", da: "Nulstil stats og/eller skills" }],
   ["Platinum Skill NPC", "Prontera 128,200", "re", { en: "Your class' quest skills", pt: "Skills de quest da sua classe", da: "Din klasses quest-skills" }],
-  ["Stylist", "Prontera 170,180", "re", { en: "Hair style, hair colour, clothes colour", pt: "Penteado, cor do cabelo, cor da roupa", da: "Frisure, hårfarve, tøjfarve" }],
+  ["Stylist", "Prontera 170,180", "re", { en: "Hair style, hair colour, clothes colour (only the colours your class really has, no more crashes)", pt: "Penteado, cor do cabelo, cor da roupa (só as cores que a sua classe tem de verdade, sem travar o jogo)", da: "Frisure, hårfarve, tøjfarve (kun de farver din klasse faktisk har, ingen nedbrud)" }],
+  ["Item Disposal", "Prontera 193,177", "re", { en: "Destroys items you can't drop or sell (starter gear, bound items)", pt: "Destrói itens que não dá pra dropar nem vender (equipamento inicial, itens presos)", da: "Destruerer items du ikke kan smide eller sælge (startudstyr, bundne items)" }],
   ["Private MVP Room", "Prontera 148,174", "re", { en: "Rent a room (100k zeny, 1 hour, party/guild/account) and summon MVPs (100k) or bosses (50k). These MVPs give no cash points.", pt: "Aluga uma sala (100k zeny, 1 hora, grupo/clã/conta) e invoca MVPs (100k) ou chefes (50k). Esses MVPs não dão pontos de cash.", da: "Lej et rum (100k zeny, 1 time, party/guild/konto) og tilkald MVP'er (100k) eller bosser (50k). Disse MVP'er giver ingen cash points." }],
   ["Refine Master", "Prontera 184,177", "re", { en: "Safe refine with the +14 / +19 certificates", pt: "Refino seguro com os certificados +14 / +19", da: "Sikker refine med +14 / +19 certifikaterne" }],
   ["Shadow Blacksmith", "Prontera 187,177", "re", { en: "Refine window, shadow gear too", pt: "Janela de refino, inclusive equipamento sombrio", da: "Refine-vindue, også shadow gear" }],
@@ -41,12 +42,35 @@ const T = {
           <tr><td>Every hour played (not AFK)</td><td class="c">+500</td></tr>
           <tr><td>Every MVP you kill (last hit)</td><td class="c">+5,000</td></tr>
           <tr><td>Every PvP kill (not the same victim twice in 10 min)</td><td class="c">+3,000</td></tr></table>
-        <p>Tabs: <em>Beginner</em> (rush gear), <em>2nd Class</em>, <em>3rd Class</em>, <em>Endgame</em> (full sets per build), <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manuals, speed, stat foods, acid packs, Kafra card, pet eggs) and <em>Visuals</em> (the ride and costumes: wings, auras, halos, crowns).</p>`],
+        <p>Tabs by playstyle: <em>Popular</em> (the best picks and <b>featured full builds</b>: Creator and Genetic Acid Demonstration, Rune Knight Dragon Breath, with cards and shadow gear), <em>Melee</em>, <em>Ranged</em>, <em>Magic &amp; Support</em>, <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manuals, speed, stat foods, acid packs, <b>weapon element converters</b> incl. a Ghost one, pet eggs) and <em>Visuals</em> (the ride, wings and costumes).</p>`],
       ["refine", "re", "REFINING", `<ul>
           <li><b>Refine Master</b> (Prontera 184,177): safe refine with the <em>Safe to +14</em> / <em>Safe to +19</em> certificates from the shop.</li>
           <li><b>Shadow Blacksmith</b> (Prontera 187,177): opens the Refine window, also for shadow gear. Safe up to +4; from +5, HD ores only drop it one level.</li>
           <li><b>Shadow 9 Refine Hammer</b> (shop): any shadow piece up to +8 becomes <b>+9</b>, no risk. <b>Shadow Refine Hammer</b>: random +1 to +10.</li>
           <li>HD and Enriched Elunium / Oridecon, Blacksmith Blessing and costume enchant stones in the <em>Refine</em> tab.</li></ul>`],
+      ["jobs4", "re", "4TH JOBS", `
+        <p>Two ways, both at <b>base 200 / job 70</b>, both give the <b>Hourglass Necklace</b>:</p>
+        <ul><li><b>Job Master</b> (Prontera 153,193): instant, from any 3rd class.</li>
+          <li><b>The real quests</b>, like the official ones: same NPCs, places and trials, private instances with the official 4th job maps and monsters (no party needed).</li></ul>
+        <div class="scroll"><table><tr><th>4TH CLASS</th><th>START</th><th>WHERE</th></tr>
+          <tr><td>Dragon Knight</td><td>Oscar</td><td class="c">gef_fild08 54,101</td></tr>
+          <tr><td>Imperial Guard</td><td>King's Knight</td><td class="c">prt_cas 181,10</td></tr>
+          <tr><td>Arch Mage</td><td>Fairy</td><td class="c">ba_maison 201,269</td></tr>
+          <tr><td>Elemental Master</td><td>Elma</td><td class="c">gef_tower 108,166</td></tr>
+          <tr><td>Windhawk</td><td>Drunk Old Man</td><td class="c">payon 100,177</td></tr>
+          <tr><td>Troubadour / Trouvere</td><td>Flyer Part-timer</td><td class="c">lighthalzen 186,124</td></tr>
+          <tr><td>Cardinal</td><td>Priest Jergus</td><td class="c">prt_church 114,122</td></tr>
+          <tr><td>Inquisitor</td><td>Inn Employee</td><td class="c">prt_in 253,133</td></tr>
+          <tr><td>Meister</td><td>Roday / Mist</td><td class="c">yuno 112,208</td></tr>
+          <tr><td>Biolo</td><td>Aldina</td><td class="c">verus04 157,165</td></tr>
+          <tr><td>Shadow Cross</td><td>Rumin</td><td class="c">job3_guil01 74,92</td></tr>
+          <tr><td>Abyss Chaser</td><td>Vicente</td><td class="c">s_atelier 123,59</td></tr>
+          <tr><td>Sky Emperor</td><td>Sign</td><td class="c">payon 215,202</td></tr>
+          <tr><td>Soul Ascetic</td><td>Clerk</td><td class="c">payon 195,119</td></tr>
+          <tr><td>Night Watch</td><td>Anya</td><td class="c">einbroch 312,323</td></tr>
+          <tr><td>Shinkiro / Shiranui</td><td>Seoyeon</td><td class="c">amatsu 82,118</td></tr>
+          <tr><td>Hyper Novice</td><td>Grape</td><td class="c">aldebaran 110,69</td></tr>
+          <tr><td>Spirit Handler</td><td>Doram job quest</td><td class="c">official</td></tr></table></div>`],
       ["maps", "re", "SPECIAL MAPS (bRO EVENTS)", `
         <div class="scroll"><table><tr><th>WHAT</th><th>WHERE</th><th>WHAT'S INSIDE</th></tr>
           <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 rooms packed with monsters that respawn instantly, no EXP loss on death. Base 70+. Ticket: 1 point.</td></tr>
@@ -66,7 +90,7 @@ const T = {
         re: `<ul><li>Kingdom of Ragnarok 2026 client, everything in English: items, skills, NPCs, maps. Every item has a picture and a description.</li>
           <li>Text in <b>Arial</b>, like the old bRO.</li>
           <li>Login and loading screens of our own, no web pages popping up on exit or in the shop.</li>
-          <li>Installers for Windows and Linux (with uninstall) on the home page.</li></ul>`,
+          <li>Installers for Windows and Linux (with uninstall) on the home page. The game opens through a <b>launcher that updates itself</b>: only changed files are downloaded, then PLAY.</li></ul>`,
         pre: `<ul><li>Classic 2021 client, everything in English.</li>
           <li>Login and loading screens of our own, no web pages popping up on exit.</li>
           <li>Installers for Windows and Linux (with uninstall) on the home page.</li></ul>` }],
@@ -92,12 +116,35 @@ const T = {
           <tr><td>Cada hora jogada (sem AFK)</td><td class="c">+500</td></tr>
           <tr><td>Cada MVP que você mata (último golpe)</td><td class="c">+5.000</td></tr>
           <tr><td>Cada kill de PvP (não a mesma vítima 2x em 10 min)</td><td class="c">+3.000</td></tr></table>
-        <p>Abas: <em>Beginner</em> (equipamento pra upar), <em>2nd Class</em>, <em>3rd Class</em>, <em>Endgame</em> (sets completos por build), <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manuais, velocidade, comidas de status, pacotes de ácido, cartão Kafra, ovos de mascote) e <em>Visuals</em> (a montaria e visuais: asas, auras, auréolas, coroas).</p>`],
+        <p>Abas por estilo de jogo: <em>Popular</em> (os melhores itens e <b>builds completas em destaque</b>: Criador e Bioquímico de Demonstração Ácida, Cavaleiro Rúnico de Sopro do Dragão, com cartas e equipamento sombrio), <em>Melee</em>, <em>Ranged</em>, <em>Magic &amp; Support</em>, <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manuais, velocidade, comidas de status, pacotes de ácido, <b>conversores de elemento da arma</b>, inclusive um Fantasma, ovos de mascote) e <em>Visuals</em> (a montaria, asas e visuais).</p>`],
       ["refine", "re", "REFINO", `<ul>
           <li><b>Refine Master</b> (Prontera 184,177): refino seguro com os certificados <em>Safe to +14</em> / <em>Safe to +19</em> da loja.</li>
           <li><b>Shadow Blacksmith</b> (Prontera 187,177): abre a janela de refino, inclusive pra equipamento sombrio. Seguro até +4; a partir do +5, minério HD só faz cair um nível.</li>
           <li><b>Shadow 9 Refine Hammer</b> (loja): qualquer peça sombria até +8 vira <b>+9</b>, sem risco. <b>Shadow Refine Hammer</b>: aleatório de +1 a +10.</li>
           <li>Elunium / Oridecon HD e Enriquecido, Bênção do Ferreiro e pedras de encantamento de visual na aba <em>Refine</em>.</li></ul>`],
+      ["jobs4", "re", "CLASSES 4", `
+        <p>Dois caminhos, os dois com <b>base 200 / classe 70</b>, os dois dão o <b>Hourglass Necklace</b>:</p>
+        <ul><li><b>Job Master</b> (Prontera 153,193): na hora, de qualquer classe 3.</li>
+          <li><b>As quests de verdade</b>, como as oficiais: mesmos NPCs, lugares e provas, instâncias privadas com os mapas e monstros oficiais das classes 4 (não precisa de grupo).</li></ul>
+        <div class="scroll"><table><tr><th>CLASSE 4</th><th>COMEÇA COM</th><th>ONDE</th></tr>
+          <tr><td>Dragon Knight</td><td>Oscar</td><td class="c">gef_fild08 54,101</td></tr>
+          <tr><td>Imperial Guard</td><td>King's Knight</td><td class="c">prt_cas 181,10</td></tr>
+          <tr><td>Arch Mage</td><td>Fairy</td><td class="c">ba_maison 201,269</td></tr>
+          <tr><td>Elemental Master</td><td>Elma</td><td class="c">gef_tower 108,166</td></tr>
+          <tr><td>Windhawk</td><td>Drunk Old Man</td><td class="c">payon 100,177</td></tr>
+          <tr><td>Troubadour / Trouvere</td><td>Flyer Part-timer</td><td class="c">lighthalzen 186,124</td></tr>
+          <tr><td>Cardinal</td><td>Priest Jergus</td><td class="c">prt_church 114,122</td></tr>
+          <tr><td>Inquisitor</td><td>Inn Employee</td><td class="c">prt_in 253,133</td></tr>
+          <tr><td>Meister</td><td>Roday / Mist</td><td class="c">yuno 112,208</td></tr>
+          <tr><td>Biolo</td><td>Aldina</td><td class="c">verus04 157,165</td></tr>
+          <tr><td>Shadow Cross</td><td>Rumin</td><td class="c">job3_guil01 74,92</td></tr>
+          <tr><td>Abyss Chaser</td><td>Vicente</td><td class="c">s_atelier 123,59</td></tr>
+          <tr><td>Sky Emperor</td><td>Sign</td><td class="c">payon 215,202</td></tr>
+          <tr><td>Soul Ascetic</td><td>Clerk</td><td class="c">payon 195,119</td></tr>
+          <tr><td>Night Watch</td><td>Anya</td><td class="c">einbroch 312,323</td></tr>
+          <tr><td>Shinkiro / Shiranui</td><td>Seoyeon</td><td class="c">amatsu 82,118</td></tr>
+          <tr><td>Hyper Novice</td><td>Grape</td><td class="c">aldebaran 110,69</td></tr>
+          <tr><td>Spirit Handler</td><td>Doram job quest</td><td class="c">official</td></tr></table></div>`],
       ["maps", "re", "MAPAS ESPECIAIS (EVENTOS DO bRO)", `
         <div class="scroll"><table><tr><th>O QUE</th><th>ONDE</th><th>O QUE TEM</th></tr>
           <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 salas lotadas de monstros que renascem na hora, sem perder EXP ao morrer. Base 70+. Ingresso: 1 ponto.</td></tr>
@@ -117,7 +164,7 @@ const T = {
         re: `<ul><li>Cliente kRO 2026, tudo em inglês: itens, skills, NPCs, mapas. Todo item tem imagem e descrição.</li>
           <li>Texto em <b>Arial</b>, igual ao bRO antigo.</li>
           <li>Telas de login e carregamento nossas, nenhuma página da web abrindo ao sair ou na loja.</li>
-          <li>Instaladores pra Windows e Linux (com desinstalador) na página inicial.</li></ul>`,
+          <li>Instaladores pra Windows e Linux (com desinstalador) na página inicial. O jogo abre por um <b>launcher que se atualiza sozinho</b>: baixa só os arquivos que mudaram, depois PLAY.</li></ul>`,
         pre: `<ul><li>Cliente clássico 2021, tudo em inglês.</li>
           <li>Telas de login e carregamento nossas, nenhuma página da web abrindo ao sair.</li>
           <li>Instaladores pra Windows e Linux (com desinstalador) na página inicial.</li></ul>` }],
@@ -143,12 +190,35 @@ const T = {
           <tr><td>Hver time spillet (ikke AFK)</td><td class="c">+500</td></tr>
           <tr><td>Hver MVP du dræber (sidste slag)</td><td class="c">+5.000</td></tr>
           <tr><td>Hvert PvP-kill (ikke samme offer 2x på 10 min)</td><td class="c">+3.000</td></tr></table>
-        <p>Faner: <em>Beginner</em> (rush-gear), <em>2nd Class</em>, <em>3rd Class</em>, <em>Endgame</em> (fulde sæt pr. build), <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manualer, speed, stat-mad, syrepakker, Kafra-kort, kæledyrsæg) og <em>Visuals</em> (ridedyret og kostumer: vinger, auraer, glorier, kroner).</p>`],
+        <p>Faner efter spillestil: <em>Popular</em> (de bedste valg og <b>fremhævede fulde builds</b>: Creator og Genetic Acid Demonstration, Rune Knight Dragon Breath, med kort og shadow gear), <em>Melee</em>, <em>Ranged</em>, <em>Magic &amp; Support</em>, <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manualer, speed, stat-mad, syrepakker, <b>våben-element-konvertere</b> inkl. en Ghost, kæledyrsæg) og <em>Visuals</em> (ridedyret, vinger og kostumer).</p>`],
       ["refine", "re", "REFINING", `<ul>
           <li><b>Refine Master</b> (Prontera 184,177): sikker refine med <em>Safe to +14</em> / <em>Safe to +19</em> certifikaterne fra butikken.</li>
           <li><b>Shadow Blacksmith</b> (Prontera 187,177): åbner refine-vinduet, også til shadow gear. Sikkert op til +4; fra +5 får HD-malm den kun til at falde ét niveau.</li>
           <li><b>Shadow 9 Refine Hammer</b> (butik): enhver shadow-del op til +8 bliver <b>+9</b>, ingen risiko. <b>Shadow Refine Hammer</b>: tilfældigt +1 til +10.</li>
           <li>HD og Enriched Elunium / Oridecon, Blacksmith Blessing og costume-enchant-sten i <em>Refine</em>-fanen.</li></ul>`],
+      ["jobs4", "re", "4. JOB", `
+        <p>To veje, begge ved <b>base 200 / job 70</b>, begge giver <b>Hourglass Necklace</b>:</p>
+        <ul><li><b>Job Master</b> (Prontera 153,193): med det samme, fra enhver 3. klasse.</li>
+          <li><b>De rigtige quests</b>, som de officielle: samme NPC'er, steder og prøver, private instances med de officielle 4. job-maps og monstre (ingen party nødvendig).</li></ul>
+        <div class="scroll"><table><tr><th>4. KLASSE</th><th>START</th><th>HVOR</th></tr>
+          <tr><td>Dragon Knight</td><td>Oscar</td><td class="c">gef_fild08 54,101</td></tr>
+          <tr><td>Imperial Guard</td><td>King's Knight</td><td class="c">prt_cas 181,10</td></tr>
+          <tr><td>Arch Mage</td><td>Fairy</td><td class="c">ba_maison 201,269</td></tr>
+          <tr><td>Elemental Master</td><td>Elma</td><td class="c">gef_tower 108,166</td></tr>
+          <tr><td>Windhawk</td><td>Drunk Old Man</td><td class="c">payon 100,177</td></tr>
+          <tr><td>Troubadour / Trouvere</td><td>Flyer Part-timer</td><td class="c">lighthalzen 186,124</td></tr>
+          <tr><td>Cardinal</td><td>Priest Jergus</td><td class="c">prt_church 114,122</td></tr>
+          <tr><td>Inquisitor</td><td>Inn Employee</td><td class="c">prt_in 253,133</td></tr>
+          <tr><td>Meister</td><td>Roday / Mist</td><td class="c">yuno 112,208</td></tr>
+          <tr><td>Biolo</td><td>Aldina</td><td class="c">verus04 157,165</td></tr>
+          <tr><td>Shadow Cross</td><td>Rumin</td><td class="c">job3_guil01 74,92</td></tr>
+          <tr><td>Abyss Chaser</td><td>Vicente</td><td class="c">s_atelier 123,59</td></tr>
+          <tr><td>Sky Emperor</td><td>Sign</td><td class="c">payon 215,202</td></tr>
+          <tr><td>Soul Ascetic</td><td>Clerk</td><td class="c">payon 195,119</td></tr>
+          <tr><td>Night Watch</td><td>Anya</td><td class="c">einbroch 312,323</td></tr>
+          <tr><td>Shinkiro / Shiranui</td><td>Seoyeon</td><td class="c">amatsu 82,118</td></tr>
+          <tr><td>Hyper Novice</td><td>Grape</td><td class="c">aldebaran 110,69</td></tr>
+          <tr><td>Spirit Handler</td><td>Doram job quest</td><td class="c">official</td></tr></table></div>`],
       ["maps", "re", "SPECIAL MAPS (bRO-EVENTS)", `
         <div class="scroll"><table><tr><th>HVAD</th><th>HVOR</th><th>HVAD ER DER</th></tr>
           <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 rum fyldt med monstre der respawner med det samme, intet EXP-tab ved død. Base 70+. Billet: 1 point.</td></tr>
@@ -168,7 +238,7 @@ const T = {
         re: `<ul><li>kRO 2026-klient, alt på engelsk: items, skills, NPC'er, maps. Hvert item har et billede og en beskrivelse.</li>
           <li>Tekst i <b>Arial</b>, ligesom det gamle bRO.</li>
           <li>Vores egne login- og loadingskærme, ingen websider der popper op ved afslutning eller i butikken.</li>
-          <li>Installere til Windows og Linux (med afinstallation) på forsiden.</li></ul>`,
+          <li>Installere til Windows og Linux (med afinstallation) på forsiden. Spillet åbner gennem en <b>launcher der opdaterer sig selv</b>: kun ændrede filer hentes, derefter PLAY.</li></ul>`,
         pre: `<ul><li>Klassisk 2021-klient, alt på engelsk.</li>
           <li>Vores egne login- og loadingskærme, ingen websider der popper op ved afslutning.</li>
           <li>Installere til Windows og Linux (med afinstallation) på forsiden.</li></ul>` }],

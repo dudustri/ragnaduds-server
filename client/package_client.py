@@ -353,6 +353,31 @@ def main():
     print(f"{out}\n  {n} game files, {size/1024**3:.2f} GB in → {os.path.getsize(out)/1024**3:.2f} GB download, "
           f"server {addr}:{c['port']}")
 
+    # small "launcher upgrade" download: gives an existing install the auto-updating launcher, no game files
+    up = out[:-4] + "-launcher-upgrade.zip"; utop = f"{top}-Upgrade"
+    with zipfile.ZipFile(up + ".part", "w") as z:
+        z.writestr(f"{utop}/Upgrade RagnaDuds.bat",
+                   '@echo off\r\ntitle RagnaDuds launcher upgrade\r\n'
+                   'powershell -NoProfile -ExecutionPolicy Bypass -STA -WindowStyle Hidden '
+                   '-File "%~dp0installer\\upgrade.ps1"\r\n', zipfile.ZIP_DEFLATED)
+        sh = zipfile.ZipInfo(f"{utop}/upgrade.sh"); sh.external_attr = 0o100755 << 16; sh.compress_type = zipfile.ZIP_DEFLATED
+        z.writestr(sh, '#!/bin/sh\n# RagnaDuds launcher upgrade for Linux\ncd "$(dirname "$0")" || exit 1\n'
+                       'exec python3 installer/linux_install.py --upgrade "$@"\n')
+        z.writestr(f"{utop}/README.txt",
+                   f"RagnaDuds · {c['edition']} · launcher upgrade\r\n\r\n"
+                   "For players who ALREADY have the game installed: adds the launcher that updates the game by itself\r\n"
+                   "(only changed files are downloaded). No need to download the whole game again.\r\n\r\n"
+                   "WINDOWS: close the game, double-click 'Upgrade RagnaDuds.bat'.\r\n"
+                   "LINUX: close the game, run ./upgrade.sh (or ./upgrade.sh --dest /path/to/the/game/folder).\r\n\r\n"
+                   "Then open 'RagnaDuds' from your desktop. The first start checks every file, so it takes a bit longer.\r\n",
+                   zipfile.ZIP_DEFLATED)
+        z.writestr(f"{utop}/installer/config.json", json.dumps(cfg, indent=2), zipfile.ZIP_DEFLATED)
+        for f in INSTALLER_FILES + ["upgrade.ps1"]:
+            if f in ("install.ps1",): continue
+            z.write(os.path.join(INSTALLER, f), f"{utop}/installer/{f}", zipfile.ZIP_DEFLATED)
+    os.replace(up + ".part", up)
+    print(f"{up}\n  launcher upgrade, {os.path.getsize(up)/1024:.0f} KB")
+
 
 if __name__ == "__main__":
     main()

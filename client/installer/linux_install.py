@@ -11,6 +11,7 @@ Options: --dest DIR    install somewhere else
          --text        force the terminal progress bar
          --uninstall   remove this edition (game folder, Wine setup, launchers)
          --launch      the launcher (menu / desktop entries): download changed files, then PLAY
+         --upgrade     give an existing install the launcher (the small "launcher upgrade" download)
 """
 import hashlib, json, os, re, shutil, socket, subprocess, sys, threading, zipfile
 
@@ -121,6 +122,12 @@ def install(report):
                                "  (C:\\Windows\\Fonts\\gulim.ttc) next to install.sh and run it again.")
 
     report(97, "Creating the RagnaDuds shortcut…")
+    make_shortcuts()
+    report(100, f"Done! Start '{CFG['shortcut']}' from your desktop or app menu.")
+
+
+def make_shortcuts():
+    """Start script, menu/desktop entries (they open the launcher), uninstaller and the launcher's files."""
     shutil.copy(os.path.join(HERE, "ragnaduds.png"), os.path.join(DEST, "ragnaduds.png"))
     launcher = os.path.join(DEST, "ragnaduds.sh")
     lp = CFG.get("login_pics")        # random login picture: DATA.INI line 0 = one of our login GRFs
@@ -159,7 +166,6 @@ def install(report):
                 f"Icon={os.path.join(DEST, 'ragnaduds.png')}\nTerminal=false\nCategories=Game;\n")
     if "GNOME" in os.environ.get("XDG_CURRENT_DESKTOP", "").upper():   # GNOME shows no desktop icons by default
         RESULT["notes"].append(f"✔ GNOME hides desktop icons: press the Super key and type RagnaDuds")
-    report(100, f"Done! Start '{CFG['shortcut']}' from your desktop or app menu.")
 
 
 RESULT = {"notes": [], "shas": {}}          # sanity-check summary, shown at the end; installed file checksums
@@ -709,9 +715,47 @@ def launch():
     start_game(); return 0
 
 
+# ---------------- upgrade: give an existing install the launcher (no game download) ----------------
+def find_install():
+    """The game folder of an existing install: --dest, its menu entry, or the usual places."""
+    cands = []
+    if "--dest" in ARGS: cands.append(DEST)
+    entry = os.path.join(APPS, f"{LAUNCHER}.desktop")
+    if os.path.exists(entry):
+        for line in open(entry, errors="replace"):
+            if line.startswith("Path="): cands.append(line[5:].strip())
+    cands += [DEST, os.path.expanduser(f"~/ragnaduds/{CFG['folder']}"), os.path.expanduser(f"~/RagnaDuds/{CFG['folder']}")]
+    for d in cands:
+        if d and os.path.exists(os.path.join(d, CFG["exe"])): return d
+    return None
+
+
+def upgrade():
+    global DEST, PREFIX
+    d = find_install()
+    if not d:
+        print(f"No {CFG['title']} install found. Install it from the website, or run: upgrade.sh --dest /path/to/the/game/folder")
+        return 1
+    DEST, PREFIX = d, os.path.join(d, "wine")
+    if game_running():
+        print("The game is open: close it, then run the upgrade again."); return 1
+    print(f"Upgrading {d} ...")
+    for old in ("lang", "ragnaduds_lang.grf", os.path.join("System", "itemInfo_PT.lua")):   # Portuguese-era leftovers
+        p = os.path.join(d, old)
+        if os.path.isdir(p): shutil.rmtree(p, ignore_errors=True)
+        elif os.path.exists(p): os.remove(p)
+    make_shortcuts()
+    print(f"Done! Open '{CFG['shortcut']}' from your desktop or app menu: the first start checks your files and downloads only what changed.")
+    if "--no-launch" not in ARGS:
+        subprocess.Popen([sys.executable, os.path.join(d, ".installer", "linux_install.py"), "--launch"], start_new_session=True,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return 0
+
+
 if __name__ == "__main__":
     if "--uninstall" in ARGS: sys.exit(uninstall())
     if "--launch" in ARGS: sys.exit(launch())
+    if "--upgrade" in ARGS: sys.exit(upgrade())
     gui = os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")
     if "--text" in ARGS or not gui: sys.exit(run_text())
     try:                                   # 1st choice: GTK window with the photo as background

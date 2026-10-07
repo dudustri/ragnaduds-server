@@ -190,6 +190,8 @@
   }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
   @media (max-width: 560px) { .npc { grid-template-columns: 64px 1fr; } .npc img { width: 64px; height: 64px; } .meter { grid-template-columns: 90px 1fr 64px; } }
+  .sublink { display: block; margin-top: 10px; font-size: 18px; color: var(--ink-dim); text-decoration: underline; }
+  .sublink:hover { color: var(--gold); }
 </style>
 </head>
 <body>
@@ -265,6 +267,7 @@
       <div class="row"><canvas data-sprite="sword" data-scale="4"></canvas><div data-i18n="pretext"></div></div>
       <div class="tags"><span class="tag">client 2021-11-03</span><span class="tag">English</span><span class="tag">port 6900</span><span class="tag" data-size="pre">…</span></div>
       <a class="btn" href="files/duds-pre-renewal.zip" data-i18n="download"></a>
+      <a class="sublink" href="files/duds-pre-renewal-launcher-upgrade.zip" data-i18n="upgrade"></a>
       <div class="status" data-status="pre"></div>
     </section>
     <section class="frame slot re">
@@ -272,6 +275,7 @@
       <div class="row"><canvas data-sprite="chest" data-scale="4"></canvas><div data-i18n="retext"></div></div>
       <div class="tags"><span class="tag">client 2026-01-07</span><span class="tag">English</span><span class="tag">port 6901</span><span class="tag" data-size="re">…</span></div>
       <a class="btn" href="files/duds-renewal.zip" data-i18n="download"></a>
+      <a class="sublink" href="files/duds-renewal-launcher-upgrade.zip" data-i18n="upgrade"></a>
       <div class="status" data-status="re"></div>
     </section>
   </div>
@@ -306,7 +310,7 @@ const T = {
     npcname: "[RagnaDuds, Kafra intern]", click: "▼ click", clickme: "click to continue",
     pretext: "The classic. 2004 vibes, 99/70 cap, zero bullshit. For veterans and people who cry at the Prontera theme.",
     retext: "Modern RO. 3rd &amp; 4th jobs, level 275, forty skills per button. For masochists who read patch notes for fun.",
-    download: "▶ DOWNLOAD", cta: "▼ DOWNLOAD THE GAME", featurescta: "★ SERVER FEATURES", statustitle: "SERVER STATUS", playerson: "players online", totals: "{a} accounts · {c} characters · checked {t}", hoftitle: "HALL OF FAME", hofrich: "RICHEST", hofmvp: "MVP SLAYERS", hofempty: "Nobody here yet.", hofname: "NAME", lvtip: "base level / job level", killstip: "MVPs killed · players slain in PvP", online: "● ONLINE", offline: "● OFFLINE", starting: "● STARTING", livetip: "Server status, checked every 15 s", notyet: "Not uploaded yet. Duds is probably still zipping. Or drunk.", updated: "updated",
+    download: "▶ DOWNLOAD", upgrade: "Already installed? Get just the auto-updating launcher (tiny download)", cta: "▼ DOWNLOAD THE GAME", featurescta: "★ SERVER FEATURES", statustitle: "SERVER STATUS", playerson: "players online", totals: "{a} accounts · {c} characters · checked {t}", hoftitle: "HALL OF FAME", hofrich: "RICHEST", hofmvp: "MVP SLAYERS", hofempty: "Nobody here yet.", hofname: "NAME", lvtip: "base level / job level", killstip: "MVPs killed · players slain in PvP", online: "● ONLINE", offline: "● OFFLINE", starting: "● STARTING", livetip: "Server status, checked every 15 s", notyet: "Not uploaded yet. Duds is probably still zipping. Or drunk.", updated: "updated",
     dk: "Denmark", br: "Brasil", you: "★ You",
     lagnote: "Denmark/Brasil = measured data-center averages. <b>You</b> = your real ping to this server, live, every 5 s. Server lives in US East, so nobody gets to blame the lag.",
     howto: "HOW TO INSTALL",
@@ -339,7 +343,7 @@ const T = {
     npcname: "[RagnaDuds, estagiário da Kafra]", click: "▼ clica", clickme: "clica pra continuar",
     pretext: "O clássico. Vibe de 2004, cap 99/70, zero frescura. Pra veterano e pra quem chora ouvindo a música de Prontera.",
     retext: "RO moderno. Classes 3 e 4, nível 275, quarenta skills por botão. Pra masoquista que lê patch note por diversão.",
-    download: "▶ BAIXAR", cta: "▼ BAIXAR O JOGO", featurescta: "★ O QUE TEM NO SERVER", statustitle: "STATUS DOS SERVIDORES", playerson: "jogadores online", totals: "{a} contas · {c} personagens · conferido {t}", hoftitle: "HALL DA FAMA", hofrich: "MAIS RICOS", hofmvp: "CAÇADORES DE MVP", hofempty: "Ninguém aqui ainda.", hofname: "NOME", lvtip: "nível de base / nível de classe", killstip: "MVPs mortos · jogadores mortos no PvP", online: "● ONLINE", offline: "● DESLIGADO", starting: "● LIGANDO", livetip: "Status do servidor, conferido a cada 15 s", notyet: "Ainda não subiu. O Duds tá zipando. Ou bêbado.", updated: "atualizado",
+    download: "▶ BAIXAR", upgrade: "Já instalou? Baixe só o launcher que se atualiza sozinho (download pequeno)", cta: "▼ BAIXAR O JOGO", featurescta: "★ O QUE TEM NO SERVER", statustitle: "STATUS DOS SERVIDORES", playerson: "jogadores online", totals: "{a} contas · {c} personagens · conferido {t}", hoftitle: "HALL DA FAMA", hofrich: "MAIS RICOS", hofmvp: "CAÇADORES DE MVP", hofempty: "Ninguém aqui ainda.", hofname: "NOME", lvtip: "nível de base / nível de classe", killstip: "MVPs mortos · jogadores mortos no PvP", online: "● ONLINE", offline: "● DESLIGADO", starting: "● LIGANDO", livetip: "Status do servidor, conferido a cada 15 s", notyet: "Ainda não subiu. O Duds tá zipando. Ou bêbado.", updated: "atualizado",
     dk: "Dinamarca", br: "Brasil", you: "★ Você",
     lagnote: "Dinamarca/Brasil = média medida entre data centers. <b>Você</b> = teu ping real pro servidor, ao vivo, a cada 5 s. O servidor fica no leste dos EUA, então ninguém culpa o lag.",
     howto: "COMO INSTALAR",
@@ -375,7 +379,7 @@ const T = {
     clickme: "klik for at fortsætte",
     pretext: "Klassikeren. 2004-vibes, 99/70 cap, nul pis. For veteraner og folk, der græder til Prontera-musikken.",
     retext: "Moderne RO. 3. og 4. jobs, level 275, fyrre skills per knap. For masochister, der læser patch notes for sjov.",
-    download: "▶ DOWNLOAD",
+    download: "▶ DOWNLOAD", upgrade: "Allerede installeret? Hent kun launcheren der opdaterer sig selv (lille download)",
     cta: "▼ HENT SPILLET", featurescta: "★ SERVERENS FEATURES",
     statustitle: "SERVERSTATUS",
     playerson: "spillere online",
