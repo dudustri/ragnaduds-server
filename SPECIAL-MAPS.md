@@ -133,6 +133,6 @@ are defined with their client Ids in `re_db_import/mob_db.yml`. Spirit Handler u
 |---|---|---|
 | Reset Girl | prontera 150,193 | resets stats and/or skills (zeny) |
 | Platinum Skill NPC | prontera 128,200 | quest skills of your class (the Job Master also gives them on job change) |
-| Stylist | prontera 170,180 | hair style / hair colour / clothes colour |
+| Stylist | prontera 170,180 | hair style / hair colour / clothes colour. Our copy (`deploy/stylist.txt`) offers only the clothes colours the class has: `getclothmax()` / `pc_cloth_color_max` (src/map/pc.cpp) cap every class to the body palettes in the 2026 client (Novice 8, 1st/2nd 4, trans 2nd + Crusader/Monk/Sage/Rogue/Assassin/Bard/Dancer 3, 3rd/4th 7, Royal Guard on a gryphon 3); `max_cloth_color: 8` is only the overall ceiling |
 | Private MVP Room | prontera 148,174 | rent a room (100k zeny, 60 min, party/guild/account) and summon MVPs (100k) or bosses (50k). MVPs killed there give **no** cash points (deploy/cash_points.txt) |
 | Marriage (Vomars, Happy Marry, Sister Lisa) | prt_church (Prontera church) | weddings |

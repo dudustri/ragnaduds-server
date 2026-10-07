@@ -11,6 +11,12 @@ Type them in the chat box. Your account must be a GM (**group 99 = Admin**, e.g.
 
 ---
 
+## From your computer, without logging in (no restart)
+`./duds.sh gm <host> <re|pre> @command [args]` types the command into the running map server's console and shows
+what it logged, e.g. `./duds.sh gm vm re @reloadscript`, `./duds.sh gm vm re @reloadcashdb`,
+`./duds.sh gm vm pre @kami Server restart in 5 minutes`. Only commands that don't need a target player (reloads,
+announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and `stdin_open` (compose.yml).
+
 ## Spawn / kill monsters
 | Command | What it does |
 |---|---|

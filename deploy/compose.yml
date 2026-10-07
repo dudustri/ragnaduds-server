@@ -37,6 +37,7 @@ services:
         depends_on: [prere-login]
     prere-map:
         <<: *rathena
+        stdin_open: true   # console input: ./duds.sh gm <host> <re|pre> @command (no restart needed)
         image: "ghcr.io/dudustri/duds-server-pre-renewal:${TAG:-latest}"
         command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./map-server"
         volumes:
@@ -84,6 +85,7 @@ services:
         depends_on: [re-login]
     re-map:
         <<: *rathena
+        stdin_open: true   # console input: ./duds.sh gm <host> <re|pre> @command (no restart needed)
         image: "ghcr.io/dudustri/duds-server-renewal:${TAG:-latest}"
         command: sh -c "until nc -z db 3306; do sleep 2; done; exec ./map-server"
         volumes:
@@ -97,6 +99,7 @@ services:
             - "./homunculus_room.txt:/rathena/npc/custom/duds_homunculus_room.txt:ro,z"   # private homunculus training rooms (alchemists)
             - "./ticket_refiner.txt:/rathena/npc/custom/duds_ticket_refiner.txt:ro,z"   # Refine Master: certificates also for level 2 armor / level 5 weapons
             - "./jobmaster.txt:/rathena/npc/custom/duds_jobmaster.txt:ro,z"   # Job Master: fourth class from any third class
+            - "./stylist.txt:/rathena/npc/custom/duds_stylist.txt:ro,z"   # Stylist: clothes colours per class
             - "./fourth_quests.txt:/rathena/npc/custom/duds_fourth_quests.txt:ro,z"   # 4th job change quests (Cardinal, Biolo, Dragon Knight)
             - "./fourth_quests_a.txt:/rathena/npc/custom/duds_fourth_quests_a.txt:ro,z"
             - "./fourth_quests_b.txt:/rathena/npc/custom/duds_fourth_quests_b.txt:ro,z"
