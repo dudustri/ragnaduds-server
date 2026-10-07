@@ -135,3 +135,139 @@ Body:
       Map: 1@dime
       X: 80
       Y: 76
+  - Id: 916
+    Name: Cardinal Last Ordeal
+    TimeLimit: 3600
+    IdleTimeout: 600
+    Enter:
+      Map: 1@4cdn
+      X: 128
+      Y: 135
+  - Id: 917
+    Name: Dragon Knight Trials
+    TimeLimit: 7200
+    IdleTimeout: 900
+    Enter:
+      Map: 1@4drk
+      X: 60
+      Y: 58
+  - Id: 918
+    Name: Biologist's Laboratory
+    TimeLimit: 3600
+    IdleTimeout: 600
+    Enter:
+      Map: ver_eju
+      X: 55
+      Y: 179
+  - Id: 919
+    Name: Tourney Hall of Trials
+    TimeLimit: 3600
+    IdleTimeout: 900
+    Enter:
+      Map: 1@4igd
+      X: 50
+      Y: 14
+  - Id: 920
+    Name: Inquisitor Underground Ward
+    TimeLimit: 3600
+    IdleTimeout: 900
+    Enter:
+      Map: 1@4inq
+      X: 80
+      Y: 138
+  - Id: 921
+    Name: Juperos Core Investigation
+    TimeLimit: 3600
+    IdleTimeout: 600
+    Enter:
+      Map: 1@4mst
+      X: 150
+      Y: 150
+  - Id: 922
+    Name: Hyper Novice Challenge
+    TimeLimit: 3600
+    IdleTimeout: 900
+    Enter:
+      Map: 1@exhn
+      X: 184
+      Y: 14
+  - Id: 927
+    Name: Shadow Cross Trial
+    TimeLimit: 3600
+    IdleTimeout: 600
+    Enter:
+      Map: ve_fild05
+      X: 80
+      Y: 56
+  - Id: 928
+    Name: Abyss Chaser Trial
+    TimeLimit: 600
+    IdleTimeout: 300
+    Enter:
+      Map: ve_fild05
+      X: 115
+      Y: 62
+  - Id: 929
+    Name: Yeongwi's Battleground
+    TimeLimit: 3600
+    IdleTimeout: 600
+    Enter:
+      Map: ama_dun02
+      X: 125
+      Y: 50
+  - Id: 930
+    Name: Night Watch Exam
+    TimeLimit: 3600
+    IdleTimeout: 600
+    Enter:
+      Map: 1@exnw
+      X: 30
+      Y: 114
+  - Id: 931
+    Name: Windhawk Survival
+    TimeLimit: 9000
+    IdleTimeout: 900
+    Enter:
+      Map: 1@4win
+      X: 72
+      Y: 105
+  - Id: 932
+    Name: Celestial Branch Office
+    TimeLimit: 3600
+    IdleTimeout: 900
+    Enter:
+      Map: 1@exse
+      X: 50
+      Y: 22
+  - Id: 933
+    Name: The Foot of an Unknown Mountain
+    TimeLimit: 3600
+    IdleTimeout: 900
+    Enter:
+      Map: 1@exsr
+      X: 38
+      Y: 16
+  - Id: 923
+    Name: Arch Mage Trial
+    TimeLimit: 3600
+    IdleTimeout: 600
+    Enter:
+      Map: 1@4mag
+      X: 114
+      Y: 72
+  - Id: 924
+    Name: Elemental Master Trial
+    TimeLimit: 3600
+    IdleTimeout: 600
+    Enter:
+      Map: 1@4mag
+      X: 114
+      Y: 72
+  - Id: 925
+    Name: Troubadour Trial
+    TimeLimit: 3600
+    IdleTimeout: 900
+    Enter:
+      Map: 1@4tro
+      X: 48
+      Y: 23

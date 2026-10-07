@@ -1,0 +1,1151 @@
+//===== RagnaDuds: 4th job change quests (renewal), part B ====================
+//= Arch Mage, Elemental Master and Troubadour / Trouvere, following the official quests (iRO Wiki job change
+//= guides: steps, NPC names, places and trials). rAthena ships none of them; dialogue is ours.
+//= Shared helpers (F_Duds4th_Is / _Levels / _Promote / _Enter) live in fourth_quests.txt.
+//= Private instances (re_db_import/instance_db.yml):
+//=   923 "Arch Mage Trial"        1@4mag (official Arch Mage map)
+//=   924 "Elemental Master Trial" 1@4mag (same Varmundt map: right room, north hall, south exit)
+//=   925 "Troubadour Trial"       1@4tro (official Troubadour / Trouvere map)
+//= Both 1@4mag quests share the map: every instance NPC checks the instance name and hides itself in the other
+//= quest. The public copy of 1@4mag is used as Yoop's hideout (isolated room in the south-west, 66-78 / 37-47).
+//= Requirements: base 200 / job 70. Reward: the job change + Hourglass Necklace (490087, in F_Duds4th_Promote).
+//= Progress variables:
+//=   DUDS4_AMG   Arch Mage stage (0-7), DUDS4_AMG_K hunt counter, DUDS4_AMG_I bit mask of items already used
+//=               inside the trial (1 Burning Heart, 2 Mermaid's Heart, 4 Yggdrasil Seed: never lost on a retry)
+//=   DUDS4_ELM   Elemental Master stage (0-9), DUDS4_ELM_A / DUDS4_ELM_B hunt counters
+//=   DUDS4_TRO   Troubadour / Trouvere stage (0-4), DUDS4_TRO_A monster task (0-7), DUDS4_TRO_B dialogue
+//=               task (0-4), DUDS4_TRO_K hunt counter
+
+// getarg(0): monster GID, getarg(1): hp. Sets the max and current HP of a spawned monster.
+function	script	F_Duds4thB_Hp	{
+	setunitdata getarg(0), UMOB_MAXHP, getarg(1);
+	setunitdata getarg(0), UMOB_HP, getarg(1);
+	return;
+}
+
+// hunting counters of the three quests
+-	script	Duds4thKillsB	-1,{
+OnNPCKillEvent:
+	.@map$ = strcharinfo(3);
+	// Arch Mage: the three hearts / seed Maggie asks for
+	if (DUDS4_AMG >= 3 && DUDS4_AMG <= 6) {
+		if (.@map$ == "thor_v03" && !countitem(7097) && !(DUDS4_AMG_I & 1)) {
+			DUDS4_AMG_K++;
+			if (rand(100) < 10 || DUDS4_AMG_K >= 20) {
+				DUDS4_AMG_K = 0;
+				getitem 7097, 1;   // Burning Heart
+				dispbottom "Maggie's task: a Burning Heart fell from the volcano monster! Bring it to Maggie.";
+			}
+		} else if (.@map$ == "ba_bath" && DUDS4_AMG >= 4 && !countitem(950) && !(DUDS4_AMG_I & 2)) {
+			DUDS4_AMG_K++;
+			if (rand(100) < 10 || DUDS4_AMG_K >= 20) {
+				DUDS4_AMG_K = 0;
+				getitem 950, 1;    // Mermaid's Heart
+				dispbottom "Maggie's task: you found a Mermaid's Heart in the bath water! Bring it to Maggie.";
+			}
+		} else if (.@map$ == "odin_tem03" && DUDS4_AMG >= 5 && killedrid == 1083 && !countitem(608) && !(DUDS4_AMG_I & 4)) {
+			getitem 608, 1;        // Yggdrasil Seed
+			dispbottom "Maggie's task: the Shining Plant left a Yggdrasil Seed! Bring it to Maggie.";
+		}
+	}
+	// Elemental Master: Power Plant 1 and the library
+	if (DUDS4_ELM == 5 && .@map$ == "ba_pw01") {
+		if (killedrid == 20689 && DUDS4_ELM_A < 10) {
+			DUDS4_ELM_A++;
+			dispbottom "Potent Mana: Spell Addicted Dolor " + DUDS4_ELM_A + " / 10, Released Spell " + DUDS4_ELM_B + " / 10";
+		} else if (killedrid == 20690 && DUDS4_ELM_B < 10) {
+			DUDS4_ELM_B++;
+			dispbottom "Potent Mana: Spell Addicted Dolor " + DUDS4_ELM_A + " / 10, Released Spell " + DUDS4_ELM_B + " / 10";
+		}
+		if (DUDS4_ELM_A >= 10 && DUDS4_ELM_B >= 10)
+			dispbottom "The mana calms down. Touch the Potent Mana Stone again (centre of the Power Plant).";
+	} else if (DUDS4_ELM == 7 && .@map$ == "ba_lib" && killedrid == 20684 && DUDS4_ELM_A < 10) {
+		DUDS4_ELM_A++;
+		dispbottom "Potent Mana: Roaming Spellbook " + DUDS4_ELM_A + " / 10" + (DUDS4_ELM_A >= 10 ? ". Go back to the Potent Mana Bookshelf." : "");
+	}
+	// Troubadour / Trouvere: the three Small Pieces
+	if (DUDS4_TRO_A == 2 && .@map$ == "niflheim" && DUDS4_TRO_K < 20 && getmonsterinfo(killedrid, MOB_LV) >= 105) {
+		DUDS4_TRO_K++;
+		dispbottom "Small Piece (Niflheim): " + DUDS4_TRO_K + " / 20 monsters of level 105+" + (DUDS4_TRO_K >= 20 ? ". Return to the Small Piece." : "");
+	} else if (DUDS4_TRO_A == 4 && .@map$ == "thor_v01" && DUDS4_TRO_K < 15 && getmonsterinfo(killedrid, MOB_ELEMENT) == ELE_FIRE && getmonsterinfo(killedrid, MOB_LV) >= 130) {
+		DUDS4_TRO_K++;
+		dispbottom "Small Piece (Thor Volcano): " + DUDS4_TRO_K + " / 15 fire monsters of level 130+" + (DUDS4_TRO_K >= 15 ? ". Return to the Small Piece." : "");
+	} else if (DUDS4_TRO_A == 6 && .@map$ == "abyss_03" && DUDS4_TRO_K < 10 && getmonsterinfo(killedrid, MOB_RACE) == RC_DRAGON && getmonsterinfo(killedrid, MOB_LV) >= 120) {
+		DUDS4_TRO_K++;
+		dispbottom "Small Piece (Abyss Lake): " + DUDS4_TRO_K + " / 10 dragons of level 120+" + (DUDS4_TRO_K >= 10 ? ". Return to the Small Piece." : "");
+	}
+	end;
+}
+
+//============================================================================
+// ARCH MAGE (from Warlock): the fairy of the bathhouse, Yoop and Maggie, the Burning Heart, the Mermaid's Heart,
+// the Yggdrasil Seed, and Master Egnoloria at the end of the trial (instance on 1@4mag)
+//============================================================================
+ba_maison,201,269,4	script	Fairy#d4amg1	4_F_FAIRY,3,3,{
+	.@n$ = "[Fairy]";
+	if (Class == Job_Arch_Mage) {
+		mes .@n$;
+		mes "Hehe, the great magician! Maggie still talks about your fire.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Arch_Mage)) {
+		mes .@n$;
+		mes "La la la... the flowers smell so nice today.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	if (DUDS4_AMG == 0) {
+		mes "Oh! A Warlock, and such a strong one! Your magic tickles from over here.";
+		mes "Yoop told me to look for someone like you. He said a human wants to become a ^0000FFgreat magician^000000... is it you?";
+		next;
+		if (select("It is me.:Not now.") == 2) {
+			mes .@n$;
+			mes "Hmph. Come back when you're curious!";
+			close;
+		}
+		DUDS4_AMG = 1;
+		mes .@n$;
+		mes "Then follow the ^0000FFStrange Plant^000000 at the bathhouse entrance, right next to me. Touch it and it will take you to Yoop!";
+		close;
+	}
+	mes "The ^0000FFStrange Plant^000000 right here takes you to Yoop and Maggie. Go, go!";
+	close;
+
+OnTouch:
+	if (DUDS4_AMG == 0 && BaseLevel >= 200 && callfunc("F_Duds4th_Is", Job_Arch_Mage))
+		dispbottom "A small fairy is fluttering around the flower garden, looking at you. Talk to her.";
+	end;
+}
+
+ba_maison,204,266,4	script	Strange Plant#d4amg2	1080,{
+	if (DUDS4_AMG < 1 || DUDS4_AMG > 6 || !callfunc("F_Duds4th_Is", Job_Arch_Mage)) {
+		mes "A strange plant. Its leaves move even without wind.";
+		close;
+	}
+	mes "The Strange Plant's leaves curl around your hand. You feel a gentle pull...";
+	next;
+	if (select("Let it take you:Step back") == 2) close;
+	close2;
+	specialeffect2 EF_TELEPORTATION;
+	warp "1@4mag", 71, 40;
+	end;
+}
+
+// Yoop's hideout: the public copy of 1@4mag (shared by the Arch Mage and Elemental Master quests)
+1@4mag,70,44,5	script	Yoop#d4mag1	4_M_FAIRYKID5,{
+	.@n$ = "[Yoop]";
+	if (callfunc("F_Duds4th_Is", Job_Elemental_Master) && DUDS4_ELM == 8) {
+		mes .@n$;
+		mes "Elma sent you? Ugh, she never asks before sending people here.";
+		mes "Fine. The elements in my trial room went wild: ^0000FFwater and earth^000000 are tearing it apart.";
+		mes "Calm them and the Guild Master will see what kind of Sorcerer you are.";
+		next;
+		switch (select("Follow him:Go back to the mansion:Not now")) {
+		case 1:
+			callfunc "F_Duds4th_Levels", .@n$, 70;
+			close2;
+			callfunc "F_Duds4th_Enter", "Elemental Master Trial", 114, 72;
+			end;
+		case 2:
+			close2;
+			warp "ba_maison", 197, 99;
+			end;
+		}
+		close;
+	}
+	if (callfunc("F_Duds4th_Is", Job_Arch_Mage) && DUDS4_AMG >= 1 && DUDS4_AMG <= 6) {
+		callfunc "F_Duds4th_Levels", .@n$, 70;
+		mes .@n$;
+		if (DUDS4_AMG == 1) {
+			mes "Who let a human in here?! The fairy? Again?!";
+			mes "...Hmm. A Warlock. You smell of the giants' magic.";
+			next;
+			mes .@n$;
+			mes "You want to become a great magician? Then don't talk to me. Talk to ^0000FFMaggie^000000, she's the one who decides.";
+			DUDS4_AMG = 2;
+			close;
+		}
+		mes "Maggie gives the tasks, not me. Bother her!";
+		next;
+		if (select("Go back to the mansion:Stay") == 1) {
+			close2;
+			warp "ba_maison", 200, 263;
+			end;
+		}
+		close;
+	}
+	mes .@n$;
+	mes "How did you get in here? Out, out! This is a place for fairies.";
+	close2;
+	warp "ba_maison", 200, 263;
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));   // only in the public hideout
+	end;
+}
+
+1@4mag,73,44,4	script	Maggie#d4amg3	4_4JOB_MAGGI,{
+	.@n$ = "[Maggie]";
+	if (Class == Job_Arch_Mage) {
+		mes .@n$;
+		mes "The great magician in person! Don't let it go to your head.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Arch_Mage) || DUDS4_AMG < 2) {
+		mes .@n$;
+		mes "...";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_AMG) {
+	case 2:
+		mes "So you're the Warlock the fairy dragged in. I'm Maggie.";
+		mes "Master Egnoloria only sees magicians who can feed her trial room. It needs three things:";
+		mes "a ^0000FFBurning Heart^000000, a ^0000FFMermaid's Heart^000000 and a ^0000FFYggdrasil Seed^000000.";
+		next;
+		mes .@n$;
+		mes "One at a time. First the ^0000FFBurning Heart^000000: hunt the monsters of ^0000FFThor Volcano F3^000000 until one drops it.";
+		mes "(Enter the volcano through the Eden Group teleporter, Thor Volcano F1, and go down.)";
+		next;
+		if (select("I'll get it.:Not now.") == 2) close;
+		DUDS4_AMG = 3;
+		DUDS4_AMG_K = 0;
+		mes .@n$;
+		mes "Good. Come back through the Strange Plant when you have it.";
+		close;
+	case 3:
+		if (!countitem(7097) && !(DUDS4_AMG_I & 1)) {
+			mes "No Burning Heart yet? Hunt in ^0000FFThor Volcano F3^000000. It's hot, I know.";
+			break;
+		}
+		mes "A Burning Heart. Still warm! Keep it, you'll use it yourself.";
+		mes "Next, the ^0000FFMermaid's Heart^000000: hunt in the ^0000FFgreat bath^000000 of the mansion (Varmundt bathhouse, ba_bath 165/44 and around).";
+		DUDS4_AMG = 4;
+		DUDS4_AMG_K = 0;
+		close;
+	case 4:
+		if (!countitem(950) && !(DUDS4_AMG_I & 2)) {
+			mes "The Mermaid's Heart is in the ^0000FFgreat bath^000000. Hunt until one turns up.";
+			break;
+		}
+		mes "A Mermaid's Heart... the water inside it still moves. Perfect.";
+		mes "Last one: the ^0000FFYggdrasil Seed^000000. Defeat a ^0000FFShining Plant^000000 in ^0000FFOdin Temple F3^000000.";
+		DUDS4_AMG = 5;
+		close;
+	case 5:
+		if (!countitem(608) && !(DUDS4_AMG_I & 4)) {
+			mes "The Yggdrasil Seed: a ^0000FFShining Plant^000000 in ^0000FFOdin Temple F3^000000 has it.";
+			break;
+		}
+		mes "A Yggdrasil Seed! You did it all.";
+		DUDS4_AMG = 6;
+		next;
+		mes .@n$;
+		// fall through
+	case 6:
+		if ((!countitem(7097) && !(DUDS4_AMG_I & 1)) || (!countitem(950) && !(DUDS4_AMG_I & 2)) || (!countitem(608) && !(DUDS4_AMG_I & 4))) {
+			mes "You lost something? You need the Burning Heart, the Mermaid's Heart and the Yggdrasil Seed with you.";
+			mes "(Thor Volcano F3, the great bath, a Shining Plant in Odin Temple F3.)";
+			close;
+		}
+		mes "I'll open Master Egnoloria's trial room for you. Yoop will be waiting inside.";
+		mes "Feed the ^0000FFHot Barrel^000000 and the ^0000FFBoiling Pot^000000, then plant the seed in the great hall.";
+		next;
+		switch (select("Enter the trial room:Go back to the mansion:Not now")) {
+		case 1:
+			close2;
+			callfunc "F_Duds4th_Enter", "Arch Mage Trial", 114, 72;
+			end;
+		case 2:
+			close2;
+			warp "ba_maison", 200, 263;
+			end;
+		}
+		close;
+	}
+	next;
+	if (select("Go back to the mansion:Stay") == 1) {
+		close2;
+		warp "ba_maison", 200, 263;
+		end;
+	}
+	close;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+// ---- inside the trials on 1@4mag (both quests) ----
+1@4mag,113,79,5	script	Yoop#d4mag2	4_M_FAIRYKID5,{
+	.@n$ = "[Yoop]";
+	.@m$ = instance_mapname("1@4mag");
+	mes .@n$;
+	if (instance_live_info(ILI_NAME) == "Elemental Master Trial") {
+		if ('elm == 0) {
+			mes "Here we are. Listen, Sorcerer.";
+			mes "The ^0000FFWater Fragments^000000 took the room to the right, up north. Kill them all and destroy the ^0000FFWater Essence^000000 they protect.";
+			mes "Then the ^0000FFEarth Fragments^000000 will wake up in the great hall to the north. Same thing: fragments, then the ^0000FFEarth Essence^000000.";
+			next;
+			if (select("Take the warp up:Leave the trial") == 2) {
+				close2;
+				warp "ba_maison", 197, 99;
+				end;
+			}
+			'mag_yoop = 1;
+			donpcevent instance_npcname("Guild Master#d4elm") + "::OnWater";
+			mes .@n$;
+			mes "The warp is right behind me. Go!";
+			close;
+		}
+		mes "Water first, in the right room; then earth, in the great hall. The Guild Master waits at the very top.";
+	} else {
+		if ('mag_yoop == 0) {
+			'mag_yoop = 1;
+			mes "So Maggie let you in. Don't touch anything you don't understand. Which is everything.";
+			mes "Take the warp up. In the ^0000FFright wing^000000 there's the ^0000FFHot Barrel^000000: feed it the Burning Heart.";
+			mes "Then go north to the next right wing, the ^0000FFBoiling Pot^000000: the Mermaid's Heart.";
+			mes "And in the great hall, plant the ^0000FFYggdrasil Seed^000000 in the centre of the carpet.";
+			next;
+			mes .@n$;
+			mes "Whatever comes out of the barrel and the pot will be angry. Be ready.";
+			close;
+		}
+		mes "Hot Barrel (right wing), Boiling Pot (north-east room), then the carpet of the great hall. Go!";
+	}
+	next;
+	if (select("Continue:Leave the trial") == 2) {
+		close2;
+		if (instance_live_info(ILI_NAME) == "Elemental Master Trial")
+			warp "ba_maison", 197, 99;
+		else
+			warp "ba_maison", 200, 263;
+		end;
+	}
+	close;
+
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4mag,115,81,0	script	#d4magw	WARPNPC,1,1,{
+	end;
+OnTouch:
+	if (!'mag_yoop) {
+		dispbottom "Yoop: Hey! Talk to me before you run off.";
+		end;
+	}
+	warp instance_mapname("1@4mag"), 115, 116;
+	end;
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+// the fairies at the south end of the trial: the way out
+1@4mag,114,114,6	script	Fairy#d4mag3	4_F_FAIRY,{
+	mes "[Fairy]";
+	mes "Going home? We can fly you back to the mansion.";
+	next;
+	if (select("Leave the trial:Stay") == 2) close;
+	close2;
+	if (instance_live_info(ILI_NAME) == "Elemental Master Trial")
+		warp "ba_maison", 197, 99;
+	else
+		warp "ba_maison", 200, 263;
+	end;
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4mag,139,116,4	script	Hot Barrel#d4amg	4_BONFIRE,{
+	.@m$ = instance_mapname("1@4mag");
+	if ('amg >= 2) { mes "The Hot Barrel burns quietly now."; close; }
+	if ('amg == 1) { mes "The flame from the barrel is still loose! Defeat it."; close; }
+	mes "^777777Hot Barrel^000000";
+	mes "A barrel glowing red from the inside. Something here is hungry for fire.";
+	next;
+	if (select("Put in the Burning Heart:Leave it") == 2) close;
+	if (!(DUDS4_AMG_I & 1)) {
+		if (!countitem(7097)) { mes "You don't have a Burning Heart."; close; }
+		delitem 7097, 1;
+		DUDS4_AMG_I |= 1;
+	}
+	'amg = 1;
+	close2;
+	specialeffect EF_FIREPILLAR;
+	monster .@m$, 138, 119, "Flame of the Hot Barrel", 1831, 1, instance_npcname("Hot Barrel#d4amg") + "::OnFlame";
+	callfunc "F_Duds4thB_Hp", $@mobid[0], 1500000;
+	mapannounce .@m$, "The Burning Heart bursts into a living flame! Defeat it.", bc_map, "0xFF7744";
+	end;
+OnFlame:
+	'amg = 2;
+	mapannounce instance_mapname("1@4mag"), "The Hot Barrel is calm. Go north to the next right wing: the Boiling Pot.", bc_map, "0xFFD700";
+	end;
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Arch Mage Trial") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4mag,159,155,4	script	Boiling Pot#d4amg	4_ENERGY_BLUE,{
+	.@m$ = instance_mapname("1@4mag");
+	if ('amg < 2) { mes "A big pot of boiling water. It doesn't react... maybe something else must be done first (the Hot Barrel?)."; close; }
+	if ('amg >= 4) { mes "The water in the pot is clear and still."; close; }
+	if ('amg == 3) { mes "The spirit of the pot is still loose! Defeat it."; close; }
+	mes "^777777Boiling Pot^000000";
+	mes "The water boils without any fire under it.";
+	next;
+	if (select("Put in the Mermaid's Heart:Leave it") == 2) close;
+	if (!(DUDS4_AMG_I & 2)) {
+		if (!countitem(950)) { mes "You don't have a Mermaid's Heart."; close; }
+		delitem 950, 1;
+		DUDS4_AMG_I |= 2;
+	}
+	'amg = 3;
+	close2;
+	specialeffect EF_WATERBALL;
+	monster .@m$, 156, 150, "Spirit of the Boiling Pot", 20645, 1, instance_npcname("Boiling Pot#d4amg") + "::OnSpirit";
+	callfunc "F_Duds4thB_Hp", $@mobid[0], 1500000;
+	mapannounce .@m$, "The Mermaid's Heart boils over into an angry spirit! Defeat it.", bc_map, "0x77DDFF";
+	end;
+OnSpirit:
+	'amg = 4;
+	mapannounce instance_mapname("1@4mag"), "The Boiling Pot is calm. Go north to the great hall and plant the Yggdrasil Seed in the centre of the carpet.", bc_map, "0xFFD700";
+	end;
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Arch Mage Trial") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4mag,131,177,0	script	Centre of the Carpet#d4amg	4_ENERGY_WHITE,{
+	if ('amg < 4) { mes "The centre of a great carpet. The pattern seems to wait for something. (Feed the Hot Barrel and the Boiling Pot first.)"; close; }
+	mes "The centre of the carpet. The pattern looks like roots around an empty spot.";
+	next;
+	if (select("Plant the Yggdrasil Seed:Leave it") == 2) close;
+	if (!(DUDS4_AMG_I & 4)) {
+		if (!countitem(608)) { mes "You don't have a Yggdrasil Seed."; close; }
+		delitem 608, 1;
+		DUDS4_AMG_I |= 4;
+	}
+	'amg = 5;
+	mes "The seed sinks into the carpet. Roots of light spread across the hall and wrap around you...";
+	close2;
+	specialeffect2 EF_TELEPORTATION;
+	warp instance_mapname("1@4mag"), 159, 40;
+	end;
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Arch Mage Trial") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4mag,159,44,4	script	Master Egnoloria#d4amg	4_4JOB_SILLA,{
+	.@n$ = "[Master Egnoloria]";
+	mes .@n$;
+	if (DUDS4_AMG == 7 || Class == Job_Arch_Mage) {
+		mes "Go. The way out is to the south.";
+		close;
+	}
+	if ('amg < 5 || !callfunc("F_Duds4th_Is", Job_Arch_Mage)) {
+		mes "How did you get here before the seed was planted? Go back.";
+		close;
+	}
+	mes "Fire from the Burning Heart, water from the Mermaid's Heart, life from Yggdrasil... you fed my room with all three.";
+	mes "I remember you, little Warlock. You wanted the magic of the giants. And now?";
+	next;
+	if (select("I want to be a great magician.:I am not ready.") == 2) {
+		mes .@n$;
+		mes "Then come back when you are. The seed has already taken root.";
+		close;
+	}
+	mes .@n$;
+	mes "Hahaha! Honest, at least. Very well.";
+	next;
+	callfunc "F_Duds4th_Promote", Job_Arch_Mage;
+	DUDS4_AMG = 7;
+	mes .@n$;
+	mes "Rise, ^0000FFArch Mage^000000. Every element now answers you.";
+	mes "Leave through the south of this room.";
+	close;
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Arch Mage Trial") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4mag,157,37,0	script	#d4amgx	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp "ba_maison", 200, 263;
+	end;
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Arch Mage Trial") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+//============================================================================
+// ELEMENTAL MASTER (from Sorcerer): Elma and Kiran at the top of Geffen Tower, the Potent Mana Stone of Power
+// Plant 1, the Potent Mana Bookshelf of the library, Yoop, and the water / earth trial (instance on 1@4mag)
+//============================================================================
+gef_tower,108,166,4	script	Elma#d4elm1	2_F_MAGICMASTER,{
+	.@n$ = "[Elma]";
+	if (Class == Job_Elemental_Master) {
+		mes .@n$;
+		mes "The elements are calmer since you passed the trial, Elemental Master.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Elemental_Master)) {
+		mes .@n$;
+		mes "The wind up here is full of mana. Can you feel it?";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_ELM) {
+	case 0:
+		mes "A Sorcerer! You came at the right time.";
+		mes "The spirits of the elements have been restless for weeks. Something is pulling at them from far away.";
+		mes "My colleague ^0000FFKiran^000000 has been measuring it. Talk to him, he's right beside me.";
+		DUDS4_ELM = 1;
+		close;
+	case 1:
+		mes "Talk to ^0000FFKiran^000000 first, he has the numbers.";
+		close;
+	case 2:
+		mes "Kiran told you? The mana is flowing towards ^0000FFVarmundt's mansion^000000.";
+		mes "Varmundt's people built power plants that run on raw mana. If it leaks, the elements go mad.";
+		next;
+		mes .@n$;
+		mes "Someone who can command all the spirits could put them back in order... an ^0000FFElemental Master^000000.";
+		mes "Will you try?";
+		next;
+		if (select("I'll try.:Not now.") == 2) close;
+		DUDS4_ELM = 3;
+		mes .@n$;
+		mes "Good. Let me tell you where to start. Talk to me again when you're ready to go.";
+		close;
+	case 3:
+		mes "Go to ^0000FFPower Plant 1^000000: in Varmundt's mansion, the laboratory entrance (75/146), then into the plant.";
+		mes "In the ^0000FFcentre of the plant^000000 there must be a ^0000FFPotent Mana Stone^000000. Investigate it.";
+		DUDS4_ELM = 4;
+		next;
+		// fall through
+	case 4:
+		mes .@n$;
+		mes "The Potent Mana Stone is in the centre of ^0000FFPower Plant 1^000000.";
+		mes "I can open a gate to the mansion's laboratory entrance for you, if you like.";
+		next;
+		if (select("Send me there:I'll walk") == 1) {
+			close2;
+			warp "ba_maison", 75, 143;
+			end;
+		}
+		close;
+	case 5:
+	case 6:
+	case 7:
+		mes "Keep following the mana: the Potent Mana Stone in Power Plant 1, then the Potent Mana Bookshelf in the library.";
+		close;
+	default:
+		mes "Yoop is waiting for you. Good luck.";
+		close;
+	}
+}
+
+gef_tower,111,166,4	script	Kiran#d4elm2	4_M_JOB_WIZARD,{
+	.@n$ = "[Kiran]";
+	mes .@n$;
+	if (DUDS4_ELM == 1 && callfunc("F_Duds4th_Is", Job_Elemental_Master)) {
+		mes "Elma sent you? Look at this.";
+		mes "Fire, water, wind, earth: every reading points the same way, to the ^0000FFnorth-east^000000, beyond Rune-Midgarts.";
+		mes "The only place with that much mana is Varmundt's mansion.";
+		next;
+		mes .@n$;
+		mes "Whatever is there is drawing the spirits like a whirlpool. Tell Elma, she'll know what to do.";
+		DUDS4_ELM = 2;
+		close;
+	}
+	if (DUDS4_ELM >= 2 && DUDS4_ELM < 9) {
+		mes "The readings still point to Varmundt's mansion. Elma has the plan.";
+		close;
+	}
+	mes "Hmm... the needles are spinning again. Don't distract me, please.";
+	close;
+}
+
+ba_pw01,140,140,0	script	Potent Mana Stone#d4elm3	4_ENERGY_BLUE,{
+	if (DUDS4_ELM < 4 || DUDS4_ELM > 7 || !callfunc("F_Duds4th_Is", Job_Elemental_Master)) {
+		mes "A stone pulsing with raw mana. Better not touch it.";
+		close;
+	}
+	mes "^777777Potent Mana Stone^000000";
+	if (DUDS4_ELM == 4) {
+		mes "The stone is overflowing with mana. It flows out of it into the monsters around and drives them mad.";
+		mes "If you take down the creatures feeding on it, the flow should calm.";
+		mes "- 10 ^0000FFSpell Addicted Dolor^000000";
+		mes "- 10 ^0000FFReleased Spell^000000";
+		DUDS4_ELM = 5;
+		DUDS4_ELM_A = 0;
+		DUDS4_ELM_B = 0;
+		close;
+	}
+	if (DUDS4_ELM == 5 && (DUDS4_ELM_A < 10 || DUDS4_ELM_B < 10)) {
+		mes "The mana still flows out. Spell Addicted Dolor " + DUDS4_ELM_A + " / 10, Released Spell " + DUDS4_ELM_B + " / 10.";
+		close;
+	}
+	if (DUDS4_ELM == 5) {
+		DUDS4_ELM = 6;
+		mes "The stone dims. But the current of mana did not stop: it goes on, towards ^0000FFthe library^000000 of the mansion.";
+		mes "There must be a ^0000FFPotent Mana Bookshelf^000000 in the library's Memory Corridor.";
+		next;
+	}
+	mes "The trail of mana leads to the ^0000FFPotent Mana Bookshelf^000000, in the library's Memory Corridor.";
+	mes "You can follow the current right now.";
+	next;
+	if (select("Follow the mana:Not now") == 1) {
+		close2;
+		warp "ba_lib", 159, 8;
+		end;
+	}
+	close;
+}
+
+ba_lib,170,99,0	script	Potent Mana Bookshelf#d4elm4	4_VR_BOOK_BLUE,{
+	if (DUDS4_ELM < 6 || DUDS4_ELM > 8 || !callfunc("F_Duds4th_Is", Job_Elemental_Master)) {
+		mes "A bookshelf full of old magic books. Some of them are trembling.";
+		close;
+	}
+	mes "^777777Potent Mana Bookshelf^000000";
+	if (DUDS4_ELM == 6) {
+		mes "The mana from the plant ends here. The books drink it and fly off as ^0000FFRoaming Spellbooks^000000.";
+		mes "Close the books: defeat ^0000FF10 Roaming Spellbooks^000000.";
+		DUDS4_ELM = 7;
+		DUDS4_ELM_A = 0;
+		close;
+	}
+	if (DUDS4_ELM == 7 && DUDS4_ELM_A < 10) {
+		mes "Roaming Spellbook " + DUDS4_ELM_A + " / 10.";
+		close;
+	}
+	if (DUDS4_ELM == 7) {
+		DUDS4_ELM = 8;
+		mes "The shelf is quiet again. Suddenly a familiar voice...";
+		next;
+		mes "[Elma]";
+		mes "You did it! I followed the current all the way here.";
+		mes "Behind this bookshelf there's a passage to a fairy's hideout. His name is ^0000FFYoop^000000; the trial room of the elements belongs to his master.";
+		mes "Touch the shelf again and go. I'll keep watch.";
+		close;
+	}
+	mes "Behind the shelf, the passage to Yoop's hideout is open.";
+	next;
+	if (select("Go through:Not now") == 2) close;
+	close2;
+	specialeffect2 EF_TELEPORTATION;
+	warp "1@4mag", 71, 40;
+	end;
+}
+
+1@4mag,131,193,4	script	Guild Master#d4elm	4_4JOB_SILLA,{
+	.@n$ = "[Master Egnoloria]";
+	mes .@n$;
+	if (DUDS4_ELM == 9 || Class == Job_Elemental_Master) {
+		mes "The fairies to the south will take you home.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Elemental_Master)) {
+		mes "Only a Sorcerer can answer the spirits' call.";
+		close;
+	}
+	mes "Water and earth obey you again. Do you know how rare that is for a human?";
+	mes "I lead the guild of those who speak with the spirits. I offer you a place among the ^0000FFElemental Masters^000000.";
+	next;
+	if (select("Accept:Not yet") == 2) {
+		mes .@n$;
+		mes "The offer stands.";
+		close;
+	}
+	callfunc "F_Duds4th_Promote", Job_Elemental_Master;
+	DUDS4_ELM = 9;
+	mes .@n$;
+	mes "Welcome, ^0000FFElemental Master^000000. Go south, the fairies will fly you back.";
+	close;
+
+OnWater:
+	.@m$ = instance_mapname("1@4mag");
+	if ('elm) end;
+	'elm = 1;
+	areamonster .@m$, 153, 144, 166, 156, "Water Fragment", 1697, 8, instance_npcname("Guild Master#d4elm") + "::OnWaterFrag";
+	.@c = getarraysize($@mobid);
+	for (.@i = 0; .@i < .@c; .@i++) callfunc "F_Duds4thB_Hp", $@mobid[.@i], 200000;
+	mapannounce .@m$, "Water Fragments flood the room to the right (north-east). Defeat them all!", bc_map, "0x77DDFF";
+	end;
+OnWaterFrag:
+	.@m$ = instance_mapname("1@4mag");
+	if (mobcount(.@m$, instance_npcname("Guild Master#d4elm") + "::OnWaterFrag") > 0) end;
+	monster .@m$, 156, 150, "Water Essence", 1398, 1, instance_npcname("Guild Master#d4elm") + "::OnWaterEss";
+	callfunc "F_Duds4thB_Hp", $@mobid[0], 2000000;
+	mapannounce .@m$, "The fragments are gone. Destroy the Water Essence!", bc_map, "0x77DDFF";
+	end;
+OnWaterEss:
+	.@m$ = instance_mapname("1@4mag");
+	'elm = 2;
+	areamonster .@m$, 125, 168, 139, 183, "Earth Fragment", 1695, 8, instance_npcname("Guild Master#d4elm") + "::OnEarthFrag";
+	.@c = getarraysize($@mobid);
+	for (.@i = 0; .@i < .@c; .@i++) callfunc "F_Duds4thB_Hp", $@mobid[.@i], 200000;
+	mapannounce .@m$, "Water calms down... and the ground shakes! Earth Fragments in the great hall to the north.", bc_map, "0xCC9955";
+	end;
+OnEarthFrag:
+	.@m$ = instance_mapname("1@4mag");
+	if (mobcount(.@m$, instance_npcname("Guild Master#d4elm") + "::OnEarthFrag") > 0) end;
+	monster .@m$, 131, 177, "Earth Essence", 1396, 1, instance_npcname("Guild Master#d4elm") + "::OnEarthEss";
+	callfunc "F_Duds4thB_Hp", $@mobid[0], 2000000;
+	mapannounce .@m$, "The fragments are gone. Destroy the Earth Essence!", bc_map, "0xCC9955";
+	end;
+OnEarthEss:
+	'elm = 3;
+	enablenpc instance_npcname("Guild Master#d4elm");
+	mapannounce instance_mapname("1@4mag"), "Water and earth are at peace. The Guild Master appears at the top of the great hall.", bc_map, "0xFFD700";
+	end;
+
+OnInit:
+	if (strnpcinfo(4) == "1@4mag") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));   // appears after the trial (Elemental Master only)
+	end;
+}
+
+//============================================================================
+// TROUBADOUR / TROUVERE (from Minstrel / Wanderer): the Flyer Part-timer, the Folklorist and the Captain, the
+// monster task (three Small Pieces) and the dialogue task (three emotions), the Guardian Tree (instance on 1@4tro)
+//============================================================================
+lighthalzen,186,124,4	script	Flyer Part-timer#d4tro1	4_F_LGTGIRL,{
+	.@n$ = "[Flyer Part-timer]";
+	mes .@n$;
+	if (!callfunc("F_Duds4th_Is", Job_Troubadour) && !callfunc("F_Duds4th_Is", Job_Trouvere)) {
+		mes "Flyers! Free flyers! ...Oh, it's for musicians only, sorry.";
+		close;
+	}
+	if (DUDS4_TRO > 0) {
+		mes "The Folklorist is in ^0000FFOdin Temple F3^000000 (193/301). Good luck with the song!";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes "Flyers! Free flyers! Oh, a musician! This one is for you:";
+	mes "^777777\"WANTED: performers worthy of the Guardian Tree's lost song. Ask for the Folklorist, Odin Temple, third floor.\"^000000";
+	next;
+	if (select("Take the flyer:No thanks") == 2) close;
+	DUDS4_TRO = 1;
+	mes .@n$;
+	mes "Thank you! The Folklorist pays me per flyer, hehe. Odin Temple F3, at ^0000FF193/301^000000.";
+	close;
+}
+
+odin_tem03,193,301,4	script	Folklorist#d4tro2	4_M_OLDSCHOLAR,{
+	.@n$ = "[Folklorist]";
+	if (Class == Job_Troubadour || Class == Job_Trouvere) {
+		mes .@n$;
+		mes "The Guardian Tree sings again, thanks to you. I'm writing it all down!";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Troubadour) && !callfunc("F_Duds4th_Is", Job_Trouvere)) {
+		mes .@n$;
+		mes "Legends hide in old temples like this one. I'm collecting them.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_TRO) {
+	case 0:
+		mes "Ah, a musician. Did you see my flyers? A part-timer is handing them out in ^0000FFLighthalzen^000000.";
+		close;
+	case 1:
+		mes "You came because of my flyer! Welcome to our camp.";
+		mes "I study the legend of the ^0000FFGuardian Tree^000000. It protected a forest with its song, until the song was lost.";
+		next;
+		mes .@n$;
+		mes "A song is two things: ^0000FFinspiration^000000 and ^0000FFemotion^000000.";
+		mes "- The ^0000FFCaptain^000000 here will send you after the ^0000FFInspiration Pieces^000000 (a monster task).";
+		mes "- I'll send you after the ^0000FFEmotion Pieces^000000 (a dialogue task).";
+		mes "Do both, in any order.";
+		next;
+		if (select("I'll do it.:Not now.") == 2) close;
+		DUDS4_TRO = 2;
+		DUDS4_TRO_B = 1;
+		mes .@n$;
+		mes "Emotions are found in people. Start with a ^0000FFFollower^000000 praying on the left benches of the ^0000FFProntera Cathedral^000000 (94/116).";
+		mes "And talk to the Captain for the other task!";
+		close;
+	case 2:
+		if (DUDS4_TRO_A >= 7 && DUDS4_TRO_B >= 4) {
+			mes "Three Inspiration Pieces and three Emotion Pieces! I can almost hear it...";
+			mes "The ^0000FFGuardian Tree's Spirit^000000 next to me will open the way to the tree.";
+			mes "Find the ^0000FF12 Guardian Stones^000000 around it, defeat whatever guards them, then talk to the ^0000FFGuardian Tree's Spring^000000 in the centre.";
+			DUDS4_TRO = 3;
+			close;
+		}
+		mes "Your progress:";
+		mes "- Inspiration (Captain): " + (DUDS4_TRO_A >= 7 ? "^009900complete^000000" : (DUDS4_TRO_A ? ((DUDS4_TRO_A - 1) / 2) + " / 3 Inspiration Pieces" : "talk to the Captain"));
+		setarray .@b$[1], "the Follower, Prontera Cathedral (94/116)", "the Waiting Statue, Comodo Field (cmd_fild02 47/85)", "the Musical Story Teller, Payon (62/157)", "complete";
+		mes "- Emotion: " + (DUDS4_TRO_B >= 4 ? "^009900complete^000000" : "next, " + .@b$[DUDS4_TRO_B]);
+		close;
+	default:
+		mes "Talk to the ^0000FFGuardian Tree's Spirit^000000 next to me to reach the tree.";
+		close;
+	}
+}
+
+odin_tem03,196,303,4	script	Captain#d4tro3	4_M_SEAMAN,{
+	.@n$ = "[Captain]";
+	mes .@n$;
+	if (DUDS4_TRO != 2 || (!callfunc("F_Duds4th_Is", Job_Troubadour) && !callfunc("F_Duds4th_Is", Job_Trouvere))) {
+		mes "This is the Folklorist's camp. Keep your voice down, he's thinking.";
+		close;
+	}
+	switch (DUDS4_TRO_A) {
+	case 0:
+		mes "Another musician? Then listen. Inspiration doesn't come from books. It comes from danger.";
+		mes "There are three ^0000FFSmall Pieces^000000 of the old song, each one where monsters gather:";
+		mes "- ^0000FFNiflheim^000000 (331/267): 20 monsters of level 105+";
+		mes "- ^0000FFThor Volcano F1^000000 (281/233): 15 fire monsters of level 130+";
+		mes "- ^0000FFAbyss Lake F3^000000 (107/114): 10 dragons of level 120+";
+		next;
+		if (select("Count me in.:Not now.") == 2) close;
+		DUDS4_TRO_A = 1;
+		mes .@n$;
+		mes "Start in Niflheim. Touch the Small Piece there to begin. I can send you there now.";
+		next;
+		break;
+	case 7:
+		mes "All three Inspiration Pieces. Not bad. Show them to the Folklorist.";
+		close;
+	default:
+		mes "Follow the Small Pieces: Niflheim (331/267), Thor Volcano F1 (281/233), Abyss Lake F3 (107/114).";
+		mes "Inspiration Pieces: " + ((DUDS4_TRO_A - 1) / 2) + " / 3.";
+		if (DUDS4_TRO_A > 2) close;
+		next;
+		break;
+	}
+	if (select("Send me to Niflheim:Not now") == 1) {
+		close2;
+		warp "niflheim", 331, 264;
+		end;
+	}
+	close;
+}
+
+// Small Pieces: 1 = Niflheim, 2 = Thor Volcano, 3 = Abyss Lake (from the npc number)
+niflheim,331,267,0	script	Small Piece#d4tro1	4_ENERGY_YELLOW,{
+	.@p = atoi(replacestr(strnpcinfo(2), "d4tro", ""));
+	setarray .@need[1], 20, 15, 10;
+	setarray .@what$[1], "monsters of level 105+", "fire monsters of level 130+", "dragons of level 120+";
+	.@start = .@p * 2 - 1;   // DUDS4_TRO_A value that lets this piece start: 1, 3, 5
+	if (DUDS4_TRO != 2 || DUDS4_TRO_A < .@start) {
+		mes "A small shard of light. It hums a single note.";
+		close;
+	}
+	mes "^777777Small Piece^000000";
+	if (DUDS4_TRO_A > .@start + 1) {
+		mes "Its note already rings inside you.";
+		close;
+	}
+	if (DUDS4_TRO_A == .@start) {
+		mes "A shard of an old song. It flickers whenever monsters fight nearby.";
+		mes "Defeat ^0000FF" + .@need[.@p] + " " + .@what$[.@p] + "^000000 on this map.";
+		DUDS4_TRO_A++;
+		DUDS4_TRO_K = 0;
+		close;
+	}
+	if (DUDS4_TRO_K < .@need[.@p]) {
+		mes "Defeat " + .@need[.@p] + " " + .@what$[.@p] + " on this map: " + DUDS4_TRO_K + " / " + .@need[.@p] + ".";
+		close;
+	}
+	DUDS4_TRO_A++;
+	DUDS4_TRO_K = 0;
+	specialeffect2 EF_ANGEL2;
+	mes "The Small Piece melts into your hands: an ^0000FFInspiration Piece^000000 (" + .@p + " / 3)!";
+	if (.@p == 1) {
+		mes "A melody pulls you towards the heat of ^0000FFThor Volcano^000000...";
+		close2;
+		warp "thor_v01", 281, 230;
+		end;
+	}
+	if (.@p == 2) {
+		mes "A melody pulls you towards the dragons of ^0000FFAbyss Lake^000000...";
+		close2;
+		warp "abyss_03", 107, 111;
+		end;
+	}
+	mes "That was the last one. Return to the Captain and the Folklorist in ^0000FFOdin Temple F3^000000.";
+	next;
+	if (select("Go back to Odin Temple:Stay") == 1) {
+		close2;
+		warp "odin_tem03", 193, 298;
+		end;
+	}
+	close;
+}
+thor_v01,281,233,0	duplicate(Small Piece#d4tro1)	Small Piece#d4tro2	4_ENERGY_YELLOW
+abyss_03,107,114,0	duplicate(Small Piece#d4tro1)	Small Piece#d4tro3	4_ENERGY_YELLOW
+
+prt_church,94,116,4	script	Follower#d4tro4	4_F_CAPEGIRL,{
+	.@n$ = "[Follower]";
+	if (DUDS4_TRO != 2 || DUDS4_TRO_B != 1) {
+		mes .@n$;
+		mes "...Goddess, please hear me...";
+		close;
+	}
+	mes .@n$;
+	mes "Oh, you startled me. You're a musician? The Folklorist sent you?";
+	mes "I come here every day. My brother went to the war in the north and never wrote back.";
+	next;
+	mes .@n$;
+	mes "Our mother used to sing us a hymn before sleeping. I hum it here, hoping it reaches him.";
+	next;
+	switch (select("Hum it with her:Tell her he'll come back:Leave her alone")) {
+	case 1:
+		mes .@n$;
+		mes "...You know it? Thank you. It sounds less lonely with two voices.";
+		break;
+	case 2:
+		mes .@n$;
+		mes "...I want to believe that. Thank you for saying it.";
+		break;
+	default:
+		close;
+	}
+	DUDS4_TRO_B = 2;
+	next;
+	mes "Something warm stays in your chest: an ^0000FFEmotion Piece^000000 of ^0000FFlonging^000000 (1 / 3).";
+	mes "Next: the ^0000FFWaiting Statue^000000 in ^0000FFComodo Field^000000 (cmd_fild02 47/85).";
+	close;
+}
+
+cmd_fild02,47,85,4	script	Waiting Statue#d4tro5	4_F_08_STATUE,{
+	if (DUDS4_TRO != 2 || DUDS4_TRO_B != 2) {
+		mes "A stone statue of a woman looking at the sea.";
+		close;
+	}
+	mes "^777777Waiting Statue^000000";
+	mes "A woman of stone, looking at the horizon. They say she waited for a sailor so long she turned to stone.";
+	mes "When the wind blows, you can almost hear her.";
+	next;
+	mes "^777777\"...Is that a ship? No... not yet. I'll wait a little more.\"^000000";
+	next;
+	switch (select("Play her a song of the sea:Stay silent beside her:Leave")) {
+	case 1:
+		mes "The waves follow your music. For a moment, her stone face seems to smile.";
+		break;
+	case 2:
+		mes "You watch the sea with her until the sun goes down. Waiting is easier together.";
+		break;
+	default:
+		close;
+	}
+	DUDS4_TRO_B = 3;
+	next;
+	mes "You received an ^0000FFEmotion Piece^000000 of ^0000FFpatience^000000 (2 / 3).";
+	mes "Next: the ^0000FFMusical Story Teller^000000 in ^0000FFPayon^000000 (62/157).";
+	close;
+}
+
+payon,62,157,4	script	Musical Story Teller#d4tro6	4_M_BARD,{
+	.@n$ = "[Musical Story Teller]";
+	if (DUDS4_TRO != 2 || DUDS4_TRO_B != 3) {
+		mes .@n$;
+		mes "Sit, sit! Every song is a story, and every story deserves a song.";
+		close;
+	}
+	mes .@n$;
+	mes "A fellow musician! Do you know the story of the ^0000FFGuardian Tree^000000?";
+	mes "Long ago a tree stood in a forest no map remembers. Its roots drank from a spring, and its leaves sang.";
+	next;
+	mes .@n$;
+	mes "Twelve stones guarded it. As long as they stood, no monster could enter.";
+	mes "But one by one the stones were buried, the monsters came, and the tree went silent.";
+	next;
+	mes .@n$;
+	mes "They say whoever brings the stones back and sings to the spring... becomes part of the song.";
+	next;
+	if (select("That's beautiful.:I'll be that musician.") == 2) {
+		mes .@n$;
+		mes "Ha! I like you. Then go, and come back to tell me how it ends!";
+	} else {
+		mes .@n$;
+		mes "Isn't it? Stories are worth nothing until someone believes them.";
+	}
+	DUDS4_TRO_B = 4;
+	next;
+	mes "You received an ^0000FFEmotion Piece^000000 of ^0000FFhope^000000 (3 / 3)!";
+	mes "Return to the ^0000FFFolklorist^000000 in ^0000FFOdin Temple F3^000000.";
+	close;
+}
+
+odin_tem03,192,301,4	script	Guardian Tree's Spirit#d4tro7	4_F_FAIRY2,{
+	.@n$ = "[Guardian Tree's Spirit]";
+	if (DUDS4_TRO != 3 || (!callfunc("F_Duds4th_Is", Job_Troubadour) && !callfunc("F_Duds4th_Is", Job_Trouvere))) {
+		mes .@n$;
+		mes "...";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	mes "I heard your pieces... inspiration and emotion. You carry the beginning of the song.";
+	mes "Come. The tree is waiting, but its stones are buried and monsters walk around it.";
+	next;
+	if (select("Take me to the Guardian Tree:Not now") == 2) close;
+	close2;
+	callfunc "F_Duds4th_Enter", "Troubadour Trial", 48, 23;
+	end;
+}
+
+// ---- inside the Guardian Tree (instance on 1@4tro) ----
+// 12 summon marks, each guarded by monsters; step on a free mark to summon its Guardian Stone
+1@4tro,35,30,0	script	Summon Mark#d4tro1	4_ENERGY_WHITE,2,2,{
+	.@n = atoi(replacestr(strnpcinfo(2), "d4tro", ""));
+	if ('tro_stone[.@n]) {
+		mes "A Guardian Stone stands here again, humming with the tree's song.";
+		close;
+	}
+	mes "A summon mark carved in the ground. Something big was buried here.";
+	mes "Defeat the monsters around it, then step on it.";
+	close;
+
+OnTouch:
+	.@n = atoi(replacestr(strnpcinfo(2), "d4tro", ""));
+	if ('tro_stone[.@n]) end;
+	.@c = mobcount(instance_mapname("1@4tro"), instance_npcname(strnpcinfo(0)) + "::OnMob");
+	if (.@c > 0) {
+		dispbottom "Summon Mark " + .@n + ": " + .@c + " monster(s) still guard it.";
+		end;
+	}
+	'tro_stone[.@n] = 1;
+	'tro_stones++;
+	setnpcdisplay instance_npcname(strnpcinfo(0)), "Guardian Stone", 10371;
+	specialeffect EF_ANGEL2, AREA, instance_npcname(strnpcinfo(0));
+	if ('tro_stones < 12) {
+		mapannounce instance_mapname("1@4tro"), "A Guardian Stone rises from the ground! (" + 'tro_stones + " / 12)", bc_map, "0x99FF99";
+		end;
+	}
+	enablenpc instance_npcname("Guardian Tree's Spring#d4tro");
+	mapannounce instance_mapname("1@4tro"), "All 12 Guardian Stones stand again! The Guardian Tree's Spring wakes up in the centre.", bc_map, "0xFFD700";
+	end;
+
+OnMob:
+	if (mobcount(instance_mapname("1@4tro"), instance_npcname(strnpcinfo(0)) + "::OnMob") < 1)
+		mapannounce instance_mapname("1@4tro"), "Summon Mark " + replacestr(strnpcinfo(2), "d4tro", "") + " is free. Step on it!", bc_map, "0x99FF99";
+	end;
+
+OnInit:
+	if (strnpcinfo(4) == "1@4tro") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	getmapxy(.@m$, .@x, .@y, BL_NPC);
+	.@m$ = instance_mapname("1@4tro");
+	.@ev$ = instance_npcname(strnpcinfo(0)) + "::OnMob";
+	areamonster .@m$, .@x - 3, .@y - 3, .@x + 3, .@y + 3, "Wraith", 20822, 2, .@ev$;
+	for (.@i = 0; .@i < 2; .@i++) callfunc "F_Duds4thB_Hp", $@mobid[.@i], 150000;
+	areamonster .@m$, .@x - 3, .@y - 3, .@x + 3, .@y + 3, "Void", 20821, 1, .@ev$;
+	callfunc "F_Duds4thB_Hp", $@mobid[0], 150000;
+	end;
+}
+1@4tro,61,30,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro2	4_ENERGY_WHITE,2,2
+1@4tro,22,40,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro3	4_ENERGY_WHITE,2,2
+1@4tro,73,41,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro4	4_ENERGY_WHITE,2,2
+1@4tro,20,51,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro5	4_ENERGY_WHITE,2,2
+1@4tro,76,51,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro6	4_ENERGY_WHITE,2,2
+1@4tro,25,64,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro7	4_ENERGY_WHITE,2,2
+1@4tro,70,63,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro8	4_ENERGY_WHITE,2,2
+1@4tro,34,75,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro9	4_ENERGY_WHITE,2,2
+1@4tro,63,75,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro10	4_ENERGY_WHITE,2,2
+1@4tro,49,79,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro11	4_ENERGY_WHITE,2,2
+1@4tro,40,47,0	duplicate(Summon Mark#d4tro1)	Summon Mark#d4tro12	4_ENERGY_WHITE,2,2
+
+1@4tro,49,58,4	script	Guardian Tree's Spring#d4tro	4_ENERGY_BLUE,{
+	.@n$ = "[Guardian Tree's Spring]";
+	mes .@n$;
+	if (Class == Job_Troubadour || Class == Job_Trouvere) {
+		mes "^777777The spring hums your song back to you.^000000";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Troubadour) && !callfunc("F_Duds4th_Is", Job_Trouvere)) {
+		mes "^777777The water ripples quietly.^000000";
+		close;
+	}
+	mes "^777777The water ripples in rhythm. A voice rises from it, like leaves in the wind.^000000";
+	mes "\"The stones stand, and the monsters are gone. Will you give me back my song?\"";
+	next;
+	if (select("Sing to the spring:Not yet") == 2) close;
+	mes "You play the hymn of longing, the sea's patience and the hope of the old story, and the Inspiration Pieces fill the gaps.";
+	mes "The Guardian Tree answers. Its leaves sing with you.";
+	next;
+	.@job = roclass(eaclass()|EAJL_FOURTH);
+	callfunc "F_Duds4th_Promote", .@job;
+	DUDS4_TRO = 4;
+	mes .@n$;
+	mes "\"Thank you, " + jobname(.@job) + ". My song is yours now.\"";
+	mes "A wandering musician near the entrance (south) can show you the way out.";
+	close;
+OnInit:
+	if (strnpcinfo(4) == "1@4tro") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));   // appears with the 12th Guardian Stone
+	end;
+}
+
+1@4tro,51,25,4	script	Wandering Musician#d4tro	4_F_WANDERER,{
+	.@n$ = "[Wandering Musician]";
+	mes .@n$;
+	if (Class == Job_Troubadour || Class == Job_Trouvere) {
+		mes "You heard it too, didn't you? The tree's song. Come, I'll show you the way back.";
+	} else {
+		mes "Twelve marks around the tree. Free each one from its monsters, step on it, and its Guardian Stone rises.";
+		mes "Guardian Stones summoned: " + 'tro_stones + " / 12.";
+	}
+	next;
+	if (select("Leave the forest:Stay") == 2) close;
+	close2;
+	warp "odin_tem03", 193, 298;
+	end;
+OnInit:
+	if (strnpcinfo(4) == "1@4tro") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}

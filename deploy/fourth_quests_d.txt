@@ -1,0 +1,1183 @@
+//===== RagnaDuds: 4th job change quests (renewal), part D ===================
+//= Windhawk, Sky Emperor and Soul Ascetic, following the official quests (iRO Wiki job change guides: steps,
+//= NPC names, places and trials). Dialogue is ours. Shared helpers (F_Duds4th_Is / _Levels / _Promote / _Enter)
+//= live in fourth_quests.txt. Private instances (re_db_import/instance_db.yml, Ids 931-933):
+//=   931 "Windhawk Survival"            1@4win  (the cabin in Luluka Forest)
+//=   932 "Celestial Branch Office"      1@exse  (the client's extended-job map for the Star Emperor line)
+//=   933 "The Foot of an Unknown Mountain" 1@exsr (the client's extended-job map for the Soul Reaper line)
+//= Requirements: base 200 / job 70. Reward: job change + Hourglass Necklace (via F_Duds4th_Promote).
+//= Progress variables:
+//=   DUDS4_WHK  Windhawk      0 none, 1 riddle solved (go to the frog statue), 2 survived 10 days, 3 Windhawk
+//=   DUDS4_SKY  Sky Emperor   0..11 (see the NPCs; 11 = done), DUDS4_SKY_K White Minerals killed, DUDS4_SKY_N needle spot,
+//=              DUDS4_SKY_S  sand spots already searched (bitmask)
+//=   DUDS4_SAS  Soul Ascetic  0..6 (see the NPCs; 6 = done)
+
+// shows the cabin gauges (args: day, food, water, fire lit, points, animals)
+function	script	F_D4Whk_Show	{
+	dispbottom "Day " + getarg(0) + "/10 | Food " + getarg(1) + "% | Water " + getarg(2) + "% | Fireplace " + (getarg(3) ? "lit" : "OUT") + " | Animals " + getarg(5) + " | Survival points " + getarg(4), 0xFFDD66;
+	return;
+}
+
+// tunes a quest boss: getarg(0) GID, getarg(1) HP. Normal damage taken (the db has 10%), so HP is the real HP.
+function	script	F_D4_Boss	{
+	setunitdata getarg(0), UMOB_MAXHP, getarg(1);
+	setunitdata getarg(0), UMOB_HP, getarg(1);
+	setunitdata getarg(0), UMOB_DAMAGETAKEN, 100;
+	return;
+}
+
+//============================================================================
+// WINDHAWK (from Ranger): the Drunk Old Man, the frog statue of Luluka Forest and 10 days in the cabin
+//============================================================================
+payon,100,177,4	script	Drunk Old Man#d4whk1	4_4JOB_ROBIN_DRUNK,{
+	.@n$ = "[Drunk Old Man]";
+	if (Class == Job_Windhawk || Class == Job_Windhawk2) {
+		mes .@n$;
+		mes "*hic* The wind... the wind keeps whispering your name, Windhawk.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Windhawk)) {
+		mes .@n$;
+		mes "*hic* Go away, can't you see I'm busy... drinking.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	if (DUDS4_WHK == 1) {
+		mes "*hic* Didn't I tell you? ^0000FFLuluka Forest^000000, the ^0000FFfrog^000000, the ^0000FFeast side^000000...";
+		mes "The frog stone statue in the north-west of the forest (^0000FFum_fild01, 47 345^000000), far west of Umbala.";
+		close;
+	}
+	if (DUDS4_WHK >= 2) {
+		mes "*hic* You came back alive! Go see the Owner of the Tent next to the frog statue.";
+		close;
+	}
+	mes "A Ranger... *hic* ...I was one too, a long time ago. The wind and the beasts listened to me.";
+	mes "Want to hear where I learned it? I'll tell you... if you can follow an old drunk's story.";
+	next;
+	if (select("Tell me.:Not now.") == 2) close;
+	mes .@n$;
+	mes "There's a forest... a deep, green one. What was its name again... *hic*";
+	next;
+	if (select("Payon Forest:Luluka Forest:Prontera Field") != 2) {
+		mes .@n$;
+		mes "No, no, no... *hic* that's not it. Forget it, I need another drink.";
+		close;
+	}
+	mes .@n$;
+	mes "Luluka! Yes! And in that forest there's a stone... a stone shaped like a...";
+	next;
+	if (select("Wolf:Falcon:Frog") != 3) {
+		mes .@n$;
+		mes "Hah, a what? *hic* No... my head hurts. Come back later.";
+		close;
+	}
+	mes .@n$;
+	mes "A frog! A stone frog. You turn it... *hic* ...you turn it to face the...";
+	next;
+	if (select("West Side:East Side:North Side") != 2) {
+		mes .@n$;
+		mes "Nothing happens if you do that. *hic* Ask me again when I'm sober. So, never.";
+		close;
+	}
+	DUDS4_WHK = 1;
+	mes .@n$;
+	mes "...the East Side! *hic* Then the path to my old cabin opens.";
+	mes "Find the ^0000FFfrog stone statue^000000 in the north-west of ^0000FFLuluka Forest^000000 (um_fild01, 47 345) and turn it east.";
+	mes "Survive in that cabin like I did... and you'll understand the wind.";
+	close;
+}
+
+um_fild01,47,345,4	script	Frog Stone Statue#d4whk	4_FROG,{
+	if (DUDS4_WHK != 1 || !callfunc("F_Duds4th_Is", Job_Windhawk)) {
+		mes "An old stone statue of a frog, covered in moss. It faces north.";
+		close;
+	}
+	mes "An old stone statue of a frog, covered in moss. It faces north.";
+	mes "It looks like it could be turned.";
+	next;
+	switch (select("Turn West:Turn East:Leave it")) {
+	case 1:
+		mes "The statue grinds to the west... and back. Nothing happens.";
+		close;
+	case 2:
+		mes "The statue grinds to the east. A hidden path opens in the trees!";
+		mes "^777777(Follow the path north to the cabin. Leaving is possible from the collapsed rocks or the survival diary.)^000000";
+		close2;
+		callfunc "F_Duds4th_Enter", "Windhawk Survival", 72, 105;
+		end;
+	}
+	close;
+}
+
+um_fild01,50,342,4	script	Owner of the Tent#d4whk	4_4JOB_ROBIN,{
+	.@n$ = "[Owner of the Tent]";
+	if (Class == Job_Windhawk || Class == Job_Windhawk2) {
+		mes .@n$;
+		mes "The falcon came back on its own, you know. It recognises a Windhawk.";
+		close;
+	}
+	if (DUDS4_WHK != 2 || !callfunc("F_Duds4th_Is", Job_Windhawk)) {
+		mes .@n$;
+		mes "I'm camping here for a while. This falcon of mine doesn't like strangers.";
+		close;
+	}
+	mes .@n$;
+	mes "So you're the one who spent ten days in the old cabin. The old man in Payon used to live there, before the drink got him.";
+	mes "Fire, food, water, the animals... you looked after all of it. Not everyone can.";
+	next;
+	mes .@n$;
+	mes "Here. Hold this string. The falcon at the other end has been tied to me for years.";
+	mes "A hunter keeps his partner close. A ^0000FFWindhawk^000000 trusts the wind to bring it back.";
+	next;
+	if (select("Hold the string tighter:Let go of the string") == 1) {
+		mes .@n$;
+		mes "Afraid it won't come back? Think about it, then.";
+		close;
+	}
+	if (checkwug()) {
+		mes .@n$;
+		mes "Send your warg away first. Today it's just you, the falcon and the wind.";
+		close;
+	}
+	mes "You open your hand. The falcon shoots into the sky, circles once... and lands on your shoulder.";
+	next;
+	callfunc "F_Duds4th_Promote", Job_Windhawk;
+	DUDS4_WHK = 3;
+	mes .@n$;
+	mes "Ha! The wind chose you. Go, ^0000FFWindhawk^000000.";
+	close;
+}
+um_fild01,52,345,4	script	Falcon#d4whk	20832,{
+	mes "A falcon tied to a long string. It watches the sky.";
+	close;
+}
+
+// ---- inside the cabin clearing (1@4win) ----
+1@4win,56,150,4	script	Survival Diary#d4whk	4_BULLETIN_BOARD2,{
+	mes "^777777Survival Diary^000000";
+	if ('whk_st < 3) {
+		mes "\"Whoever finds this: the cabin key is hidden in the ^0000FFflowers by the door^000000.\"";
+	} else if ('whk_st == 3) {
+		mes "Day ^0000FF" + 'whk_day + " / 10^000000 - Survival points ^0000FF" + 'whk_pts + "^000000 (below 50 and you're done for)";
+		mes "Food Storage " + 'whk_food + "% - Drinking Water " + 'whk_water + "% - Fireplace " + ('whk_fire ? "lit" : "^FF0000out^000000") + " - Animals " + 'whk_pets;
+		mes "From ^0000FFday 3^000000, every night: Fireplace lit, Food above 40%, Water above 30%, animals fed and warm.";
+	} else {
+		mes "\"Ten days. You made it. The owner is waiting by the collapsed rocks.\"";
+	}
+	next;
+	switch (select("How do I survive here?:Close:Leave the forest")) {
+	case 1:
+		mes "^777777Survival Diary^000000";
+		mes "- ^0000FFWarehouse^000000 (left of the cabin): take the hoe, the bucket or the axe. One tool at a time.";
+		mes "- ^0000FFFirewood Pile^000000 (2 o'clock, needs the axe): chop wood, feed the ^0000FFFireplace^000000 (2 bundles keep it lit all night).";
+		mes "- ^0000FFSpring^000000 (1 o'clock, needs the bucket): fill it and pour it in the Drinking Water Bucket: +10% each.";
+		mes "- ^0000FFRed plants^000000 around the clearing (need the hoe): +15% food each, they grow back every day.";
+		mes "- ^0000FFTraps^000000 (11 o'clock): set two every day. Next morning: make food (+80%) or keep the animal in the basket (feed it 10% food daily, keep the fire lit).";
+		mes "- Sleep in the ^0000FFbed^000000 (Food above 40%, Water above 30%) to start the next day. A day lasts at most 10 minutes.";
+		close;
+	case 2:
+		close;
+	case 3:
+		mes "Leave the forest? The cabin waits while this place lasts; come back through the frog statue.";
+		next;
+		if (select("Leave:Stay") == 2) close;
+		close2;
+		warp "um_fild01", 47, 341;
+		end;
+	}
+	end;
+
+OnStartDay:   // a new day: overnight consumption, traps, timer
+	.@m$ = instance_mapname("1@4win");
+	'whk_fire = 0;
+	'whk_fuel = 0;
+	'whk_plant = 0;
+	'whk_fed = 0;
+	'whk_slept = 0;
+	if ('whk_day > 1) {
+		'whk_food = max(0, 'whk_food - 15);
+		'whk_water = max(0, 'whk_water - 20);
+		for (.@i = 1; .@i <= 2; .@i++) {
+			if ('whk_trap[.@i] == 1)
+				'whk_trap[.@i] = (rand(100) < 25) ? 4 : 2;   // 4 = empty this morning, 2 = caught something
+		}
+	}
+	mapannounce .@m$, "Day " + 'whk_day + " / 10 begins. Food " + 'whk_food + "%, Water " + 'whk_water + "%, the Fireplace is out. Survival points: " + 'whk_pts + ".", bc_map, "0xFFDD66";
+	if ('whk_day == 3)
+		mapannounce .@m$, "From today on, every night counts: Fireplace lit, Food above 40%, Water above 30%, animals fed.", bc_map, "0xFF9966";
+	initnpctimer;
+	end;
+
+OnTimer540000:
+	mapannounce instance_mapname("1@4win"), "The sun is setting. One minute left before you collapse from exhaustion: go to bed!", bc_map, "0xFF9966";
+	end;
+
+OnTimer600000:   // the day ran out: collapse (no sleep)
+	'whk_slept = 0;
+	// fall through
+OnEndDay:
+	stopnpctimer;
+	if ('whk_st != 3) end;
+	.@m$ = instance_mapname("1@4win");
+	.@lost = 0;
+	.@why$ = "";
+	if ('whk_day >= 3) {
+		if (!'whk_slept) { .@lost += 10; .@why$ += " exhausted -10"; }
+		if (!'whk_fire) { .@lost += 10; .@why$ += " cold fireplace -10"; }
+		if ('whk_food <= 40) { .@lost += 10; .@why$ += " hungry -10"; }
+		if ('whk_water <= 30) { .@lost += 10; .@why$ += " thirsty -10"; }
+		if ('whk_pets && !'whk_fed) { .@lost += 5 * 'whk_pets; .@why$ += " animals unfed -" + (5 * 'whk_pets); }
+		if ('whk_pets && !'whk_fire) { .@lost += 5 * 'whk_pets; .@why$ += " animals cold -" + (5 * 'whk_pets); }
+	}
+	'whk_pts -= .@lost;
+	if (.@lost)
+		mapannounce .@m$, "Night " + 'whk_day + ":" + .@why$ + ". Survival points: " + 'whk_pts + ".", bc_map, "0xFF7777";
+	else
+		mapannounce .@m$, "Night " + 'whk_day + ": a peaceful night. Survival points: " + 'whk_pts + ".", bc_map, "0x77FF77";
+	if ('whk_pts < 50) {
+		'whk_st = 9;
+		mapannounce .@m$, "You couldn't survive the forest... You are carried out. Turn the frog statue east to try again.", bc_map, "0xFF7777";
+		sleep 4000;
+		instance_warpall "um_fild01", 47, 341, instance_id();
+		instance_destroy;
+		end;
+	}
+	if ('whk_day >= 10) {
+		'whk_st = 4;
+		enablenpc instance_npcname("Silla#d4whk");
+		mapannounce .@m$, "Morning of the 11th day: voices behind the collapsed rocks! Someone cleared the path. Go to the rocks.", bc_map, "0xFFD700";
+		end;
+	}
+	'whk_day++;
+	donpcevent instance_npcname("Survival Diary#d4whk") + "::OnStartDay";
+	end;
+}
+
+1@4win,48,153,4	script	Flowers by the Door#d4whk	4_BLUE_FLOWER,{
+	if ('whk_st > 0) {
+		mes "Pretty blue flowers by the cabin door.";
+		close;
+	}
+	mes "Pretty blue flowers by the cabin door. Something glints between the stems.";
+	next;
+	if (select("Look at the flowers:Leave them") == 2) close;
+	'whk_st = 1;
+	mes "You found the ^0000FFKey of the hut^000000! Now you can open the cabin door.";
+	close;
+}
+
+1@4win,52,154,0	script	Cabin Door#d4whk	WARPNPC,1,1,{
+	end;
+OnTouch:
+	if ('whk_st < 1) {
+		dispbottom "The cabin door is locked. Maybe the key is hidden somewhere close by...";
+		end;
+	}
+	warp instance_mapname("1@4win"), 346, 19;
+	end;
+}
+
+1@4win,346,14,0	script	Cabin Exit#d4whk	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp instance_mapname("1@4win"), 52, 151;
+	end;
+}
+
+1@4win,348,33,4	script	Bed#d4whk	4_WOODBOX,{
+	.@m$ = instance_mapname("1@4win");
+	switch ('whk_st) {
+	case 1:
+		mes "An old bed with a thick fur blanket. It smells of smoke and pine.";
+		next;
+		if (select("Investigate the bed:Leave it") == 2) close;
+		'whk_st = 2;
+		enablenpc instance_npcname("Collapsed Rocks#d4whk");
+		mes "You sit on the bed... ^FF0000CRASH!^000000 A deafening rumble comes from outside!";
+		mes "Go out and see what happened.";
+		close2;
+		mapannounce .@m$, "A rockfall! The path out of the forest is blocked. Check the collapsed rocks to the south.", bc_map, "0xFF7777";
+		end;
+	case 2:
+		mes "Something happened outside! Go and check.";
+		close;
+	case 3:
+		callfunc "F_D4Whk_Show", 'whk_day, 'whk_food, 'whk_water, 'whk_fire, 'whk_pts, 'whk_pets;
+		mes "Your bed. Sleeping ends ^0000FFday " + 'whk_day + "^000000.";
+		if ('whk_food <= 40 || 'whk_water <= 30) {
+			mes "You're too " + ('whk_food <= 40 ? "hungry" : "thirsty") + " to sleep. Food must be above 40% and Water above 30%.";
+			close;
+		}
+		if ('whk_day >= 3 && (!'whk_fire || ('whk_pets && !'whk_fed)))
+			mes "^FF0000Careful:^000000 " + (!'whk_fire ? "the fireplace is out" : "the animals in the basket are hungry") + ". That will cost survival points tonight.";
+		next;
+		if (select("Sleep until tomorrow:Not yet") == 2) close;
+		'whk_slept = 1;
+		mes "You pull the fur blanket over your head and fall asleep...";
+		close2;
+		donpcevent instance_npcname("Survival Diary#d4whk") + "::OnEndDay";
+		end;
+	case 4:
+		mes "No more nights here. The owner is waiting by the collapsed rocks.";
+		close;
+	default:
+		mes "An old bed with a thick fur blanket.";
+		close;
+	}
+}
+
+1@4win,72,132,4	script	Collapsed Rocks#d4whk	4_EP19_HEALROCK,{
+	if ('whk_st == 2) {
+		mes "Huge rocks block the only path out of the forest. Nobody gets through here for a long time.";
+		mes "You will have to ^0000FFlive in the cabin^000000 until someone clears the path.";
+		mes "The survival diary in front of the cabin explains how.";
+		next;
+		if (select("Start now:Not yet") == 2) close;
+		'whk_st = 3;
+		'whk_day = 1;
+		'whk_food = 50;
+		'whk_water = 50;
+		'whk_pts = 100;
+		'whk_pets = 0;
+		mes "Ten days. Fire, food, water. Let's go.";
+		close2;
+		donpcevent instance_npcname("Survival Diary#d4whk") + "::OnStartDay";
+		end;
+	}
+	mes "Huge rocks block the path out of the forest.";
+	next;
+	if (select("Climb over and leave the forest:Stay") == 2) close;
+	close2;
+	warp "um_fild01", 47, 341;
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4win,70,136,4	script	Silla#d4whk	4_4JOB_SILLA,{
+	.@n$ = "[Silla]";
+	mes .@n$;
+	mes "There you are! I own this cabin. I came as soon as I heard about the rockfall... and I find a Ranger living in my home!";
+	mes "Fire still burning, water full, even animals in the basket. You did better than I ever did.";
+	next;
+	mes .@n$;
+	mes "The old man in Payon sent you, didn't he? Then you're ready. Come, the path is clear now.";
+	mes "My friend keeps a tent next to the frog statue. Talk to him.";
+	next;
+	if (select("Let's go.:Wait a moment.") == 2) close;
+	if (DUDS4_WHK < 2) DUDS4_WHK = 2;
+	close2;
+	warp "um_fild01", 49, 340;
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4win,40,150,4	script	Warehouse#d4whk	4_WOODBOX,{
+	if ('whk_st != 3) { mes "A small warehouse full of old tools."; close; }
+	setarray .@t$[0], "nothing", "the hoe", "the bucket", "the axe";
+	mes "^777777Warehouse^000000";
+	mes "You are holding " + .@t$['whk_tool] + ". Take a tool (you put the one you hold back):";
+	mes "- ^0000FFHoe^000000: harvest the red plants (+15% food).";
+	mes "- ^0000FFBucket^000000: carry water from the spring (+10% water).";
+	mes "- ^0000FFAxe^000000: chop firewood for the fireplace.";
+	next;
+	.@s = select("Take the hoe:Take the bucket:Take the axe:Put the tool back:Close");
+	if (.@s == 5) close;
+	'whk_tool = (.@s == 4) ? 0 : .@s;
+	'whk_full = 0;
+	'whk_carry = 0;
+	mes "You are now holding " + .@t$['whk_tool] + ".";
+	close;
+}
+
+1@4win,60,148,4	script	Fireplace#d4whk	4_BONFIRE,{
+	if ('whk_st != 3) { mes "A stone fireplace in front of the cabin."; close; }
+	mes "^777777Fireplace^000000";
+	mes "The fire is " + ('whk_fire ? "^0000FFburning^000000. It will last all night." : "^FF0000out^000000 (" + 'whk_fuel + " / 2 bundles of firewood).");
+	if (!'whk_carry) {
+		mes "Chop firewood at the ^0000FFFirewood Pile^000000 (2 o'clock) with the axe.";
+		close;
+	}
+	next;
+	if (select("Add " + 'whk_carry + " bundle(s) of firewood:Not now") == 2) close;
+	'whk_fuel += 'whk_carry;
+	'whk_carry = 0;
+	if ('whk_fuel >= 2 && !'whk_fire) {
+		'whk_fire = 1;
+		specialeffect EF_FIREPILLARON;
+		mes "The fire roars to life! It will keep the cabin and the animals warm tonight.";
+	} else
+		mes "You add the firewood. (" + min('whk_fuel, 2) + " / 2)";
+	close;
+}
+
+1@4win,65,151,4	script	Basket#d4whk	4_EP17_BASKET,{
+	if ('whk_st != 3) { mes "A big basket lined with straw."; close; }
+	mes "^777777Basket by the fireplace^000000";
+	if (!'whk_pets) {
+		mes "Empty. Animals caught in the traps can be kept here.";
+		close;
+	}
+	mes "^0000FF" + 'whk_pets + "^000000 animal(s) curled up in the straw. " + ('whk_fed ? "They have eaten today." : "^FF0000They are hungry.^000000");
+	mes "Feeding them costs ^0000FF" + (10 * 'whk_pets) + "%^000000 of the Food Storage (" + 'whk_food + "% now).";
+	if ('whk_fed) close;
+	next;
+	if (select("Feed them:Not now") == 2) close;
+	if ('whk_food < 10 * 'whk_pets) {
+		mes "There isn't enough food in the storage.";
+		close;
+	}
+	'whk_food -= 10 * 'whk_pets;
+	'whk_fed = 1;
+	mes "The animals eat happily. Food Storage: " + 'whk_food + "%.";
+	close;
+}
+1@4win,67,153,4	script	Wolf Cub#d4whk	20833,{
+	mes "A wolf cub you pulled out of a trap. It watches you with bright eyes.";
+	close;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@4win,48,147,4	script	Food Storage#d4whk	4_WOODBOX,{
+	mes "^777777Food Storage^000000";
+	mes "Filled to ^0000FF" + 'whk_food + "%^000000. It must stay above 40% every night from day 3.";
+	mes "Red plants give +15%, a trapped animal made into food +80%. Every morning the cabin eats 15%.";
+	close;
+}
+
+1@4win,58,146,4	script	Drinking Water Bucket#d4whk	4_EP17_BUCKETS,{
+	if ('whk_st != 3) { mes "A big bucket for drinking water."; close; }
+	if ('whk_tool == 2 && 'whk_full) {
+		'whk_full = 0;
+		'whk_water = min(100, 'whk_water + 10);
+		specialeffect EF_BUBBLE;
+		dispbottom "You pour the water in. Drinking Water: " + 'whk_water + "%.";
+		end;
+	}
+	mes "^777777Drinking Water Bucket^000000";
+	mes "Filled to ^0000FF" + 'whk_water + "%^000000. It must stay above 30% every night from day 3; each morning 20% is gone.";
+	mes "Take the ^0000FFbucket^000000 from the warehouse and fill it at the ^0000FFspring^000000 (1 o'clock): +10% per trip.";
+	close;
+}
+
+1@4win,62,182,4	script	Spring#d4whk	4_ENERGY_BLUE,{
+	if ('whk_st != 3) { mes "Clear, cold water."; close; }
+	if ('whk_tool != 2) { dispbottom "Clear, cold water. You need the bucket from the warehouse."; end; }
+	if ('whk_full) { dispbottom "Your bucket is already full. Pour it into the Drinking Water Bucket by the cabin."; end; }
+	progressbar "0000FF", 2;
+	'whk_full = 1;
+	dispbottom "Bucket filled. Take it to the Drinking Water Bucket in front of the cabin.";
+	end;
+}
+
+1@4win,100,178,4	script	Firewood Pile#d4whk	4_WOODPILE,{
+	if ('whk_st != 3) { mes "A pile of logs."; close; }
+	if ('whk_tool != 3) { dispbottom "A pile of logs. You need the axe from the warehouse."; end; }
+	if ('whk_carry >= 2) { dispbottom "You can't carry more than 2 bundles. Take them to the fireplace."; end; }
+	progressbar "885500", 3;
+	'whk_carry++;
+	dispbottom "You chopped a bundle of firewood (" + 'whk_carry + " / 2 carried). Take it to the fireplace.";
+	end;
+}
+
+1@4win,34,179,4	script	Trap#d4whk1	4_NPC_TRAP,{
+	if ('whk_st != 3) { mes "A simple snare trap."; close; }
+	.@t = atoi(charat(strnpcinfo(2), getstrlen(strnpcinfo(2)) - 1));
+	switch ('whk_trap[.@t]) {
+	case 1:
+		mes "The trap is set. Check it tomorrow morning.";
+		close;
+	case 2:
+		mes "A little ^0000FFwolf cub^000000 is caught in the trap!";
+		next;
+		switch (select("Take it out and put it in the basket:Make food (+80% Food Storage):Leave it for now")) {
+		case 1:
+			'whk_pets++;
+			'whk_trap[.@t] = 0;
+			enablenpc instance_npcname("Wolf Cub#d4whk");
+			mes "You carry it to the basket by the fireplace. Remember: feed it every day and keep the fire lit.";
+			close;
+		case 2:
+			'whk_food = min(100, 'whk_food + 80);
+			'whk_trap[.@t] = 0;
+			mes "Survival is survival. Food Storage: " + 'whk_food + "%.";
+			close;
+		}
+		close;
+	case 4:
+		mes "The trap was sprung, but it's empty.";
+		'whk_trap[.@t] = 0;
+		next;
+		break;
+	}
+	mes "The trap is empty. Set it? Whatever it catches will be here tomorrow morning.";
+	next;
+	if (select("Set the trap:Not now") == 2) close;
+	'whk_trap[.@t] = 1;
+	mes "Trap set.";
+	close;
+}
+1@4win,40,184,4	duplicate(Trap#d4whk1)	Trap#d4whk2	4_NPC_TRAP
+
+1@4win,30,170,4	script	Red Plant#d4whk1	4_RED_FLOWER,{
+	if ('whk_st != 3) { mes "A red plant with a thick, juicy root."; close; }
+	.@p = atoi(charat(strnpcinfo(2), getstrlen(strnpcinfo(2)) - 1));
+	if ('whk_plant & (1 << .@p)) { dispbottom "Already harvested today. It grows back tomorrow."; end; }
+	if ('whk_tool != 1) { dispbottom "A red plant with a thick root. You need the hoe from the warehouse."; end; }
+	progressbar "FF0000", 2;
+	'whk_plant |= (1 << .@p);
+	'whk_food = min(100, 'whk_food + 15);
+	dispbottom "You dug up the root. Food Storage: " + 'whk_food + "%.";
+	end;
+}
+1@4win,28,185,4	duplicate(Red Plant#d4whk1)	Red Plant#d4whk2	4_RED_FLOWER
+1@4win,36,140,4	duplicate(Red Plant#d4whk1)	Red Plant#d4whk3	4_RED_FLOWER
+1@4win,85,150,4	duplicate(Red Plant#d4whk1)	Red Plant#d4whk4	4_RED_FLOWER
+1@4win,104,149,4	duplicate(Red Plant#d4whk1)	Red Plant#d4whk5	4_RED_FLOWER
+1@4win,98,196,4	duplicate(Red Plant#d4whk1)	Red Plant#d4whk6	4_RED_FLOWER
+
+//============================================================================
+// SKY EMPEROR (from Star Emperor): Sign, Eunha, the Troubled Person and Heeun at the Celestial Branch Office
+//============================================================================
+payon,215,202,4	script	Sign#d4sky1	4_EXJOB_KI_SUL,{
+	.@n$ = "[Sign]";
+	if (Class == Job_Sky_Emperor || Class == Job_Sky_Emperor2) {
+		mes .@n$;
+		mes "The stars move a little differently since you became a Sky Emperor.";
+		close;
+	}
+	if (Class != Job_Star_Emperor && Class != Job_Star_Emperor2) {
+		mes .@n$;
+		mes "I read the sky for travellers. Yours is cloudy today.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_SKY) {
+	case 0:
+		mes "A Star Emperor... The sun, the moon and the stars already answer you. But above them there is the ^0000FFsky^000000 itself.";
+		mes "Someone from the Meteor Grove is looking for a disciple worthy of it: ^0000FFEunha^000000.";
+		next;
+		if (select("Where can I find her?:Not now.") == 2) close;
+		DUDS4_SKY = 1;
+		mes .@n$;
+		mes "She trains near the ^0000FFMjolnir Dead Pits^000000: Mjolnir field (^0000FFmjolnir_03, 283 252^000000).";
+		close;
+	case 1:
+		mes "Eunha is waiting in the Mjolnir field (mjolnir_03, 283 252).";
+		close;
+	case 8:
+		mes "You're back! The stars told me you helped that poor man all the way to Morocc...";
+		next;
+		mes "^777777A cloud drifts down from the sky and takes the shape of a girl.^000000";
+		next;
+		mes "[Heeun]";
+		mes "So this is Eunha's candidate. Hmph. Helping people is nice, but the sky needs ^0000FFstrength^000000.";
+		mes "The ^0000FFCelestial Branch Office^000000 is opening its door today. If you're late, it closes for another hundred years.";
+		next;
+		mes "[Heeun]";
+		mes "Better rush to Eunha, little star. I'll be waiting upstairs.";
+		DUDS4_SKY = 9;
+		next;
+		mes .@n$;
+		mes "Heeun of the clouds... she's never easy on anyone. Hurry to Eunha in Mjolnir!";
+		close;
+	case 9:
+		mes "Hurry, Eunha is waiting in Mjolnir (mjolnir_03, 283 252)!";
+		close;
+	default:
+		mes "Eunha's trial will take you far from here. Follow the stars.";
+		close;
+	}
+}
+
+mjolnir_03,283,252,4	script	Eunha#d4sky1	4_EXJOB_STAR,{
+	.@n$ = "[Eunha]";
+	if (Class == Job_Sky_Emperor || Class == Job_Sky_Emperor2) {
+		mes .@n$;
+		mes "The sky looks good on you.";
+		close;
+	}
+	if ((Class != Job_Star_Emperor && Class != Job_Star_Emperor2) || DUDS4_SKY < 1) {
+		mes .@n$;
+		mes "Shh. I'm watching the stars.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_SKY) {
+	case 1:
+		mes "Sign sent you? You look strong enough. But a ^0000FFSky Emperor^000000 protects everyone under the sky, not only himself.";
+		mes "There's a man in ^0000FFVeins^000000 in trouble. Help him, and keep helping until his trouble is over.";
+		next;
+		if (select("Send me to Veins.:Not now.") == 2) close;
+		DUDS4_SKY = 2;
+		close2;
+		warp "veins", 236, 106;
+		end;
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+		mes "Did you finish helping the troubled man? Don't come back halfway.";
+		next;
+		if (select("Send me to Veins again.:I'm on it.") == 2) close;
+		close2;
+		warp "veins", 236, 106;
+		end;
+	case 8:
+		mes "Go back to Sign in Payon first. Something is waiting for you there.";
+		close;
+	case 9:
+	case 10:
+		if (DUDS4_SKY == 9) {
+			mes "Heeun came down to see you? Then the ^0000FFCelestial Branch Office^000000 is open.";
+			mes "I'll take you there. Whatever she says... don't lose your temper.";
+		} else
+			mes "The Celestial Branch Office is still open. Go back in?";
+		next;
+		if (select("Open the door.:Not yet.") == 2) close;
+		DUDS4_SKY = 10;
+		close2;
+		callfunc "F_Duds4th_Enter", "Celestial Branch Office", 50, 22;
+		end;
+	}
+	close;
+}
+
+veins,236,110,4	script	Troubled Person#d4sky1	4_EXJOB_CHUL_HO,{
+	.@n$ = "[Troubled Person]";
+	if (DUDS4_SKY != 2) {
+		mes .@n$;
+		mes "Oh, what am I going to do...";
+		close;
+	}
+	mes .@n$;
+	mes "You're here to help? Thank the stars! I'm a peddler, and I promised a healer some herbs that grow ^0000FFsouth of Veins^000000.";
+	mes "But the plants there almost ate me!";
+	mes "I need ^0000FF3 Sticky Poison^000000, ^0000FF3 Maneater Root^000000 and ^0000FF20 Maneater Blossom^000000.";
+	next;
+	if (countitem(7565) < 3 || countitem(1033) < 3 || countitem(1032) < 20) {
+		mes .@n$;
+		mes "Sticky Poison " + countitem(7565) + "/3, Maneater Root " + countitem(1033) + "/3, Maneater Blossom " + countitem(1032) + "/20.";
+		close;
+	}
+	if (select("Hand over the plants:Not yet") == 2) close;
+	delitem 7565, 3;
+	delitem 1033, 3;
+	delitem 1032, 20;
+	DUDS4_SKY = 3;
+	mes .@n$;
+	mes "All of them! You saved me. Now I can go to Einbech, I have another delivery there... and another problem. Will you come?";
+	close2;
+	warp "einbech", 155, 239;
+	end;
+}
+
+einbech,155,243,4	script	Troubled Person#d4sky2	4_EXJOB_CHUL_HO,{
+	.@n$ = "[Troubled Person]";
+	if (DUDS4_SKY < 3 || DUDS4_SKY > 4) {
+		mes .@n$;
+		mes "The miners here are scared stiff...";
+		close;
+	}
+	mes .@n$;
+	if (DUDS4_SKY == 3) {
+		mes "The miners won't buy anything: ^0000FFWhite Minerals^000000 came alive in the mine and they can't work.";
+		mes "Could you destroy ^0000FF10 White Minerals^000000 in the ^0000FFEinbech Mine Dungeon, 3rd floor^000000 (ein_dun03)?";
+		next;
+		if (select("Leave it to me.:Not now.") == 2) close;
+		DUDS4_SKY = 4;
+		DUDS4_SKY_K = 0;
+		mes .@n$;
+		mes "Thank you! Come back when it's done.";
+		close;
+	}
+	if (DUDS4_SKY_K < 10) {
+		mes "White Minerals destroyed: " + DUDS4_SKY_K + " / 10. They're in the Einbech Mine Dungeon, 3rd floor.";
+		close;
+	}
+	mes "The mine is safe again! You're a real star. One last thing... I lost something precious in the desert near ^0000FFMorocc^000000. Meet me there?";
+	DUDS4_SKY = 5;
+	close2;
+	warp "morocc", 235, 69;
+	end;
+}
+
+-	script	Duds4thKills#d4sky	-1,{
+OnNPCKillEvent:
+	if (DUDS4_SKY == 4 && killedrid == 20596 && DUDS4_SKY_K < 10) {
+		DUDS4_SKY_K++;
+		dispbottom "White Mineral: " + DUDS4_SKY_K + " / 10" + (DUDS4_SKY_K >= 10 ? ". Return to the Troubled Person in Einbech." : "");
+	}
+	end;
+}
+
+morocc,235,73,4	script	Troubled Person M#d4sky3	4_EXJOB_CHUL_HO,{
+	.@n$ = "[Troubled Person M]";
+	if (DUDS4_SKY < 5 || DUDS4_SKY > 7) {
+		mes .@n$;
+		mes "Sand, sand, everywhere sand...";
+		close;
+	}
+	setarray .@sp$[1], "moc_fild12 (230, 227)", "moc_fild12 (233, 61)", "moc_fild18 (127, 222)", "moc_fild18 (312, 191)", "moc_fild17 (218, 258)";
+	mes .@n$;
+	if (DUDS4_SKY == 5) {
+		mes "Call me M, everyone does. On my way here a sandstorm blew my bag open, and my mother's ^0000FFneedle^000000 fell out.";
+		mes "It's the only thing I have left of her. It's somewhere in one of these five places:";
+		for (.@i = 1; .@i <= 5; .@i++)
+			mes "- " + .@sp$[.@i];
+		next;
+		if (select("I'll find it.:Not now.") == 2) close;
+		DUDS4_SKY = 6;
+		DUDS4_SKY_N = rand(1, 5);
+		DUDS4_SKY_S = 0;
+		mes .@n$;
+		mes "Look for the ^0000FFglittering sand^000000 in those spots. Thank you!";
+		close;
+	}
+	if (DUDS4_SKY == 6) {
+		mes "Did you find the needle? Places you haven't searched yet:";
+		for (.@i = 1; .@i <= 5; .@i++)
+			if (!(DUDS4_SKY_S & (1 << .@i))) mes "- " + .@sp$[.@i];
+		close;
+	}
+	mes "My mother's needle! I... I don't know how to thank you.";
+	mes "Eunha must be proud of you. Let me send you back to Payon, Sign wants to see you.";
+	DUDS4_SKY = 8;
+	close2;
+	warp "payon", 216, 199;
+	end;
+}
+
+moc_fild12,230,227,4	script	Glittering Sand#d4sky1	4_ENERGY_YELLOW,{
+	if (DUDS4_SKY != 6) {
+		mes "The sand glitters in the sun.";
+		close;
+	}
+	.@s = atoi(charat(strnpcinfo(2), getstrlen(strnpcinfo(2)) - 1));
+	if (DUDS4_SKY_S & (1 << .@s)) {
+		mes "You already searched here. Nothing.";
+		close;
+	}
+	mes "The sand glitters in the sun. Something could be buried here.";
+	next;
+	if (select("Search the sand:Leave") == 2) close;
+	close2;
+	progressbar "FFDD00", 3;
+	DUDS4_SKY_S |= (1 << .@s);
+	if (.@s != DUDS4_SKY_N) {
+		dispbottom "Only sand and an old coin. The needle isn't here.";
+		end;
+	}
+	DUDS4_SKY = 7;
+	specialeffect2 EF_ANGEL2;
+	dispbottom "You found a small silver needle! Bring it back to M in Morocc.";
+	end;
+}
+moc_fild12,233,61,4	duplicate(Glittering Sand#d4sky1)	Glittering Sand#d4sky2	4_ENERGY_YELLOW
+moc_fild18,127,222,4	duplicate(Glittering Sand#d4sky1)	Glittering Sand#d4sky3	4_ENERGY_YELLOW
+moc_fild18,312,191,4	duplicate(Glittering Sand#d4sky1)	Glittering Sand#d4sky4	4_ENERGY_YELLOW
+moc_fild17,218,258,4	duplicate(Glittering Sand#d4sky1)	Glittering Sand#d4sky5	4_ENERGY_YELLOW
+
+// ---- inside the Celestial Branch Office (1@exse) ----
+1@exse,50,27,4	script	Eunha#d4sky2	4_EXJOB_STAR,{
+	.@n$ = "[Eunha]";
+	mes .@n$;
+	if ('sky_st == 0) {
+		mes "This is the ^0000FFCelestial Branch Office^000000. Every star that wants to become sky has to pass through here.";
+		mes "The clouds, the winds, the storms... they all report here. And Heeun guards the upper floor.";
+		next;
+		mes .@n$;
+		mes "She'll test you. She'll mock you. Don't listen, just show her what you showed the people you helped.";
+		next;
+		if (select("Let's go upstairs.:Leave the office") == 2) { close2; warp "mjolnir_03", 283, 248; end; }
+		'sky_st = 1;
+		enablenpc instance_npcname("Eunha#d4sky3");
+		enablenpc instance_npcname("Heeun#d4sky2");
+		mes .@n$;
+		mes "Upstairs, then. Go up the stairs to the north. I'm right behind you.";
+		close;
+	}
+	mes "Heeun is upstairs, to the north. I'll be there.";
+	next;
+	if (select("On my way.:Leave the office") == 2) { close2; warp "mjolnir_03", 283, 248; end; }
+	close;
+}
+
+1@exse,52,62,4	script	Eunha#d4sky3	4_EXJOB_STAR,{
+	.@n$ = "[Eunha]";
+	mes .@n$;
+	if ('sky_st < 3) {
+		mes "Talk to Heeun. And don't hold back.";
+		next;
+		if (select("Understood.:Leave the office") == 2) { close2; warp "mjolnir_03", 283, 248; end; }
+		close;
+	}
+	mes "You did it. Even Heeun had to admit it.";
+	mes "From the sun, the moon and the stars... to the whole sky. Rise, ^0000FFSky Emperor^000000.";
+	next;
+	callfunc "F_Duds4th_Promote", (Class == Job_Star_Emperor2 ? Job_Sky_Emperor2 : Job_Sky_Emperor);
+	DUDS4_SKY = 11;
+	mes .@n$;
+	mes "Let's go home. The Meteor Grove will want to hear about this.";
+	close2;
+	warp "mjolnir_03", 283, 248;
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@exse,55,65,4	script	Heeun#d4sky2	4_EXJOB_HAPPY_CLOUD,{
+	.@n$ = "[Heeun]";
+	mes .@n$;
+	if ('sky_st == 3) {
+		mes "...Fine. FINE. You're strong. Go talk to Eunha before I change my mind.";
+		close;
+	}
+	mes "You actually came. The Celestial Branch Office doesn't accept just anyone, little star.";
+	mes "Show me you can hold the sky up. ^0000FFDefeat me^000000!";
+	next;
+	if (select("Let's fight!:Wait") == 2) close;
+	'sky_st = 2;
+	close2;
+	disablenpc instance_npcname("Heeun#d4sky2");
+	.@m$ = instance_mapname("1@exse");
+	monster .@m$, 55, 65, "Heeun", 21445, 1, instance_npcname("Heeun#d4sky2") + "::OnHeeun";
+	callfunc "F_D4_Boss", $@mobid[0], 800000;
+	mapannounce .@m$, "Heeun: Come on, show me your sky!", bc_map, "0x99CCFF";
+	end;
+
+OnHeeun:
+	'sky_st = 3;
+	enablenpc instance_npcname("Heeun#d4sky2");
+	mapannounce instance_mapname("1@exse"), "Heeun: Ugh... alright, you win! Talk to Eunha.", bc_map, "0xFFD700";
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+//============================================================================
+// SOUL ASCETIC (from Soul Reaper): the Clerk, Banyak, Jonchosa and the Foot of an Unknown Mountain
+//============================================================================
+payon,195,119,4	script	Clerk#d4sas1	1_M_INNKEEPER,{
+	.@n$ = "[Clerk]";
+	if (Class == Job_Soul_Ascetic) {
+		mes .@n$;
+		mes "Master Jonchosa's disciple! Welcome, welcome. Tea is on the house.";
+		close;
+	}
+	if (Class != Job_Soul_Reaper) {
+		mes .@n$;
+		mes "Welcome to Payon! The inn is just to the east.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	if (DUDS4_SAS == 0) {
+		mes "A Soul Reaper? Oh, good! There's a fellow here, ^0000FFBanyak^000000, who keeps asking every Soul Reaper who passes by for help.";
+		mes "He's right there. Please, talk to him before he scares more customers away.";
+		DUDS4_SAS = 1;
+		close;
+	}
+	mes "Banyak is right next to me. Talk to him.";
+	close;
+}
+
+payon,198,119,4	script	Banyak#d4sas1	4_EXJOB_HYUN_ROK,{
+	.@n$ = "[Banyak]";
+	if (Class == Job_Soul_Ascetic) {
+		mes .@n$;
+		mes "The master says you're doing well. I'm a little jealous!";
+		close;
+	}
+	if (Class != Job_Soul_Reaper || DUDS4_SAS < 1) {
+		mes .@n$;
+		mes "Hmm? I'm waiting for someone.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_SAS) {
+	case 1:
+		mes "A Soul Reaper! You remember me? We met when you learned to call souls.";
+		mes "My master, ^0000FFJonchosa^000000, is looking for a disciple. But he only answers those who can see through his ^0000FFlandscape painting^000000.";
+		next;
+		mes .@n$;
+		mes "It hangs in the inn to the east. Go inside, head ^0000FFnorth^000000, take the passage to the upper room, and look at the ^0000FFLandscape Painting^000000.";
+		DUDS4_SAS = 2;
+		close;
+	case 2:
+		mes "The Landscape Painting is in the inn to the east: go inside, north, through the passage.";
+		close;
+	case 3:
+		mes "You saw the mountain in the painting? Then the master already knows you're here...";
+		next;
+		mes .@n$;
+		mes "Master! You came yourself!";
+		mes "^777777An old man with a long beard is suddenly standing next to Banyak.^000000";
+		close;
+	case 4:
+		mes "The master will take you to the mountain. I'll alert his subordinates so the way is prepared.";
+		next;
+		if (select("Alert his subordinates:Not yet") == 2) close;
+		DUDS4_SAS = 5;
+		mes .@n$;
+		mes "Done! Everyone is ready.";
+		next;
+		// fall through
+	case 5:
+		if (select("I think we can depart now.:Wait") == 2) close;
+		close2;
+		callfunc "F_Duds4th_Enter", "The Foot of an Unknown Mountain", 38, 16;
+		end;
+	}
+	close;
+}
+
+payon,196,115,4	script	Jonchosa#d4sas1	4_EXJOB_MASTER_J,{
+	.@n$ = "[Jonchosa]";
+	if (Class == Job_Soul_Ascetic) {
+		mes .@n$;
+		mes "Keep your soul calm, disciple.";
+		close;
+	}
+	if (Class != Job_Soul_Reaper || DUDS4_SAS < 3) {
+		mes .@n$;
+		mes "...";
+		close;
+	}
+	mes .@n$;
+	if (DUDS4_SAS == 3) {
+		mes "So you are the one who looked into my painting and saw the mountain behind the mist.";
+		mes "Most see only ink. You saw the place where souls rest. That is the eye of an ^0000FFAscetic^000000.";
+		next;
+		mes .@n$;
+		mes "A Soul Reaper calls the souls of others. An Ascetic first masters his own.";
+		mes "Dusting, fishing, cooking. Simple things. Done with a calm soul, they become a discipline.";
+		next;
+		mes .@n$;
+		mes "Come with me to the foot of the mountain. Banyak will prepare the way.";
+		DUDS4_SAS = 4;
+		close;
+	}
+	mes "Tell Banyak when you are ready to depart.";
+	close;
+}
+
+payon_in01,176,82,4	script	Landscape Painting#d4sas	4_BULLETIN_BOARD2,{
+	if (DUDS4_SAS != 2) {
+		mes "An old ink painting of a mountain in the mist.";
+		close;
+	}
+	mes "An old ink painting of a mountain in the mist.";
+	next;
+	if (select("Look closer:Leave it") == 2) close;
+	mes "The longer you look, the more the mist seems to move... A path appears at the foot of the mountain.";
+	mes "^777777\"Come, child. I have been waiting.\"^000000";
+	next;
+	DUDS4_SAS = 3;
+	mes "The voice fades. Go back to ^0000FFBanyak^000000 in front of the inn.";
+	close;
+}
+
+// ---- The Foot of an Unknown Mountain (1@exsr) ----
+// 'sas_st: 0 start, 1 dusting, 2 wolf cub, 3 cub beaten, 4 fishing spirits, 5 Eddga, 6 Eddga beaten,
+//          7 cooking spirits, 8 Seo, 9 Seo beaten.  'sas_sp: next spirit to calm (1..3)
+1@exsr,38,20,4	script	Jonchosa#d4sas2	4_EXJOB_MASTER_J,{
+	.@n$ = "[Jonchosa]";
+	.@m$ = instance_mapname("1@exsr");
+	mes .@n$;
+	switch ('sas_st) {
+	case 0:
+		mes "This place has not been swept in a hundred years. ^0000FFDust it^000000.";
+		mes "The dust here is alive: three ^0000FFspirits^000000 sleep in it. Calm them one by one. Do not skip any.";
+		next;
+		if (select("Start dusting:Leave the mountain") == 2) { close2; warp "payon", 196, 117; end; }
+		'sas_st = 1;
+		'sas_sp = 1;
+		enablenpc instance_npcname("Spirit#d4sas1");
+		mes .@n$;
+		mes "Patience. A calm hand, again and again.";
+		close;
+	case 1:
+		mes "Calm the spirits in the dust (" + ('sas_sp - 1) + " / 3).";
+		break;
+	case 2:
+		mes "The wolf cub smelled the clean air. ^0000FFFight it^000000!";
+		if (mobcount(.@m$, instance_npcname("Jonchosa#d4sas2") + "::OnSol") < 1) {
+			monster .@m$, 38, 32, "Wolf Cub", 21447, 1, instance_npcname("Jonchosa#d4sas2") + "::OnSol";
+			callfunc "F_D4_Boss", $@mobid[0], 300000;
+		}
+		close;
+	case 3:
+		mes "A strong cub. And a calm fight. Good. Now we eat... but first we need fish.";
+		mes "Come, the river is up on the mountain.";
+		next;
+		'sas_st = 4;
+		enablenpc instance_npcname("Jonchosa#d4sas3");
+		close2;
+		warp .@m$, 38, 48;
+		end;
+	case 4:
+	case 5:
+	case 6:
+		mes "Why are you down here? The river is up north.";
+		close2;
+		warp .@m$, 38, 48;
+		end;
+	case 7:
+		mes "Now ^0000FFscale the fish and cook it^000000. The spirits of the fire must agree.";
+		if ('sas_sp > 3) break;
+		mes "Calm the spirits (" + ('sas_sp - 1) + " / 3).";
+		enablenpc instance_npcname("Spirit#d4sas" + 'sas_sp);
+		break;
+	case 8:
+		mes "^FF0000Seo!^000000 That thief always comes when the food is ready. Drive him away!";
+		if (mobcount(.@m$, instance_npcname("Jonchosa#d4sas2") + "::OnSeo") < 1) {
+			monster .@m$, 38, 32, "Seo", 21446, 1, instance_npcname("Jonchosa#d4sas2") + "::OnSeo";
+			callfunc "F_D4_Boss", $@mobid[0], 1000000;
+		}
+		close;
+	case 9:
+		mes "Dust, fish, fire... and not one of them disturbed your soul. Not even Seo.";
+		mes "That is all an Ascetic is. Rise, ^0000FFSoul Ascetic^000000.";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Soul_Ascetic;
+		DUDS4_SAS = 6;
+		mes .@n$;
+		mes "Go. Banyak will want to hear all about it.";
+		close2;
+		warp "payon", 196, 117;
+		end;
+	}
+	next;
+	if (select("Continue:Leave the mountain") == 2) { close2; warp "payon", 196, 117; end; }
+	close;
+
+OnSol:
+	'sas_st = 3;
+	mapannounce instance_mapname("1@exsr"), "The wolf cub runs off into the trees. Talk to Jonchosa.", bc_map, "0xFFD700";
+	end;
+OnSeo:
+	'sas_st = 9;
+	mapannounce instance_mapname("1@exsr"), "Seo flees, empty-handed! Talk to Jonchosa.", bc_map, "0xFFD700";
+	end;
+}
+
+1@exsr,38,52,4	script	Jonchosa#d4sas3	4_EXJOB_MASTER_J,{
+	.@n$ = "[Jonchosa]";
+	.@m$ = instance_mapname("1@exsr");
+	mes .@n$;
+	switch ('sas_st) {
+	case 4:
+		if ('sas_sp > 3 || 'sas_sp < 1 || !'sas_fish) {
+			mes "The fish hide under the water, guarded by its spirits. ^0000FFFind the fish^000000: calm the three water spirits, one after another.";
+			'sas_fish = 1;
+			'sas_sp = 1;
+			enablenpc instance_npcname("Spirit#d4sas4");
+			close;
+		}
+		mes "Calm the water spirits (" + ('sas_sp - 1) + " / 3).";
+		close;
+	case 5:
+		mes "The guardian of the river, ^0000FFEddga^000000! Defeat it, and the fish is ours.";
+		if (mobcount(.@m$, instance_npcname("Jonchosa#d4sas3") + "::OnHo") < 1) {
+			monster .@m$, 38, 44, "Eddga", 21448, 1, instance_npcname("Jonchosa#d4sas3") + "::OnHo";
+			callfunc "F_D4_Boss", $@mobid[0], 500000;
+		}
+		close;
+	case 6:
+		mes "A fine fish. Let's go back down and cook it.";
+		next;
+		'sas_st = 7;
+		'sas_sp = 1;
+		close2;
+		enablenpc instance_npcname("Spirit#d4sas1");
+		warp .@m$, 38, 22;
+		end;
+	default:
+		mes "We cook down by the camp.";
+		close2;
+		warp .@m$, 38, 22;
+		end;
+	}
+OnHo:
+	'sas_st = 6;
+	mapannounce instance_mapname("1@exsr"), "Eddga goes back into the river, leaving a big fish behind. Talk to Jonchosa.", bc_map, "0xFFD700";
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+// the spirits: 1-3 at the camp (dusting, then cooking), 4-6 at the river (fishing). Each calm attempt is a chance.
+1@exsr,30,24,4	script	Spirit#d4sas1	4_ENERGY_WHITE,{
+	.@s = atoi(charat(strnpcinfo(2), getstrlen(strnpcinfo(2)) - 1));
+	.@m$ = instance_mapname("1@exsr");
+	if (.@s <= 3) {
+		.@ok = ('sas_st == 1 || 'sas_st == 7) && 'sas_sp == .@s;
+		.@act$ = ('sas_st == 7) ? (.@s == 1 ? "scale the fish" : (.@s == 2 ? "clean the fish" : "cook the fish")) : "sweep the dust";
+	} else {
+		.@ok = 'sas_st == 4 && 'sas_sp == .@s - 3;
+		.@act$ = "search the water";
+	}
+	if (!.@ok) {
+		mes "A small spirit floats here, half asleep.";
+		close;
+	}
+	mes "A small spirit floats here. It won't stay calm unless you " + .@act$ + " gently.";
+	next;
+	if (select("Try to " + .@act$ + ":Wait") == 2) close;
+	if (rand(100) >= 40) {
+		mes "The spirit startles and flickers... Try again, calmly.";
+		close;
+	}
+	specialeffect EF_HEAL2;
+	'sas_sp++;
+	disablenpc instance_npcname(strnpcinfo(0));
+	if ('sas_sp <= 3) {
+		mes "The spirit settles down and fades. (" + ('sas_sp - 1) + " / 3)";
+		enablenpc instance_npcname("Spirit#d4sas" + ('sas_sp + (.@s > 3 ? 3 : 0)));
+		mes "Another spirit wakes up nearby.";
+		close;
+	}
+	mes "The last spirit settles down. (3 / 3)";
+	close2;
+	if ('sas_st == 1) {
+		'sas_st = 2;
+		monster .@m$, 38, 32, "Wolf Cub", 21447, 1, instance_npcname("Jonchosa#d4sas2") + "::OnSol";
+		callfunc "F_D4_Boss", $@mobid[0], 300000;
+		mapannounce .@m$, "Jonchosa: The dust is gone... and a wolf cub smelled the clean air. Duel it!", bc_map, "0xFF9966";
+	} else if ('sas_st == 4) {
+		'sas_st = 5;
+		monster .@m$, 38, 44, "Eddga", 21448, 1, instance_npcname("Jonchosa#d4sas3") + "::OnHo";
+		callfunc "F_D4_Boss", $@mobid[0], 500000;
+		mapannounce .@m$, "Jonchosa: There's the fish... and its guardian, Eddga! Defeat it!", bc_map, "0xFF9966";
+	} else if ('sas_st == 7) {
+		'sas_st = 8;
+		monster .@m$, 38, 32, "Seo", 21446, 1, instance_npcname("Jonchosa#d4sas2") + "::OnSeo";
+		callfunc "F_D4_Boss", $@mobid[0], 1000000;
+		mapannounce .@m$, "The smell of grilled fish fills the air... Seo jumps out of the bushes to steal it! Fight him!", bc_map, "0xFF7777";
+	}
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@exsr,46,24,4	duplicate(Spirit#d4sas1)	Spirit#d4sas2	4_ENERGY_WHITE
+1@exsr,38,28,4	duplicate(Spirit#d4sas1)	Spirit#d4sas3	4_ENERGY_WHITE
+1@exsr,30,48,4	duplicate(Spirit#d4sas1)	Spirit#d4sas4	4_ENERGY_BLUE
+1@exsr,46,48,4	duplicate(Spirit#d4sas1)	Spirit#d4sas5	4_ENERGY_BLUE
+1@exsr,38,57,4	duplicate(Spirit#d4sas1)	Spirit#d4sas6	4_ENERGY_BLUE

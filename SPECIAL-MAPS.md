@@ -92,6 +92,42 @@ sell: the Paradise starter shadow set, Mace of Madness and other bound items. Sc
 flags, so it lists every **unequipped** item (asks how many for stacks) and asks again before destroying. Each
 destroyed item is written to the map server's script log (`logmes`). Script: end of `deploy/cash_points.txt`.
 
+## Job Master and 4th classes (renewal)
+NPC **Job Master**, Prontera (153,193): every job change, including **4th classes**. rAthena has no official
+4th job quests, so this NPC is the way. Our copy (`deploy/jobmaster.txt`, loaded instead of rAthena's) lets
+**any** 3rd class become 4th, not only transcendent ones, because the NPC lets players skip rebirth. Still
+needed: base level 200, job level 70, no unused skill points, no cart/falcon/mount. Pre-renewal keeps the
+stock Job Master (no 4th classes there).
+
+### 4th job change quests (like the official ones)
+Scripts: `deploy/fourth_quests.txt` (shared helpers + Cardinal, Biolo, Dragon Knight) and `fourth_quests_a/b/c/d.txt`.
+Official steps, places and trials (iRO Wiki job change guides), our own dialogue. Every quest needs **base 200 /
+job 70** and ends with the job change + Hourglass Necklace. Private per-character instances (no party needed):
+`re_db_import/instance_db.yml` 916-933, mostly on the official 4th job maps the 2026 client has. Official quest
+monsters (Golden/Bone Acidus, Letizia, the Imperial knights, Verkhasel, Doomk, Heinous Monster, Yeongwi, Seo...)
+are defined with their client Ids in `re_db_import/mob_db.yml`. Spirit Handler uses rAthena's built-in quest.
+
+| Class (from) | Start NPC | Where | Script |
+|---|---|---|---|
+| Dragon Knight (Rune Knight) | Oscar | gef_fild08 54,101 | fourth_quests.txt |
+| Imperial Guard (Royal Guard) | King's Knight | prt_cas 181,10 | _a |
+| Arch Mage (Warlock) | Fairy / Strange Plant | ba_maison 201,269 | _b |
+| Elemental Master (Sorcerer) | Elma | gef_tower 108,166 | _b |
+| Windhawk (Ranger) | Drunk Old Man | payon 100,177 (then Luluka Forest um_fild01 47,345) | _d |
+| Troubadour / Trouvere (Minstrel / Wanderer) | Flyer Part-timer | lighthalzen 186,124 | _b |
+| Cardinal (Arch Bishop) | Priest Jergus | prt_church 114,122 | fourth_quests.txt |
+| Inquisitor (Sura) | Inn Employee | prt_in 253,133 (Prontera hotel) | _a |
+| Meister (Mechanic) | Roday / Mist | yuno 112,208 | _a |
+| Biolo (Genetic) | Aldina | verus04 157,165 | fourth_quests.txt |
+| Shadow Cross (Guillotine Cross) | Rumin | job3_guil01 74,92 (Finn's Secret Tavern, veins) | _c |
+| Abyss Chaser (Shadow Chaser) | Vicente | s_atelier 123,59 (Rachel) | _c |
+| Sky Emperor (Star Emperor) | Sign | payon 215,202 | _d |
+| Soul Ascetic (Soul Reaper) | Clerk | payon 195,119 | _d |
+| Night Watch (Rebellion) | Anya | einbroch 312,323 | _c |
+| Shinkiro / Shiranui (Kagerou / Oboro) | Seoyeon | amatsu 82,118 | _c |
+| Hyper Novice (Expanded Super Novice) | Grape | aldebaran 110,69 | _a |
+| Spirit Handler (Summoner) | rAthena's official quest | | npc/re/jobs/doram |
+
 ## Other NPCs (renewal, rAthena's ready-made scripts, enabled in hosts/<host>/renewal/import/map_conf.txt)
 | NPC | Where | What |
 |---|---|---|

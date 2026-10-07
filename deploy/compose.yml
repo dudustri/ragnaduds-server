@@ -96,6 +96,12 @@ services:
             - "./cash_points.txt:/rathena/npc/custom/duds_cash_points.txt:ro,z"   # cash points by playing (@points)
             - "./homunculus_room.txt:/rathena/npc/custom/duds_homunculus_room.txt:ro,z"   # private homunculus training rooms (alchemists)
             - "./ticket_refiner.txt:/rathena/npc/custom/duds_ticket_refiner.txt:ro,z"   # Refine Master: certificates also for level 2 armor / level 5 weapons
+            - "./jobmaster.txt:/rathena/npc/custom/duds_jobmaster.txt:ro,z"   # Job Master: fourth class from any third class
+            - "./fourth_quests.txt:/rathena/npc/custom/duds_fourth_quests.txt:ro,z"   # 4th job change quests (Cardinal, Biolo, Dragon Knight)
+            - "./fourth_quests_a.txt:/rathena/npc/custom/duds_fourth_quests_a.txt:ro,z"
+            - "./fourth_quests_b.txt:/rathena/npc/custom/duds_fourth_quests_b.txt:ro,z"
+            - "./fourth_quests_c.txt:/rathena/npc/custom/duds_fourth_quests_c.txt:ro,z"
+            - "./fourth_quests_d.txt:/rathena/npc/custom/duds_fourth_quests_d.txt:ro,z"
             # bRO special maps (Mapas Especiais, Cheffenia, Turn In): script + rooms, tickets, cash shop
             - "./special_maps.txt:/rathena/npc/custom/duds_special_maps.txt:ro,z"
             - "./re_db_import/instance_db.yml:/rathena/db/import/instance_db.yml:ro,z"
@@ -103,6 +109,7 @@ services:
             - "./re_db_import/item_cash.yml:/rathena/db/import/item_cash.yml:ro,z"
             - "./re_db_import/level_penalty.yml:/rathena/db/import/level_penalty.yml:ro,z"   # no EXP level penalty
             - "./re_db_import/skill_db.yml:/rathena/db/import/skill_db.yml:ro,z"   # Call Homunculus: no 30-minute limit
+            - "./re_db_import/mob_db.yml:/rathena/db/import/mob_db.yml:ro,z"   # official 4th job quest monsters (client Ids)
         ports: ["5122:5122"]
         networks: { re: { aliases: [map] } }
         depends_on: [re-char]

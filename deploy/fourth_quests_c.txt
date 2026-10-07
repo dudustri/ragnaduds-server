@@ -1,0 +1,1106 @@
+//===== RagnaDuds: 4th job change quests, part C (renewal) ===================
+//= Shadow Cross, Abyss Chaser, Shinkiro / Shiranui and Night Watch, following the official quests (iRO Wiki job
+//= change guides: steps, NPC names, places, trials). rAthena ships none of them; the dialogue is ours.
+//= Uses the shared helpers of fourth_quests.txt (F_Duds4th_Is / _Levels / _Promote / _Enter): load it first.
+//= Private instances (re_db_import/instance_db.yml):
+//=   927 "Shadow Cross Trial"     private copy of ve_fild05 (the south-west hollow), enter 80,56
+//=   928 "Abyss Chaser Trial"     private copy of ve_fild05, enter 115,62, 10 minutes like the official one
+//=   929 "Yeongwi's Battleground" private copy of ama_dun02, enter 125,50
+//=   930 "Night Watch Exam"       1@exnw (the client's Night Watch exam map), enter 30,114
+//= Official assets: monsters 20827 Doomk, 20828 Verkhasel, 21444 Yeongwi, 21439/21440 O/X Target,
+//= 21441-21443 Heart Hunter Skirmisher/Bellare/Sanare; NPC sprites 4_F_ANYA, 4_M_ILYA, 4_F_ELENA,
+//= 4_EXJOB_GERHOLD, 4_EXJOB_NINJA, 4_EXJOB_NINJA2 and the Doomk/Verkhasel monster sprites (20827/20828).
+//= Requirements: base 200 / job 70. Reward: the job change + Hourglass Necklace (490087).
+//= Progress (character variables):
+//=   DUDS4_SHX   Shadow Cross   0 -> 9 (9 = done)
+//=   DUDS4_ABC   Abyss Chaser   0 -> 7 (7 = done)
+//=   DUDS4_SKR   Shinkiro / Shiranui 0 -> 3 (3 = done), DUDS4_SKR_K1/_K2/_K3 = kills in ama_dun01/02/03
+//=   DUDS4_NWT   Night Watch    0 -> 5 (5 = done), DUDS4_NWT_F = disqualified (instance must be recreated)
+
+//============================================================================
+// SHADOW CROSS (from Guillotine Cross): Rumin, Verkhasel and the Pale Shadow of Veins
+//============================================================================
+job3_guil01,74,92,4	script	Rumin#d4shx1	4_F_GUILLOTINE,{
+	.@n$ = "[Rumin]";
+	if (Class == Job_Shadow_Cross) {
+		mes .@n$;
+		mes "The shadows bow to you now, Shadow Cross. Finn's door stays open for you.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Shadow_Cross)) {
+		mes .@n$;
+		mes "This tavern doesn't exist. And neither do I. Walk away.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	if (DUDS4_SHX == 0) {
+		mes "A Guillotine Cross who has gone as far as the blade can take you...";
+		mes "Lately something strange moves in the streets of Veins: a ^0000FFpale shadow^000000 with no one to cast it.";
+		next;
+		mes .@n$;
+		mes "Our guild sent ^0000FFVerkhasel^000000 to look into it. Help him and you may learn to walk where shadows walk.";
+		mes "A ^0000FFShadow Cross^000000.";
+		next;
+		if (select("I'll help Verkhasel.:Not now.") == 2) {
+			mes .@n$;
+			mes "Then forget you saw me.";
+			close;
+		}
+		DUDS4_SHX = 1;
+		mes .@n$;
+		mes "He waits in the building east of here (^0000FFVeins 335, 231^000000, the house at three o'clock).";
+		close;
+	}
+	if (DUDS4_SHX == 1)
+		mes "Verkhasel is in the building east of the tavern, ^0000FFVeins 335, 231^000000.";
+	else
+		mes "Keep working with Verkhasel. The guild is watching.";
+	close;
+}
+
+ve_in,212,384,4	script	Verkhasel#d4shx2	20828,{
+	.@n$ = "[Guillotine Cross Verkhasel]";
+	if (Class == Job_Shadow_Cross) {
+		mes .@n$;
+		mes "You saw through the Shadow before I did. Respect.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Shadow_Cross) || DUDS4_SHX == 0) {
+		mes .@n$;
+		mes "...";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_SHX) {
+	case 1:
+		mes "Rumin sent you? Good, I need eyes I can trust.";
+		mes "People keep seeing a ^0000FFpale shadow^000000 south of town. Nothing casts it.";
+		next;
+		mes .@n$;
+		mes "Go to the field south of Veins, ^0000FFve_fild07 (99, 141)^000000, and look at it yourself.";
+		DUDS4_SHX = 2;
+		close;
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+		mes "Follow the trail of the pale shadow: south field (^0000FFve_fild07 99, 141^000000), then whoever saw it.";
+		close;
+	case 6:
+		mes "A shadow that talks... and a boy whose friend ^0000FFDoomk^000000 'went strange'. It all fits.";
+		mes "The Shadow is gathering strength north of town, at ^0000FFve_fild05 (317, 235)^000000. I'll meet you there.";
+		next;
+		mes .@n$;
+		mes "Shadows feed on darkness. To bind it we need ^0000FF5 Crystal of Darkness^000000 and ^0000FF20 Dark Piece^000000. Bring them.";
+		mes "(Crystal of Darkness: Incarnations of Morocc in the ruined Morocc fields. Dark Piece: Twin Caput, Petal, Dark Shadow...)";
+		DUDS4_SHX = 7;
+		close;
+	default:
+		mes "Meet me at ^0000FFve_fild05 (317, 235)^000000 with 5 Crystal of Darkness and 20 Dark Piece.";
+		close;
+	}
+}
+
+ve_fild07,99,141,4	script	Pale Shadow#d4shx3	1_SHADOW_NPC,{
+	if (!callfunc("F_Duds4th_Is", Job_Shadow_Cross) || (DUDS4_SHX != 2 && DUDS4_SHX != 5)) {
+		mes "A pale stain on the ground, the shape of a man. When you look closer, it's gone.";
+		close;
+	}
+	if (DUDS4_SHX == 2) {
+		mes "A pale shadow lies on the grass, but nothing stands above it.";
+		next;
+		if (select("Investigate the shadow:Leave it") == 2) close;
+		mes "As you crouch down, the shadow slides away under a rock. Someone runs up behind you.";
+		next;
+		mes "[Frightened Villager]";
+		mes "You saw it too?! It followed me all the way from town!";
+		mes "^0000FFNoah^000000, the guard outside the Security Management Room, saw it first. Ask him!";
+		DUDS4_SHX = 3;
+		next;
+		mes "^777777Noah is outside the Security Management Room, Veins (87, 158).^000000";
+		close;
+	}
+	mes "The pale shadow is back. This time it doesn't run.";
+	next;
+	if (select("Investigate the shadow again:Leave it") == 2) close;
+	mes "[???]";
+	mes "...Guillotine Cross... you smell like ^0000FFVerkhasel^000000...";
+	mes "Tell him... the boy's friend is mine now...";
+	next;
+	mes "The voice fades. Report to ^0000FFVerkhasel^000000 (ve_in, the building east of the tavern).";
+	DUDS4_SHX = 6;
+	close;
+}
+
+veins,87,158,4	script	Noah#d4shx4	4_M_YOUNGKNIGHT,{
+	.@n$ = "[Noah]";
+	if (!callfunc("F_Duds4th_Is", Job_Shadow_Cross) || DUDS4_SHX < 3 || DUDS4_SHX > 4) {
+		mes .@n$;
+		mes "Security Management Room. Move along, nothing to see.";
+		close;
+	}
+	mes .@n$;
+	if (DUDS4_SHX == 3) {
+		mes "The pale shadow? ...Yes, I saw it. Every night it stops at the house right behind me.";
+		mes "Little ^0000FFTori^000000 lives there. He says he has a new friend who 'only comes out at night'.";
+		next;
+		mes .@n$;
+		mes "Go and ask him. The door is just north of here (^0000FFVeins 88, 173^000000).";
+		DUDS4_SHX = 4;
+		close;
+	}
+	mes "Tori's house is just north of here, Veins 88, 173.";
+	close;
+}
+
+ve_in,77,304,4	script	Tori#d4shx5	4_M_DST_CHILD,{
+	.@n$ = "[Tori]";
+	if (!callfunc("F_Duds4th_Is", Job_Shadow_Cross) || DUDS4_SHX != 4) {
+		mes .@n$;
+		mes "Mom says I shouldn't talk to strangers.";
+		close;
+	}
+	mes "You knock. After a while a boy peeks out.";
+	next;
+	mes .@n$;
+	mes "My friend? His name is ^0000FFDoomk^000000. He's big and he used to play with me every day...";
+	mes "But now his shadow moves on its own. It talks to him, and he does whatever it says.";
+	next;
+	mes .@n$;
+	mes "Last night the shadow said it wanted to go back to the ^0000FFfield south of town^000000. Please help Doomk!";
+	DUDS4_SHX = 5;
+	next;
+	mes "^777777Go back to the Pale Shadow, ve_fild07 (99, 141).^000000";
+	close;
+}
+
+ve_fild05,317,235,4	script	Verkhasel#d4shx6	20828,{
+	.@n$ = "[Guillotine Cross Verkhasel]";
+	if (!callfunc("F_Duds4th_Is", Job_Shadow_Cross) || DUDS4_SHX < 7) {
+		mes .@n$;
+		mes "Turn back. This place isn't safe.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	if (DUDS4_SHX == 7) {
+		if (countitem(7799) < 5 || countitem(6089) < 20) {
+			mes "We can't bind it without the darkness it feeds on.";
+			mes "^0000FF5 Crystal of Darkness^000000 (" + countitem(7799) + ") and ^0000FF20 Dark Piece^000000 (" + countitem(6089) + ").";
+			close;
+		}
+		mes "Crystals and pieces... enough to draw it out. Ready?";
+		next;
+		if (select("Hand them over:Not yet") == 2) close;
+		delitem 7799, 5;
+		delitem 6089, 20;
+		DUDS4_SHX = 8;
+		mes .@n$;
+		mes "The Shadow is hiding in the hollow beyond these rocks. Follow me.";
+		next;
+	} else
+		mes "The Shadow is still out there. Shall we go?";
+	if (select("Follow Verkhasel:Not now") == 2) close;
+	close2;
+	callfunc "F_Duds4th_Enter", "Shadow Cross Trial", 80, 56;
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));   // public NPC only
+	end;
+}
+
+// ---- inside the Shadow Cross Trial (private copy of ve_fild05) ----
+ve_fild05,82,58,4	script	Verkhasel#d4shx7	20828,{
+	.@n$ = "[Guillotine Cross Verkhasel]";
+	mes .@n$;
+	switch ('sx) {
+	case 0:
+		mes "Here. Feel how cold it is? The Shadow is close.";
+		mes "I asked a few people to come. They know the boy... and his friend.";
+		next;
+		'sx = 1;
+		enablenpc instance_npcname("Rumin#d4shx8");
+		enablenpc instance_npcname("Tori#d4shx9");
+		enablenpc instance_npcname("Doomk#d4shx10");
+		mes "[Rumin]";
+		mes "The guild doesn't leave its own alone. I'm here.";
+		next;
+		mes "[Tori]";
+		mes "Doomk! Doomk, it's me! Why won't you look at me?";
+		next;
+		mes "[Doomk]";
+		mes "...Tori... run... it's... inside...";
+		next;
+		mes .@n$;
+		mes "The Shadow itself is to the ^0000FFeast^000000, past the hill. Go and face it. We'll be right behind you.";
+		close;
+	case 1:
+	case 2:
+		mes "The Shadow is to the ^0000FFeast^000000. Talk to it.";
+		break;
+	case 3:
+		mes "Doomk is possessed! Defeat him, it's the only way to free him!";
+		close;
+	case 4:
+		mes "You did it. The Shadow is weak now... and it wants to talk to you, not me.";
+		break;
+	case 5:
+		mes "You held your blade when you could have killed it. A blade that knows when not to cut...";
+		mes "That is what a ^0000FFShadow Cross^000000 is. Go on, the Shadow is waiting for your answer.";
+		'sx = 6;
+		close;
+	default:
+		mes "Talk to the Shadow.";
+		break;
+	}
+	next;
+	if (select("Continue:Leave the trial") == 2) { close2; warp "ve_fild05", 316, 232; end; }
+	close;
+
+OnInit:
+	if (strnpcinfo(4) == "ve_fild05") disablenpc strnpcinfo(0);   // only inside the trial
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Shadow Cross Trial")
+		enablenpc instance_npcname(strnpcinfo(0));
+	else
+		disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+ve_fild05,85,55,4	script	Rumin#d4shx8	4_F_GUILLOTINE,{
+	mes "[Rumin]";
+	mes ('sx >= 4 ? "Well fought. The guild will hear of this." : "Stay sharp. Shadows strike from behind.");
+	close;
+OnInit:
+	if (strnpcinfo(4) == "ve_fild05") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));   // appears when Verkhasel calls
+	end;
+}
+
+ve_fild05,86,60,4	script	Tori#d4shx9	4_M_DST_CHILD,{
+	mes "[Tori]";
+	mes ('sx >= 4 ? "Doomk is breathing! Thank you, thank you!" : "Please... bring Doomk back.");
+	close;
+OnInit:
+	if (strnpcinfo(4) == "ve_fild05") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+ve_fild05,88,57,4	script	Doomk#d4shx10	20827,{
+	mes "[Doomk]";
+	mes ('sx >= 4 ? "My head... it's quiet again. The voice is gone." : "...Get... away... it won't... let go...");
+	close;
+OnInit:
+	if (strnpcinfo(4) == "ve_fild05") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+ve_fild05,116,70,4	script	Shadow#d4shx11	1_SHADOW_NPC,{
+	.@n$ = "[Shadow]";
+	.@m$ = instance_mapname("ve_fild05");
+	.@ev$ = instance_npcname("Shadow#d4shx11") + "::OnDoomk";
+	switch ('sx) {
+	case 0:
+		mes "A pale shadow without an owner. Talk to ^0000FFVerkhasel^000000 first.";
+		close;
+	case 1:
+		mes .@n$;
+		mes "Hehehe... A Guillotine Cross. You walk in shadows, but you don't understand them.";
+		next;
+		'sx = 2;
+		movenpc instance_npcname("Verkhasel#d4shx7"), 112, 71;
+		movenpc instance_npcname("Rumin#d4shx8"), 111, 68;
+		movenpc instance_npcname("Tori#d4shx9"), 111, 72;
+		movenpc instance_npcname("Doomk#d4shx10"), 114, 66;
+		specialeffect EF_SUI_EXPLOSION;
+		mes "Verkhasel, Rumin, Tori and Doomk catch up with you.";
+		next;
+		mes .@n$;
+		mes "All of you came for the big one? Then let me show you what a shadow can do.";
+		mes "^777777(Talk to the Shadow again when you are ready to fight.)^000000";
+		close;
+	case 2:
+		mes .@n$;
+		mes "Ready? Let's see you cut your way out of this, Guillotine Cross!";
+		next;
+		if (select("Bring it on!:Wait") == 2) close;
+		'sx = 3;
+		close2;
+		disablenpc instance_npcname("Doomk#d4shx10");
+		specialeffect EF_DEVIL;
+		monster .@m$, 114, 66, "Doomk", 20827, 1, .@ev$;
+		.@g = $@mobid[0];
+		setunitdata .@g, UMOB_ATKMIN, 3000;   // the db copy attacks 13 times a second; tamed for a solo duel
+		setunitdata .@g, UMOB_ATKMAX, 4500;
+		setunitdata .@g, UMOB_ADELAY, 1000;
+		setunitdata .@g, UMOB_AMOTION, 500;
+		mapannounce .@m$, "The Shadow possessed Doomk! Defeat him to break the possession.", bc_map, "0xFF7777";
+		end;
+	case 3:
+		if (mobcount(.@m$, .@ev$) < 1) {   // Doomk vanished (e.g. the server restarted the fight): summon him again
+			'sx = 2;
+			mes .@n$;
+			mes "Hmph. Again, then.";
+			close;
+		}
+		mes .@n$;
+		mes "Hahaha! Hit him harder, if you can bear it!";
+		close;
+	case 4:
+		mes .@n$;
+		mes "...You beat my puppet without killing the boy's friend. Annoying.";
+		mes "Your shadow is deep, Guillotine Cross. Deeper than mine.";
+		next;
+		mes .@n$;
+		mes "Fine. I'll make you an offer: let me become ^0000FFyour^000000 shadow, and I'll leave the boy alone.";
+		mes "^777777(Ask Verkhasel what he thinks.)^000000";
+		'sx = 5;
+		close;
+	case 5:
+		mes .@n$;
+		mes "Go on, ask your friend. I'll wait. Shadows are patient.";
+		close;
+	case 6:
+		mes .@n$;
+		mes "So? Will you carry me?";
+		next;
+		if (select("I'll carry you, Shadow.:Not yet") == 2) close;
+		if (!callfunc("F_Duds4th_Is", Job_Shadow_Cross)) close;
+		mes .@n$;
+		mes "Then we walk together. Every step you take in the dark, I take with you...";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Shadow_Cross;
+		DUDS4_SHX = 9;
+		mes .@n$;
+		mes "Rise, ^0000FFShadow Cross^000000.";
+		close2;
+		warp "ve_fild05", 316, 232;
+		end;
+	}
+	close;
+
+OnDoomk:
+	if ('sx != 3) end;
+	'sx = 4;
+	enablenpc instance_npcname("Doomk#d4shx10");
+	mapannounce instance_mapname("ve_fild05"), "The Shadow is torn out of Doomk. Talk to the Shadow.", bc_map, "0xFFD700";
+	end;
+
+OnInit:
+	if (strnpcinfo(4) == "ve_fild05") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Shadow Cross Trial")
+		enablenpc instance_npcname(strnpcinfo(0));
+	else
+		disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+//============================================================================
+// ABYSS CHASER (from Shadow Chaser): Vicente, Julie, Mulie, the Pale Shadow and Doomk
+//============================================================================
+s_atelier,123,59,4	script	Vicente#d4abc1	4_M_SHADOWCHASER,{
+	.@n$ = "[Vicente]";
+	if (Class == Job_Abyss_Chaser) {
+		mes .@n$;
+		mes "The workshop's finest shadow. Even Doomk says so.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Abyss_Chaser)) {
+		mes .@n$;
+		mes "Welcome to the Shadow Workshop. Don't touch anything.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_ABC) {
+	case 0:
+		mes "Ah, a Shadow Chaser at the top of the craft. Good timing.";
+		mes "Rumours from the market: a ^0000FFpale shadow^000000 is moving on its own around Rachel and Veins.";
+		next;
+		mes .@n$;
+		mes "A Chaser who can catch a living shadow becomes something more: an ^0000FFAbyss Chaser^000000.";
+		mes "Start with ^0000FFJulie^000000 in the south-west market district of Rachel (^0000FF54, 48^000000). She saw it.";
+		next;
+		if (select("I'm on it.:Not now.") == 2) close;
+		DUDS4_ABC = 1;
+		mes .@n$;
+		mes "Off you go.";
+		close;
+	case 1:
+	case 2:
+	case 3:
+		mes "Follow the shadow's trail: Julie in the Rachel market (54, 48), then wherever she sends you.";
+		close;
+	case 4:
+		mes "It spoke? And it said ^0000FFDoomk^000000... I know him. A big guy from Veins Field 05.";
+		mes "If the Shadow is going after him, we need something to draw it out.";
+		next;
+		mes .@n$;
+		mes "Bring me ^0000FF5 Crystal of Darkness^000000 and ^0000FF20 Dark Piece^000000. I'll make bait no shadow can resist.";
+		mes "(Crystal of Darkness: Incarnations of Morocc in the ruined Morocc fields. Dark Piece: Twin Caput, Petal, Dark Shadow...)";
+		DUDS4_ABC = 5;
+		close;
+	case 5:
+		if (countitem(7799) < 5 || countitem(6089) < 20) {
+			mes "5 Crystal of Darkness (" + countitem(7799) + ") and 20 Dark Piece (" + countitem(6089) + "). Come back with all of them.";
+			close;
+		}
+		mes "You got them all. Give them here...";
+		next;
+		if (select("Hand them over:Not yet") == 2) close;
+		delitem 7799, 5;
+		delitem 6089, 20;
+		DUDS4_ABC = 6;
+		mes .@n$;
+		mes "Done. Take the bait to ^0000FFDoomk^000000 in ^0000FFVeins Field 05 (313, 110)^000000.";
+		mes "North of Veins, or Eden Dungeon Teleporter -> Thor's Volcano, then one map south.";
+		close;
+	default:
+		mes "Doomk is waiting in Veins Field 05 (313, 110).";
+		close;
+	}
+}
+
+rachel,54,48,4	script	Julie#d4abc2	8_F_GIRL,{
+	.@n$ = "[Julie]";
+	if (!callfunc("F_Duds4th_Is", Job_Abyss_Chaser) || (DUDS4_ABC != 1 && DUDS4_ABC != 2)) {
+		mes .@n$;
+		mes "Fresh fruit! Best prices in Rachel!";
+		close;
+	}
+	mes .@n$;
+	if (DUDS4_ABC == 1) {
+		mes "Vicente sent you? About the shadow? Ugh, don't remind me...";
+		mes "It crossed the market at noon. No one was standing on it!";
+		next;
+		mes .@n$;
+		mes "My friend ^0000FFMulie^000000 went after it with ^0000FFPeter^000000, down in ^0000FFVeins Field 02^000000, just south of Rachel (^0000FF53, 189^000000).";
+		DUDS4_ABC = 2;
+		close;
+	}
+	mes "Mulie and Peter went to Veins Field 02 (53, 189). Please check on them!";
+	close;
+}
+
+ve_fild02,53,189,4	script	Mulie#d4abc3	4_M_DST_TOUGH,{
+	.@n$ = "[Mulie]";
+	if (!callfunc("F_Duds4th_Is", Job_Abyss_Chaser) || DUDS4_ABC != 2) {
+		mes .@n$;
+		mes "Peter, did you see that? ...No? Never mind.";
+		close;
+	}
+	mes .@n$;
+	mes "Julie sent you? We chased the shadow down here and it just... stopped. Right there.";
+	next;
+	mes "[Peter]";
+	mes "It's looking at us. I swear it's looking at us. Mulie, let's GO.";
+	next;
+	mes .@n$;
+	mes "...Yeah. It's all yours, Chaser. Good luck!";
+	DUDS4_ABC = 3;
+	close2;
+	specialeffect2 EF_TELEPORTATION;
+	dispbottom "Mulie and Peter ran away. Investigate the Pale Shadow next to them.";
+	end;
+}
+
+ve_fild02,55,191,4	script	Peter#d4abc4	4_M_DSTMAN,{
+	mes "[Peter]";
+	mes "Nope. Nope nope nope. Shadows should stay on the ground.";
+	close;
+}
+
+ve_fild02,54,187,4	script	Pale Shadow#d4abc5	1_SHADOW_NPC,{
+	if (!callfunc("F_Duds4th_Is", Job_Abyss_Chaser) || DUDS4_ABC != 3) {
+		mes "A pale stain on the ground. It seems to shiver when you look at it.";
+		close;
+	}
+	mes "A pale shadow lies on the grass. Nothing casts it.";
+	next;
+	if (select("Investigate the shadow:Leave it") == 2) close;
+	mes "[???]";
+	mes "...A Shadow Chaser. You copy what others do. I copy what others ^FF0000are^000000.";
+	mes "Run home to your workshop... I have a date with ^0000FFDoomk^000000...";
+	next;
+	mes "The shadow melts into the ground. Report to ^0000FFVicente^000000 in the Shadow Workshop.";
+	DUDS4_ABC = 4;
+	close;
+}
+
+ve_fild05,313,110,4	script	Doomk#d4abc6	20827,{
+	.@n$ = "[Doomk]";
+	if (!callfunc("F_Duds4th_Is", Job_Abyss_Chaser) || DUDS4_ABC < 6) {
+		mes .@n$;
+		mes "Hm? What are you looking at?";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	mes "Vicente's bait? Ha! Then the thing that's been following me will show up for sure.";
+	mes "It hides in the hollow to the west. I'll take you there. You'll have ^0000FF10 minutes^000000 before it slips away.";
+	next;
+	if (select("Let's go.:Not now.") == 2) close;
+	close2;
+	callfunc "F_Duds4th_Enter", "Abyss Chaser Trial", 115, 62;
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+// ---- inside the Abyss Chaser Trial (private copy of ve_fild05, 10 minutes) ----
+ve_fild05,117,64,4	script	Doomk#d4abc7	20827,{
+	.@n$ = "[Doomk]";
+	mes .@n$;
+	switch ('ac) {
+	case 0:
+		mes "This is the place. I can feel it watching...";
+		mes "The ^0000FFShadow^000000 sits by the big tree to the ^0000FFwest^000000 (78, 49). Go and pull it out. I'll stay here.";
+		'ac = 1;
+		break;
+	case 1:
+		mes "The Shadow is by the tree to the west (78, 49).";
+		break;
+	case 2:
+		mes "Verkhasel?! What is a Guillotine Cross doing here... it's controlling him! Take him down!";
+		break;
+	case 3:
+		mes "He's down! Talk to the Shadow before it slips away!";
+		break;
+	default:
+		mes "An Abyss Chaser... nice. Want me to take you back?";
+		break;
+	}
+	next;
+	if (select("Leave the trial:Stay") == 1) { close2; warp "ve_fild05", 313, 107; end; }
+	close;
+
+OnInit:
+	if (strnpcinfo(4) == "ve_fild05") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Abyss Chaser Trial")
+		enablenpc instance_npcname(strnpcinfo(0));
+	else
+		disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+ve_fild05,78,49,4	script	Shadow#d4abc8	1_SHADOW_NPC,{
+	.@n$ = "[Shadow]";
+	.@m$ = instance_mapname("ve_fild05");
+	.@ev$ = instance_npcname("Shadow#d4abc8") + "::OnVerkhasel";
+	switch ('ac) {
+	case 0:
+		mes "A shadow without an owner. Talk to ^0000FFDoomk^000000 first.";
+		close;
+	case 1:
+		mes "A pale shadow clings to the roots of the tree.";
+		next;
+		if (select("Investigate the shadow:Wait") == 2) close;
+		mes .@n$;
+		mes "The bait was cute, Chaser. But I brought a friend of my own.";
+		mes "A ^0000FFGuillotine Cross^000000 who came looking for me... and found me.";
+		next;
+		'ac = 2;
+		close2;
+		specialeffect EF_DEVIL;
+		monster .@m$, 84, 52, "Verkhasel", 20828, 1, .@ev$;
+		.@g = $@mobid[0];
+		setunitdata .@g, UMOB_ATKMIN, 3000;   // the db copy attacks 13 times a second; tamed for a solo duel
+		setunitdata .@g, UMOB_ATKMAX, 4500;
+		setunitdata .@g, UMOB_ADELAY, 1000;
+		setunitdata .@g, UMOB_AMOTION, 500;
+		mapannounce .@m$, "The Shadow controls Verkhasel! Defeat him.", bc_map, "0xFF7777";
+		end;
+	case 2:
+		if (mobcount(.@m$, .@ev$) < 1) {
+			'ac = 1;
+			mes .@n$;
+			mes "Hmph. Let's try that again.";
+			close;
+		}
+		mes .@n$;
+		mes "Hahaha! Show me how well you copy HIM!";
+		close;
+	case 3:
+		mes .@n$;
+		mes "...You beat a Guillotine Cross with his own tricks. You don't just copy, you ^0000FFbecome^000000.";
+		mes "Like me.";
+		next;
+		if (select("Then you're coming with me.:Not yet") == 2) close;
+		if (!callfunc("F_Duds4th_Is", Job_Abyss_Chaser)) close;
+		mes .@n$;
+		mes "Fine. Take my abyss, Chaser. Let's see how deep you can go.";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Abyss_Chaser;
+		DUDS4_ABC = 7;
+		'ac = 4;
+		mes .@n$;
+		mes "Rise, ^0000FFAbyss Chaser^000000. Talk to Doomk to leave.";
+		close;
+	default:
+		mes "Only an ordinary shadow under the tree now.";
+		close;
+	}
+
+OnVerkhasel:
+	if ('ac != 2) end;
+	'ac = 3;
+	mapannounce instance_mapname("ve_fild05"), "Verkhasel falls and comes back to his senses. Talk to the Shadow.", bc_map, "0xFFD700";
+	end;
+
+OnInit:
+	if (strnpcinfo(4) == "ve_fild05") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) == "Abyss Chaser Trial")
+		enablenpc instance_npcname(strnpcinfo(0));
+	else
+		disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+//============================================================================
+// SHINKIRO / SHIRANUI (from Kagerou / Oboro): Seoyeon, 300 kills in the Amatsu dungeons, Yeongwi
+//============================================================================
+amatsu,82,118,4	script	Seoyeon#d4skr1	4_EXJOB_NINJA,{
+	.@n$ = "[Seoyeon]";
+	if (Class == Job_Shinkiro || Class == Job_Shiranui) {
+		mes .@n$;
+		mes "Even Yeongwi's ghost rests now. You honour the old ways.";
+		close;
+	}
+	if (Class != Job_Kagerou && Class != Job_Oboro) {
+		mes .@n$;
+		mes "Amatsu is beautiful this season, isn't it?";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_SKR) {
+	case 0:
+		mes "A " + jobname(Class) + "... You move without a sound. Good.";
+		mes "Long ago a ninja named ^0000FFYeongwi^000000 fell in the dungeons under Amatsu. His spirit still tests anyone who walks the shadow path.";
+		next;
+		mes .@n$;
+		mes "Before he even notices you, prove your blade. Defeat ^0000FF100 monsters in each^000000 of:";
+		mes "- the ^0000FFTatami Maze^000000 (ama_dun01)";
+		mes "- the ^0000FFUnderground Forest Battleground^000000 (ama_dun02)";
+		mes "- the ^0000FFUnderground Shrine^000000 (ama_dun03)";
+		next;
+		if (select("I'll do it.:Not now.") == 2) close;
+		DUDS4_SKR = 1;
+		DUDS4_SKR_K1 = 0;
+		DUDS4_SKR_K2 = 0;
+		DUDS4_SKR_K3 = 0;
+		mes .@n$;
+		mes "The dungeon entrance is in the castle, or ask the Eden Group Dungeon Teleporter (Amatsu Dungeon).";
+		close;
+	case 1:
+		if (DUDS4_SKR_K1 < 100 || DUDS4_SKR_K2 < 100 || DUDS4_SKR_K3 < 100) {
+			mes "Keep going:";
+			mes "Tatami Maze " + DUDS4_SKR_K1 + " / 100";
+			mes "Underground Forest Battleground " + DUDS4_SKR_K2 + " / 100";
+			mes "Underground Shrine " + DUDS4_SKR_K3 + " / 100";
+			close;
+		}
+		mes "Three hundred... I felt the dungeon shiver. He has noticed you.";
+		mes "Go to the ^0000FFUnderground Forest Battleground^000000 (ama_dun02) and look for the ^0000FFTraces of Yeongwi^000000.";
+		DUDS4_SKR = 2;
+		close;
+	default:
+		mes "Find the ^0000FFTraces of Yeongwi^000000 in the Underground Forest Battleground (ama_dun02, east of the centre).";
+		close;
+	}
+}
+
+// counts the 3 x 100 Amatsu dungeon kills of the Shinkiro / Shiranui quest
+-	script	Duds4thKills#d4skr	-1,{
+OnNPCKillEvent:
+	if (DUDS4_SKR != 1) end;
+	.@m$ = strcharinfo(3);
+	if (.@m$ == "ama_dun01" && DUDS4_SKR_K1 < 100) {
+		DUDS4_SKR_K1++;
+		dispbottom "Seoyeon's trial, Tatami Maze: " + DUDS4_SKR_K1 + " / 100";
+	} else if (.@m$ == "ama_dun02" && DUDS4_SKR_K2 < 100) {
+		DUDS4_SKR_K2++;
+		dispbottom "Seoyeon's trial, Underground Forest Battleground: " + DUDS4_SKR_K2 + " / 100";
+	} else if (.@m$ == "ama_dun03" && DUDS4_SKR_K3 < 100) {
+		DUDS4_SKR_K3++;
+		dispbottom "Seoyeon's trial, Underground Shrine: " + DUDS4_SKR_K3 + " / 100";
+	} else
+		end;
+	if (DUDS4_SKR_K1 >= 100 && DUDS4_SKR_K2 >= 100 && DUDS4_SKR_K3 >= 100)
+		dispbottom "300 monsters defeated! Return to Seoyeon in Amatsu.";
+	end;
+}
+
+ama_dun02,150,82,4	script	Traces of Yeongwi#d4skr2	4_EXJOB_NINJA2,{
+	if ((Class != Job_Kagerou && Class != Job_Oboro) || DUDS4_SKR < 2) {
+		mes "Old footprints and a broken kunai. They look fresh, though no one has walked here in years.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", "[Traces of Yeongwi]", 70;
+	mes "Old footprints and a broken kunai. As you touch it, the air turns ice cold.";
+	next;
+	mes "[Yeongwi]";
+	mes "Hahaha... Seoyeon sent another pup. You killed three hundred of my dungeon's children to get my attention?";
+	mes "Then come. Face me where no one can help you.";
+	next;
+	if (select("Accept the challenge:Not now") == 2) close;
+	close2;
+	callfunc "F_Duds4th_Enter", "Yeongwi's Battleground", 125, 50;
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));   // public NPC only
+	end;
+}
+
+// ---- inside Yeongwi's Battleground (private copy of ama_dun02) ----
+ama_dun02,130,56,4	script	Trace of Yeongwi#d4skr3	4_EXJOB_NINJA2,{
+	.@n$ = "[Trace of Yeongwi]";
+	.@m$ = instance_mapname("ama_dun02");
+	.@ev$ = instance_npcname("Trace of Yeongwi#d4skr3") + "::OnYeongwi";
+	switch ('skr) {
+	case 0:
+		mes .@n$;
+		mes "This is where I fell. Three hundred years of waiting for someone worth the fight.";
+		mes "Beat me, and my art is yours.";
+		next;
+		.@s = select("Challenge Yeongwi:Leave");
+		if (.@s == 2) { close2; warp "ama_dun02", 150, 79; end; }
+		'skr = 1;
+		close2;
+		disablenpc instance_npcname("Trace of Yeongwi#d4skr3");
+		specialeffect EF_SUI_EXPLOSION;
+		monster .@m$, 140, 60, "Yeongwi", 21444, 1, .@ev$;
+		setunitdata $@mobid[0], UMOB_DAMAGETAKEN, 100;   // the db copy takes only 10% damage; 2.5M HP is the duel
+		mapannounce .@m$, "Yeongwi rises from the shadows! Defeat him.", bc_map, "0xFF7777";
+		end;
+	case 2:
+		mes .@n$;
+		mes "Hahaha... beaten by a pup. No, not a pup any more.";
+		next;
+		if (Class != Job_Kagerou && Class != Job_Oboro) close;
+		.@job = (Class == Job_Kagerou ? Job_Shinkiro : Job_Shiranui);
+		mes .@n$;
+		mes "Take my art. Become ^0000FF" + jobname(.@job) + "^000000.";
+		next;
+		callfunc "F_Duds4th_Promote", .@job;
+		DUDS4_SKR = 3;
+		mes .@n$;
+		mes "Now I can rest. Go back to Seoyeon and tell her.";
+		close2;
+		warp "amatsu", 82, 115;
+		end;
+	}
+	close;
+
+OnYeongwi:
+	if ('skr != 1) end;
+	'skr = 2;
+	enablenpc instance_npcname("Trace of Yeongwi#d4skr3");
+	mapannounce instance_mapname("ama_dun02"), "Yeongwi is defeated. Talk to the Trace of Yeongwi.", bc_map, "0xFFD700";
+	end;
+
+OnInit:
+	if (strnpcinfo(4) == "ama_dun02") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+//============================================================================
+// NIGHT WATCH (from Rebellion): Anya, Ilya, Captain Elena Volkova and Gerhold's exam (instance on 1@exnw)
+//============================================================================
+einbroch,312,323,4	script	Anya#d4nwt1	4_F_ANYA,{
+	.@n$ = "[Anya]";
+	if (Class == Job_Night_Watch) {
+		mes .@n$;
+		mes "The city sleeps safer with you on the Night Watch.";
+		close;
+	}
+	if (Class != Job_Rebellion) {
+		mes .@n$;
+		mes "Einbroch's nights are long. Stay in the light.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	if (DUDS4_NWT == 0) {
+		mes "A Rebel with that look in your eye... You've heard of the ^0000FFNight Watch^000000, haven't you?";
+		mes "The best gunslingers of the Republic, guarding what the law can't reach. The exam is open.";
+		next;
+		if (select("I'll take the test.:Not now.") == 2) close;
+		DUDS4_NWT = 1;
+		mes .@n$;
+		mes "Great! Talk to ^0000FFIlya^000000, right next to me. He'll tell you how it works.";
+		close;
+	}
+	mes "Ilya is right next to me, and Captain Volkova runs the exam in Einbech.";
+	close;
+}
+
+einbroch,315,321,4	script	Ilya#d4nwt2	4_M_ILYA,{
+	.@n$ = "[Ilya]";
+	if (Class != Job_Rebellion || DUDS4_NWT < 1) {
+		mes .@n$;
+		mes "Need something?";
+		close;
+	}
+	mes .@n$;
+	if (DUDS4_NWT == 1) {
+		mes "So Anya found another candidate. Listen: the exam has two parts.";
+		mes "^0000FFTarget practice^000000: shoot the O targets, never the X. ^0000FFShooting practice^000000: three waves of real enemies.";
+		next;
+		mes .@n$;
+		mes "Captain ^0000FFElena Volkova^000000 runs it in ^0000FFEinbech (236, 78)^000000. Tell her you're ready.";
+		DUDS4_NWT = 2;
+		close;
+	}
+	mes "Captain Volkova is in Einbech (236, 78). Don't keep her waiting.";
+	close;
+}
+
+einbech,236,78,4	script	Elena Volkova#d4nwt3	4_F_ELENA,{
+	.@n$ = "[Elena Volkova]";
+	if (Class == Job_Night_Watch) {
+		mes .@n$;
+		mes "Night Watch. On duty.";
+		close;
+	}
+	if (Class != Job_Rebellion || DUDS4_NWT < 2) {
+		mes .@n$;
+		mes "Captain Volkova. If you want the exam, talk to Anya in Einbroch first.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	if (DUDS4_NWT == 4) {
+		mes "Here it's quiet enough. No spectators, no Gerhold glaring.";
+		mes "You passed, rookie. Welcome to the ^0000FFNight Watch^000000.";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Night_Watch;
+		DUDS4_NWT = 5;
+		mes .@n$;
+		mes "Report for duty at sundown.";
+		close;
+	}
+	if (DUDS4_NWT == 2) {
+		mes "Ilya sent you? Are you ready for the exam?";
+		next;
+		if (select("I'm ready.:Not yet.") == 2) close;
+		DUDS4_NWT = 3;
+		mes .@n$;
+		mes "Good. Talk to me again to apply for entry.";
+		close;
+	}
+	if (DUDS4_NWT_F) {
+		mes "Gerhold told me you shot an X. You'll have to start the exam over.";
+		next;
+	}
+	if (select("Apply for entry to the Night Watch job change exam:Not now") == 2) close;
+	if (DUDS4_NWT_F) {
+		.@inst = instance_id(IM_CHAR);
+		if (.@inst > 0) instance_destroy .@inst;   // the failed exam is closed, a new one is opened
+		DUDS4_NWT_F = 0;
+	}
+	close2;
+	callfunc "F_Duds4th_Enter", "Night Watch Exam", 30, 114;
+	end;
+}
+
+// ---- inside the Night Watch Exam (1@exnw) ----
+1@exnw,30,119,4	script	Elena Volkova#d4nwt4	4_F_ELENA,{
+	.@n$ = "[Elena Volkova]";
+	mes .@n$;
+	if ('nw == 0) {
+		mes "Welcome to the exam. Let me introduce the senior official beside me: ^0000FFGerhold^000000.";
+		mes "He sets the tests. If he says you're done, you're done.";
+		'nw = 1;
+		next;
+		mes "[Gerhold]";
+		mes "Hmph. Another one. Talk to me when you want to start.";
+		close;
+	}
+	if ('nw == 7) {
+		mes "Not bad at all. Gerhold even nodded, I saw it.";
+		mes "Let's finish this somewhere with fewer spectators. Meet me outside.";
+		next;
+		if (select("I'm leaving.:One moment") == 2) close;
+		DUDS4_NWT = 4;
+		close2;
+		warp "einbech", 236, 75;
+		end;
+	}
+	mes "Gerhold runs the tests. Talk to him.";
+	next;
+	if (select("Continue:Leave the exam") == 2) { close2; warp "einbech", 236, 75; end; }
+	close;
+}
+
+1@exnw,33,119,4	script	Gerhold#d4nwt5	4_EXJOB_GERHOLD,{
+	.@n$ = "[Gerhold]";
+	mes .@n$;
+	if (DUDS4_NWT_F) {
+		mes "You shot an X. Disqualified. Out.";
+		close2;
+		warp "einbech", 236, 75;
+		end;
+	}
+	switch ('nw) {
+	case 0:
+		mes "Report to Captain Volkova first.";
+		close;
+	case 1:
+		mes "^0000FFTest 1, target practice^000000. Three rounds.";
+		mes "Shoot every ^0000FFO^000000 target. Hit a single ^FF0000X^000000 and you're disqualified. More O targets each round.";
+		next;
+		if (select("Start:Wait") == 2) close;
+		'nw = 2;
+		'nw_r = 0;
+		close2;
+		warp instance_mapname("1@exnw"), 116, 104;
+		donpcevent instance_npcname("Gerhold#d4nwt5") + "::OnRound";
+		end;
+	case 2:
+		mes "Target practice is on. Shoot the O targets!";
+		close;
+	case 3:
+		mes "You can aim. Now let's see if you can survive.";
+		mes "^0000FFTest 2, shooting practice^000000: three waves of enemies in the three lanes. Clear the room to bring the next wave.";
+		next;
+		if (select("Start:Wait") == 2) close;
+		'nw = 4;
+		'nw_w = 0;
+		close2;
+		warp instance_mapname("1@exnw"), 50, 50;
+		donpcevent instance_npcname("Gerhold#d4nwt5") + "::OnWave";
+		end;
+	case 4:
+		mes "Shooting practice is on. Clear the lanes!";
+		close;
+	default:
+		mes "Talk to Captain Volkova.";
+		close;
+	}
+
+OnRound:   // next round of target practice
+	sleep 2000;
+	'nw_r++;
+	setarray .@o[1], 4, 6, 8;
+	setarray .@x[1], 6, 8, 10;
+	.@m$ = instance_mapname("1@exnw");
+	.@me$ = instance_npcname("Gerhold#d4nwt5");
+	'nw_o = .@o['nw_r];
+	areamonster .@m$, 104, 110, 128, 127, "O Target", 21439, .@o['nw_r], .@me$ + "::OnO";
+	callsub S_Target, .@o['nw_r];
+	areamonster .@m$, 104, 110, 128, 127, "X Target", 21440, .@x['nw_r], .@me$ + "::OnX";
+	callsub S_Target, .@x['nw_r];
+	mapannounce .@m$, "Target practice, round " + 'nw_r + " / 3: shoot the " + .@o['nw_r] + " O targets. Do NOT hit an X!", bc_map, "0xFFD700";
+	end;
+
+S_Target:   // targets stay put and fall to one shot
+	for (.@i = 0; .@i < getarg(0); .@i++) {
+		setunitdata $@mobid[.@i], UMOB_MAXHP, 10;
+		setunitdata $@mobid[.@i], UMOB_HP, 10;
+		setunitdata $@mobid[.@i], UMOB_MODE, 0;
+	}
+	return;
+
+OnO:
+	if ('nw != 2) end;
+	'nw_o--;
+	if ('nw_o > 0) {
+		dispbottom "O targets left: " + 'nw_o;
+		end;
+	}
+	killmonster instance_mapname("1@exnw"), instance_npcname("Gerhold#d4nwt5") + "::OnX";   // silent
+	if ('nw_r < 3) {
+		mapannounce instance_mapname("1@exnw"), "Round " + 'nw_r + " cleared. Next round...", bc_map, "0xFFD700";
+		donpcevent instance_npcname("Gerhold#d4nwt5") + "::OnRound";
+		end;
+	}
+	'nw = 3;
+	mapannounce instance_mapname("1@exnw"), "Target practice passed! Gerhold calls you back.", bc_map, "0xFFD700";
+	sleep2 1500;
+	warp instance_mapname("1@exnw"), 30, 114;
+	end;
+
+OnX:
+	if ('nw != 2) end;
+	'nw = 9;   // disqualified
+	DUDS4_NWT_F = 1;
+	killmonster instance_mapname("1@exnw"), instance_npcname("Gerhold#d4nwt5") + "::OnO";
+	killmonster instance_mapname("1@exnw"), instance_npcname("Gerhold#d4nwt5") + "::OnX";
+	mapannounce instance_mapname("1@exnw"), "[Gerhold] You hit an X. Disqualified!", bc_map, "0xFF7777";
+	sleep2 2000;
+	warp "einbech", 236, 75;
+	dispbottom "Disqualified. Talk to Elena Volkova to take the exam again from the start.";
+	end;
+
+OnWave:   // next wave of shooting practice: each lane gets Skirmishers, a Bellare and a Sanare
+	sleep 3000;
+	'nw_w++;
+	.@m$ = instance_mapname("1@exnw");
+	.@ev$ = instance_npcname("Gerhold#d4nwt5") + "::OnHunter";
+	setarray .@y1[0], 46, 34, 21;
+	setarray .@y2[0], 54, 41, 29;
+	for (.@l = 0; .@l < 3; .@l++) {
+		areamonster .@m$, 62, .@y1[.@l], 90, .@y2[.@l], "Heart Hunter Skirmisher", 21441, 'nw_w, .@ev$;
+		areamonster .@m$, 62, .@y1[.@l], 90, .@y2[.@l], "Heart Hunter Bellare", 21442, 1, .@ev$;
+		areamonster .@m$, 62, .@y1[.@l], 90, .@y2[.@l], "Heart Hunter Sanare", 21443, 1, .@ev$;
+	}
+	'nw_left = 3 * ('nw_w + 2);
+	mapannounce .@m$, "Shooting practice, wave " + 'nw_w + " / 3: " + 'nw_left + " enemies in the three lanes.", bc_map, "0xFFD700";
+	end;
+
+OnHunter:
+	if ('nw != 4) end;
+	'nw_left--;
+	if ('nw_left > 0) {
+		dispbottom "Enemies left in this wave: " + 'nw_left;
+		end;
+	}
+	if ('nw_w < 3) {
+		mapannounce instance_mapname("1@exnw"), "Wave " + 'nw_w + " cleared. Next wave incoming...", bc_map, "0xFFD700";
+		donpcevent instance_npcname("Gerhold#d4nwt5") + "::OnWave";
+		end;
+	}
+	'nw = 5;
+	enablenpc instance_npcname("Gerhold#d4nwt6");
+	mapannounce instance_mapname("1@exnw"), "All waves cleared! Gerhold is waiting at the end of the room (bottom lane, west).", bc_map, "0xFFD700";
+	end;
+}
+
+1@exnw,50,25,4	script	Gerhold#d4nwt6	4_EXJOB_GERHOLD,{
+	mes "[Gerhold]";
+	mes "...Fine. You'll do.";
+	mes "Back to the Captain. She has something to tell you.";
+	'nw = 7;
+	close2;
+	disablenpc instance_npcname("Gerhold#d4nwt6");
+	warp instance_mapname("1@exnw"), 30, 114;
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}

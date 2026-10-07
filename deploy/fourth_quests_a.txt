@@ -1,0 +1,1065 @@
+//===== RagnaDuds: 4th job change quests, part A (renewal) ====================
+//= Imperial Guard, Inquisitor, Meister and Hyper Novice, following the official quests (iRO Wiki job change
+//= guides: NPC names, places, step order and trials). Dialogue is ours. Uses the shared helpers defined in
+//= fourth_quests.txt (F_Duds4th_Is / _Levels / _Promote / _Enter): load this file AFTER it.
+//= Private instances (re_db_import/instance_db.yml, Ids 919-922):
+//=   919 "Tourney Hall of Trials"        1@4igd  (Imperial Guard)
+//=   920 "Inquisitor Underground Ward"   1@4inq  (Inquisitor)
+//=   921 "Juperos Core Investigation"    1@4mst  (Meister, the Juperos Core layout)
+//=   922 "Hyper Novice Challenge"        1@exhn  (Hyper Novice: the two novice rooms + the Library of Memories)
+//= Requirements: base 200 / job 70. Reward: the job change + Hourglass Necklace (490087).
+//= Progress variables:
+//=   DUDS4_IGD    Imperial Guard  0 new, 1 accepted, 2 Knight of Devotion, 3 Knight of Armament, 4 done
+//=   DUDS4_INQ    Inquisitor      0 new, 1 Inn Employee, 2 Seriang, 3 Einhar (field), 4 done
+//=   DUDS4_INQ_C  Inquisitor      Heinous Monsters purified (3 needed)
+//=   DUDS4_MST    Meister         0 new, 1 Roday/Mist, 2-4 talks with Maura, 5 Gate of Truth seen, 6 done
+//=   DUDS4_HNV    Hyper Novice    0 new, 1 challenge accepted, 2 quiz passed, 3 done
+//= Deviation from official: no party needed (every instance is a private IM_CHAR one).
+
+//============================================================================
+// IMPERIAL GUARD (from Royal Guard): King's Knight, the Knights of Devotion and Armament, the Tourney Hall
+//============================================================================
+prt_cas,181,10,4	script	King's Knight#d4igd1	20823,{
+	.@n$ = "[King's Knight]";
+	if (Class == Job_Imperial_Guard) {
+		mes .@n$;
+		mes "Imperial Guard. The palace sleeps safer with you at the gate.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Imperial_Guard)) {
+		mes .@n$;
+		mes "The palace is under the protection of the King's knights. State your business, traveller.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_IGD) {
+	case 0:
+		mes "A Royal Guard... I have heard of your deeds. The shield you carry has saved many lives.";
+		mes "The King is forming a new order: the ^0000FFImperial Guard^000000, the last wall between the throne and its enemies.";
+		next;
+		mes .@n$;
+		mes "Only those who prove themselves in the ^0000FFTourney Hall of Trials^000000 may wear its crest.";
+		mes "But first, two senior knights must accept you. Would you like to try?";
+		next;
+		if (select("I'd love to.:Maybe later.") == 2) {
+			mes .@n$;
+			mes "The offer stands. Come back when you're ready.";
+			close;
+		}
+		DUDS4_IGD = 1;
+		mes .@n$;
+		mes "Then go and meet them:";
+		mes "- The ^0000FFKnight of Devotion^000000, north-west of Prontera, near the Knight Guild.";
+		mes "- The ^0000FFKnight of Armament^000000, north-east of Prontera, behind the Church.";
+		close;
+	case 1:
+		mes "Speak with the ^0000FFKnight of Devotion^000000 first, north-west of Prontera.";
+		close;
+	case 2:
+		mes "The Knight of Devotion accepted you. Now the ^0000FFKnight of Armament^000000, north-east of Prontera behind the Church.";
+		close;
+	default:
+		mes "Both knights accepted you. They are waiting in the ^0000FFTourney Hall of Trials^000000.";
+		mes "Defeat the ^0000FFKnight of Devotion^000000 and then the ^0000FFKnight of Armament^000000.";
+		next;
+		if (select("Request Tourney Hall of Trials:Not now.") == 2) close;
+		close2;
+		callfunc "F_Duds4th_Enter", "Tourney Hall of Trials", 50, 14;
+		end;
+	}
+}
+
+prontera,58,364,4	script	Knight of Devotion#d4igd2	20825,{
+	.@n$ = "[Knight of Devotion]";
+	mes .@n$;
+	if (!callfunc("F_Duds4th_Is", Job_Imperial_Guard) || DUDS4_IGD < 1) {
+		mes "I stand where the King's knights first swore their oath. Move along, citizen.";
+		close;
+	}
+	if (DUDS4_IGD >= 2) {
+		mes "You have my word. Now go see the Knight of Armament, north-east of the city, behind the Church.";
+		close;
+	}
+	mes "So the King's Knight sent you. Answer me, Royal Guard: what keeps a guard standing when the enemy is stronger?";
+	next;
+	if (select("Glory and fame:Faith and loyalty:An unbreakable shield") != 2) {
+		mes .@n$;
+		mes "A shield breaks, and glory fades. Think again about what truly holds a guard on his feet.";
+		close;
+	}
+	mes .@n$;
+	mes "Faith and loyalty. Yes. Will you swear to keep them, even when no one is watching?";
+	next;
+	if (select("Yes.:No.") == 2) {
+		mes .@n$;
+		mes "Then you are not ready.";
+		close;
+	}
+	DUDS4_IGD = 2;
+	specialeffect2 EF_BLESSING;
+	mes .@n$;
+	mes "I accept you. We will meet again in the Tourney Hall, and I won't hold back.";
+	mes "Now visit the ^0000FFKnight of Armament^000000, north-east of Prontera, behind the Church.";
+	close;
+}
+
+prontera,277,354,4	script	Knight of Armament#d4igd3	20826,{
+	.@n$ = "[Knight of Armament]";
+	mes .@n$;
+	if (!callfunc("F_Duds4th_Is", Job_Imperial_Guard) || DUDS4_IGD < 1) {
+		mes "Steel, shields, discipline. That is all a knight needs. Move along.";
+		close;
+	}
+	if (DUDS4_IGD == 1) {
+		mes "The Knight of Devotion should speak with you first. North-west of the city.";
+		close;
+	}
+	if (DUDS4_IGD >= 3) {
+		mes "You have my word too. Go back to the King's Knight in the palace and request the Tourney Hall.";
+		close;
+	}
+	mes "My brother in arms approved you? Then tell me, what will you carry into battle for the King?";
+	next;
+	if (select("The heaviest armor:Faith and Loyalty:A legendary weapon") != 2) {
+		mes .@n$;
+		mes "Armor and weapons I can forge for anyone. That is not what makes an Imperial Guard.";
+		close;
+	}
+	mes .@n$;
+	mes "Faith and Loyalty, the only arms that never dull. Will you bear them until your last breath?";
+	next;
+	if (select("Yes.:No.") == 2) {
+		mes .@n$;
+		mes "Come back when your answer is firm.";
+		close;
+	}
+	DUDS4_IGD = 3;
+	specialeffect2 EF_BLESSING;
+	mes .@n$;
+	mes "Accepted. Return to the ^0000FFKing's Knight^000000 in the Prontera Palace and request the ^0000FFTourney Hall of Trials^000000.";
+	close;
+}
+
+// inside the Tourney Hall (instance on 1@4igd): the ring outside, the arena inside (only reachable by warp)
+1@4igd,50,30,4	script	King's Knight#d4igd4	20823,{
+	.@n$ = "[King's Knight]";
+	.@m$ = instance_mapname("1@4igd");
+	mes .@n$;
+	if ('igd_state >= 3) {
+		mes "You won. Come, step into the hall and receive your crest.";
+		next;
+		if (select("Enter the hall:Leave the Tourney Hall") == 2) { close2; warp "prt_cas", 181, 13; end; }
+		close2;
+		warp .@m$, 50, 42;
+		end;
+	}
+	if ('igd_state == 0) {
+		mes "Welcome to the Tourney Hall of Trials.";
+		mes "Inside, the ^0000FFKnight of Devotion^000000 (4.8M HP) will face you first, then the ^0000FFKnight of Armament^000000 (5M HP).";
+		mes "Defeat both and the crest of the Imperial Guard is yours.";
+	} else
+		mes "The trial is still going on. The knights are waiting for you in the hall.";
+	next;
+	if (select("Enter the hall:Leave the Tourney Hall") == 2) { close2; warp "prt_cas", 181, 13; end; }
+	if ('igd_state == 0)
+		'igd_state = 1;
+	// (re)spawn the current knight if it's not there
+	if ('igd_state == 1 && mobcount(.@m$, instance_npcname("King's Knight#d4igd4") + "::OnDevotion") == 0)
+		monster .@m$, 50, 54, "Knight of Devotion", 20825, 1, instance_npcname("King's Knight#d4igd4") + "::OnDevotion";
+	if ('igd_state == 2 && mobcount(.@m$, instance_npcname("King's Knight#d4igd4") + "::OnArmament") == 0)
+		monster .@m$, 50, 54, "Knight of Armament", 20826, 1, instance_npcname("King's Knight#d4igd4") + "::OnArmament";
+	close2;
+	warp .@m$, 50, 42;
+	mapannounce .@m$, ('igd_state == 1 ? "Knight of Devotion: Show me your faith, Royal Guard!" : "Knight of Armament: Now show me your loyalty!"), bc_map, "0xFFD700";
+	end;
+
+OnDevotion:
+	if ('igd_state != 1) end;
+	'igd_state = 2;
+	.@m$ = instance_mapname("1@4igd");
+	mapannounce .@m$, "Knight of Devotion: Your faith is real... The Knight of Armament steps into the hall!", bc_map, "0xFFD700";
+	sleep 3000;
+	if ('igd_state == 2 && mobcount(.@m$, instance_npcname("King's Knight#d4igd4") + "::OnArmament") == 0)
+		monster .@m$, 50, 54, "Knight of Armament", 20826, 1, instance_npcname("King's Knight#d4igd4") + "::OnArmament";
+	end;
+
+OnArmament:
+	if ('igd_state != 2) end;
+	'igd_state = 3;
+	.@m$ = instance_mapname("1@4igd");
+	enablenpc instance_npcname("King's Knight#d4igd5");
+	mapannounce .@m$, "Both knights have fallen! The King's Knight enters the hall. Talk to him.", bc_map, "0xFFD700";
+	end;
+}
+
+1@4igd,50,60,4	script	King's Knight#d4igd5	20823,{
+	.@n$ = "[King's Knight]";
+	mes .@n$;
+	mes "Devotion and Armament both bowed to you. Faith and loyalty, proven with your shield.";
+	mes "By the will of the King, rise as an ^0000FFImperial Guard^000000!";
+	next;
+	callfunc "F_Duds4th_Promote", Job_Imperial_Guard;
+	DUDS4_IGD = 4;
+	mes .@n$;
+	mes "Return to the palace. Your post is waiting.";
+	close2;
+	warp "prt_cas", 181, 13;
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+// exit from the arena (the only way out while the knights are standing)
+1@4igd,44,60,4	script	Hall Gate#d4igd6	4_ENERGY_WHITE,{
+	mes "A gate of light leads back to the ring of the Tourney Hall.";
+	next;
+	switch (select("Back to the ring:Leave the Tourney Hall:Stay")) {
+	case 1: close2; warp instance_mapname("1@4igd"), 50, 30; end;
+	case 2: close2; warp "prt_cas", 181, 13; end;
+	}
+	close;
+}
+
+//============================================================================
+// INQUISITOR (from Sura): Inn Employee, Seriang, Einhar, the four seals and the Heinous Monster (3 times)
+//============================================================================
+prt_in,253,133,4	script	Inn Employee#d4inq1	4_F_MAID,{
+	.@n$ = "[Inn Employee]";
+	mes .@n$;
+	if (!callfunc("F_Duds4th_Is", Job_Inquisitor) || DUDS4_INQ >= 2) {
+		mes "Welcome to the Prontera Inn! Rooms are upstairs. Please keep it quiet, some guests are resting.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	if (DUDS4_INQ == 0) {
+		mes "Oh, a Sura! What luck. A guest upstairs has been asking every traveller if they've seen one.";
+		mes "Her name is ^0000FFSeriang^000000. She's on the ^0000FFsecond floor^000000, past the second room.";
+		DUDS4_INQ = 1;
+		close;
+	}
+	mes "Seriang is on the second floor, past the second room. The stairs are right here.";
+	close;
+}
+
+prt_in,250,105,4	script	Seriang#d4inq2	4_4JOB_SERANG,{
+	.@n$ = "[Seriang]";
+	mes .@n$;
+	if (!callfunc("F_Duds4th_Is", Job_Inquisitor) || DUDS4_INQ < 1) {
+		mes "Hm? Oh, sorry, I was lost in my notes. Have a nice stay.";
+		close;
+	}
+	if (DUDS4_INQ >= 2) {
+		mes "Einhar should still be camping in the fields ^0000FFnorth-east of Prontera^000000 (south field, east side). Hurry.";
+		close;
+	}
+	mes "You're a Sura... finally! Please, sit for a moment.";
+	mes "I study old church records. Under the ^0000FFProntera Monastery^000000 there is a sealed ward, and something in it is waking up.";
+	next;
+	select("What's sealed down there?:Why do you need a Sura?");
+	mes .@n$;
+	mes "A monster so foul the records only call it the ^0000FFHeinous Monster^000000. Four seals hold it.";
+	mes "Only one man still knows the old rites: ^0000FFEinhar^000000, a wandering priest. He needs someone whose fists can follow his prayers.";
+	next;
+	mes .@n$;
+	mes "He's camping in the field ^0000FFeast of Prontera^000000 (prt_fild03, north-east corner). Please find him!";
+	DUDS4_INQ = 2;
+	close;
+}
+
+prt_fild03,360,272,4	script	Einhar#d4inq3	4_4JOB_EINHAR,{
+	.@n$ = "[Einhar]";
+	mes .@n$;
+	if (!callfunc("F_Duds4th_Is", Job_Inquisitor) || DUDS4_INQ < 2) {
+		mes "Odin guards the brave. Walk carefully, traveller.";
+		close;
+	}
+	if (DUDS4_INQ >= 3) {
+		mes "Go to the ^0000FFProntera Monastery^000000. I'll meet you there, at the entrance of the underground ward.";
+		close;
+	}
+	mes "Who comes so close to my camp? Speak.";
+	next;
+	select("Seriang sent me.:I'm looking for a priest named Einhar.");
+	mes .@n$;
+	mes "I see. A Sura... strong fists, but you left the temple a long time ago, didn't you?";
+	mes "The seals under the monastery can only be broken and remade by someone who walks with the gods.";
+	next;
+	if (select("I'd like to return to Odin.:I fight for myself.") == 2) {
+		mes .@n$;
+		mes "Then the seals would swallow you. Come back when your heart is ready.";
+		close;
+	}
+	DUDS4_INQ = 3;
+	specialeffect2 EF_BLESSING;
+	mes .@n$;
+	mes "Good answer. Then meet me at the ^0000FFProntera Monastery^000000 (north of Prontera). We go down together.";
+	close;
+}
+
+prt_monk,97,214,4	script	Einhar#d4inq4	4_4JOB_EINHAR,{
+	.@n$ = "[Einhar]";
+	if (Class == Job_Inquisitor) {
+		mes .@n$;
+		mes "Inquisitor. The ward stays quiet since you came. Odin keeps you.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Inquisitor) || DUDS4_INQ < 3) {
+		mes .@n$;
+		mes "The underground ward is closed. Only those who walk with Odin may go down.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	if (DUDS4_INQ_C >= 3) {
+		mes "Three times you broke the seals, and three times you purified the Heinous Monster.";
+		mes "Your fists carry judgement now. Rise, ^0000FFInquisitor^000000.";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Inquisitor;
+		DUDS4_INQ = 4;
+		mes .@n$;
+		mes "Odin watches you. Go.";
+		close;
+	}
+	mes "The Heinous Monster regrows from its own filth. It must be purified ^0000FFthree times^000000. (" + DUDS4_INQ_C + " / 3)";
+	mes "Inside, break the four seals in order, then face it in the center of the ward.";
+	next;
+	.@inst = instance_id(IM_CHAR);
+	switch (select("Request to enter the underground ward:Enter the underground ward:Not now.")) {
+	case 1:
+		if (.@inst > 0) instance_destroy .@inst;   // a fresh ward
+		break;
+	case 2:
+		if (.@inst > 0 && instance_live_info(ILI_NAME, .@inst) == "Inquisitor Underground Ward" && getinstancevar('inq_state, .@inst) >= 3)
+			instance_destroy .@inst;   // that ward was already purified
+		break;
+	default:
+		close;
+	}
+	close2;
+	callfunc "F_Duds4th_Enter", "Inquisitor Underground Ward", 80, 138;
+	end;
+}
+
+// inside the underground ward (instance on 1@4inq): north hall, four seal rooms in the corners, sealed center
+1@4inq,80,141,4	script	Einhar#d4inq5	4_4JOB_EINHAR,{
+	.@n$ = "[Einhar]";
+	.@m$ = instance_mapname("1@4inq");
+	setarray .@seal$[1], "Nied (north-west)", "Is (north-east)", "Siegel (south-east)", "Wyn (south-west)";
+	setarray .@sx[1], 36, 124, 124, 36;
+	setarray .@sy[1], 113, 113, 19, 19;
+	mes .@n$;
+	if ('inq_state >= 2) {
+		mes "It's done for this time. Leave the ward and come see me at the entrance.";
+		next;
+		if (select("Leave the ward:Stay") == 1) { close2; warp "prt_monk", 97, 210; end; }
+		close;
+	}
+	if ('inq_seal < 4) {
+		mes "Four seals, one in each corner of the ward. Break them in this order:";
+		mes "^0000FFNied^000000 (north-west), ^0000FFIs^000000 (north-east), ^0000FFSiegel^000000 (south-east), ^0000FFWyn^000000 (south-west).";
+		mes "Next: ^0000FF" + .@seal$['inq_seal + 1] + "^000000. (" + 'inq_seal + " / 4 broken)";
+		viewpoint 1, .@sx['inq_seal + 1], .@sy['inq_seal + 1], 1, 0x00FF00;
+		next;
+		if (select("Understood.:Leave the ward") == 2) { close2; warp "prt_monk", 97, 210; end; }
+		close;
+	}
+	if ('inq_state == 0)
+		mes "All four seals are broken. The center of the ward is open, and the ^0000FFHeinous Monster^000000 is waking up.";
+	else
+		mes "The Heinous Monster is still standing in the center of the ward!";
+	next;
+	if (select("Enter now:Leave the ward") == 2) { close2; warp "prt_monk", 97, 210; end; }
+	if (mobcount(.@m$, instance_npcname("Einhar#d4inq5") + "::OnHeinous") == 0)
+		monster .@m$, 80, 70, "Heinous Monster", 20829, 1, instance_npcname("Einhar#d4inq5") + "::OnHeinous";
+	'inq_state = 1;
+	close2;
+	warp .@m$, 80, 50;
+	mapannounce .@m$, "Einhar: There it is! Purify it!", bc_map, "0xFFD700";
+	end;
+
+OnHeinous:
+	if ('inq_state != 1) end;
+	'inq_state = 2;
+	enablenpc instance_npcname("Einhar#d4inq6");
+	mapannounce instance_mapname("1@4inq"), "The Heinous Monster is purified! Talk to Einhar in the center of the ward.", bc_map, "0xFFD700";
+	end;
+}
+
+// the four seals (break them in order: Nied, Is, Siegel, Wyn)
+1@4inq,36,113,4	script	Seal of Nied#d4inqs1	4_4JOB_SEALSTONE,{
+	setarray .@seal$[1], "Nied", "Is", "Siegel", "Wyn";
+	.@s = atoi(charat(strnpcinfo(2), 6));
+	if ('inq_seal >= .@s) { mes "The seal of " + .@seal$[.@s] + " is already broken."; close; }
+	if ('inq_seal != .@s - 1) {
+		mes "The seal of " + .@seal$[.@s] + " doesn't react. Another seal still holds it.";
+		mes "Next seal: ^0000FF" + .@seal$['inq_seal + 1] + "^000000.";
+		close;
+	}
+	mes "^777777Seal of " + .@seal$[.@s] + "^000000";
+	mes "Old runes glow on the stone. Einhar's prayer echoes in your head.";
+	mes "(Stand still while you break the seal.)";
+	next;
+	if (select("Break the seal:Leave it") == 2) close;
+	close2;
+	progressbar "ffff00", 5;
+	if ('inq_seal != .@s - 1) end;
+	'inq_seal = .@s;
+	specialeffect EF_LORD;
+	viewpoint 2, 1, 1, 1, 0x00FF00;
+	if (.@s < 4) {
+		dispbottom "The seal of " + .@seal$[.@s] + " is broken (" + .@s + " / 4). Next: " + .@seal$[.@s + 1] + ".";
+		end;
+	}
+	mapannounce instance_mapname("1@4inq"), "All four seals are broken! Return to Einhar in the north hall and choose 'Enter now'.", bc_map, "0xFFD700";
+	end;
+}
+1@4inq,124,113,4	duplicate(Seal of Nied#d4inqs1)	Seal of Is#d4inqs2	4_4JOB_SEALSTONE
+1@4inq,124,19,4	duplicate(Seal of Nied#d4inqs1)	Seal of Siegel#d4inqs3	4_4JOB_SEALSTONE
+1@4inq,36,19,4	duplicate(Seal of Nied#d4inqs1)	Seal of Wyn#d4inqs4	4_4JOB_SEALSTONE
+
+// center of the ward: shows up when the Heinous Monster is purified
+1@4inq,76,48,4	script	Einhar#d4inq6	4_4JOB_EINHAR,{
+	.@n$ = "[Einhar]";
+	mes .@n$;
+	if ('inq_state == 2) {
+		mes "Well fought. The filth is gone... for now.";
+		DUDS4_INQ_C = min(3, DUDS4_INQ_C + 1);
+		'inq_state = 3;
+		mes "Purified: ^0000FF" + DUDS4_INQ_C + " / 3^000000." + (DUDS4_INQ_C >= 3 ? " Come see me at the monastery." : " It will grow back. Request a new ward at the monastery.");
+		next;
+	} else
+		mes "The ward is purified. Let's go up.";
+	if (select("Leave:Stay") == 2) close;
+	close2;
+	warp "prt_monk", 97, 210;
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+// way out of the center while the fight is on
+1@4inq,84,48,4	script	Ward Exit#d4inq7	4_ENERGY_WHITE,{
+	mes "A faint light leads back to the north hall.";
+	next;
+	switch (select("Back to the north hall:Leave the ward:Stay")) {
+	case 1: close2; warp instance_mapname("1@4inq"), 80, 138; end;
+	case 2: close2; warp "prt_monk", 97, 210; end;
+	}
+	close;
+}
+
+//============================================================================
+// MEISTER (from Mechanic): Roday / Mist, Maura, the E-Type Gear and the Ghost Fire in the Juperos Core
+//============================================================================
+yuno,112,208,4	script	Roday#d4mst1	4_M_SAGE_A,{
+	.@n$ = "[" + strnpcinfo(1) + "]";
+	mes .@n$;
+	if (!callfunc("F_Duds4th_Is", Job_Meister) || DUDS4_MST >= 2) {
+		mes "The Juperos ruins never stop surprising the Sages' Academy. Fascinating machines.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	if (DUDS4_MST == 1) {
+		mes "Maura is waiting for you in ^0000FFVerus^000000 (verus04, north-east, near the research camp).";
+		close;
+	}
+	mes "A Mechanic! You came at the right time.";
+	mes "There are reports of a ^0000FFGhost Fire^000000 moving through the core of the Juperos ruins. Not a monster, not a spirit... something else.";
+	next;
+	mes .@n$;
+	mes "Our engineer friend ^0000FFMaura^000000 is studying it from ^0000FFVerus^000000. She needs someone who understands machines from the inside.";
+	next;
+	if (select("I'll go help her.:Not now.") == 2) close;
+	DUDS4_MST = 1;
+	mes .@n$;
+	mes "Thank you! You'll find her in ^0000FFverus04^000000, north-east, by the research camp.";
+	close;
+}
+yuno,115,208,4	duplicate(Roday#d4mst1)	Mist#d4mst2	4_F_ALCHE_A
+
+verus04,214,251,4	script	Maura#d4mst3	4_4JOB_MAURA,{
+	.@n$ = "[Maura]";
+	if (Class == Job_Meister) {
+		mes .@n$;
+		mes "Meister! My E-Type Gear purrs whenever you walk by. I think it likes you.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Meister) || DUDS4_MST < 1) {
+		mes .@n$;
+		mes "Careful, don't touch the cables. This gear is older than both of us.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_MST) {
+	case 1:
+		mes "Roday sent you? Great, a real Mechanic! I'm Maura.";
+		mes "I've been tracking the ^0000FFGhost Fire^000000 in the Juperos core. It leaves traces, like a machine that remembers how it moved.";
+		DUDS4_MST = 2;
+		mes "Talk to me again, I'll explain more.";
+		close;
+	case 2:
+		mes "You pilot a Mado Gear, right? Then you know it obeys you. But the old Juperos machines... they ^0000FFunderstood^000000 their masters.";
+		mes "I think the Ghost Fire is a leftover of that technology. If we learn its secret, Mechanics can go much further.";
+		DUDS4_MST = 3;
+		mes "Talk to me once more.";
+		close;
+	case 3:
+		mes "This is the ^0000FFE-Type Gear^000000, rebuilt from parts I found in the ruins. It can take us straight into a projection of the Juperos core.";
+		mes "Inside, look for ^0000FFthree traces of the Ghost Fire^000000, then find the ^0000FFGate of Truth^000000.";
+		DUDS4_MST = 4;
+		mes "Talk to the ^0000FFE-Type Gear^000000 right next to me when you're ready. I'll meet you inside.";
+		close;
+	case 4:
+		mes "Talk to the ^0000FFE-Type Gear^000000 next to me. I'll be waiting in the core.";
+		close;
+	default:
+		if (checkmadogear()) {
+			mes "Climb out of your Mado Gear first. What comes next is for you, not for your machine.";
+			close;
+		}
+		mes "You saw it too, at the Gate of Truth. A machine is not a tool, it's a partner that remembers.";
+		mes "Only a ^0000FFMeister^000000 can build like that. And that's what you are now.";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Meister;
+		DUDS4_MST = 6;
+		mes .@n$;
+		mes "Let's build something amazing together someday!";
+		close;
+	}
+}
+
+verus04,216,250,4	script	E-Type Gear#d4mst4	4_MACHINE_DEVICE,{
+	if (!callfunc("F_Duds4th_Is", Job_Meister) || DUDS4_MST < 4 || DUDS4_MST > 5) {
+		mes "A strange old machine covered in cables. It hums quietly.";
+		close;
+	}
+	mes "^777777E-Type Gear^000000";
+	mes "The panel blinks: ^0000FFJUPEROS CORE - PROJECTION READY^000000.";
+	next;
+	if (select("Activate the E-Type Gear:Leave it") == 2) close;
+	close2;
+	callfunc "F_Duds4th_Enter", "Juperos Core Investigation", 150, 150;
+	end;
+}
+
+// inside the projection of the Juperos Core (instance on 1@4mst)
+1@4mst,153,152,4	script	Maura Dash#d4mst5	4_4JOB_MAURA,{
+	.@n$ = "[Maura Dash]";
+	setarray .@tx[0], 150, 60, 240;
+	setarray .@ty[0], 280, 52, 52;
+	for (.@i = 0; .@i < 3; .@i++) if ('mst_trace & (1 << .@i)) .@c++;
+	mes .@n$;
+	if ('mst_gate == 2) {
+		mes "So that's the truth of the Ghost Fire... the core's last engineer poured his memories into the machine, so it would keep working after he was gone.";
+		mes "A Mechanic commands. A ^0000FFMeister^000000 builds something that can stand on its own.";
+		if (DUDS4_MST == 4) {
+			DUDS4_MST = 5;
+			next;
+			mes .@n$;
+			mes "We've got what we came for. Let's get out of here, and then talk to me (Maura) in Verus.";
+		}
+		next;
+		if (select("Leave the Juperos Core:Stay") == 1) { close2; warp "verus04", 214, 247; end; }
+		close;
+	}
+	if (.@c < 3) {
+		mes "Welcome to the core! Well, its projection. Don't worry, nothing here can hurt you.";
+		mes "Find the three ^0000FFtraces of the Ghost Fire^000000 (green marks on your mini map): top center, bottom left, bottom right. (" + .@c + " / 3)";
+		for (.@i = 0; .@i < 3; .@i++)
+			if (!('mst_trace & (1 << .@i))) viewpoint 1, .@tx[.@i], .@ty[.@i], .@i + 1, 0x00FF00;
+	} else {
+		mes "All three traces lead to the east: the ^0000FFGate of Truth^000000 (yellow mark). Step on it!";
+		viewpoint 1, 282, 150, 4, 0xFFFF00;
+	}
+	next;
+	if (select("On my way.:Leave the Juperos Core") == 2) { close2; warp "verus04", 214, 247; end; }
+	close;
+}
+
+1@4mst,150,280,4	script	Ghost Fire's Traces#d4mst6	4_ENERGY_BLUE,{
+	.@t = atoi(charat(strnpcinfo(2), 5)) - 6;   // 0, 1, 2
+	if ('mst_trace & (1 << .@t)) { mes "You already investigated this trace. Only cold ashes of light remain."; close; }
+	setarray .@txt$[0],
+		"Burn marks shaped like gears, as if the fire turned in circles to keep itself warm.",
+		"A trail of light leading into a wall panel. Behind it, an old memory crystal is still blinking.",
+		"Footprints of light. Someone, or something, walked this path every day for years.";
+	mes "^777777Ghost Fire's Traces^000000";
+	mes "A pale flame flickers and vanishes when you come closer.";
+	next;
+	if (select("Investigate:Leave it") == 2) close;
+	close2;
+	progressbar "00ff00", 3;
+	if ('mst_trace & (1 << .@t)) end;
+	'mst_trace |= (1 << .@t);
+	for (.@i = 0; .@i < 3; .@i++) if ('mst_trace & (1 << .@i)) .@c++;
+	specialeffect EF_HEAL2;
+	viewpoint 2, 1, 1, .@t + 1, 0x00FF00;
+	dispbottom .@txt$[.@t];
+	dispbottom "Ghost Fire's Traces: " + .@c + " / 3" + (.@c >= 3 ? ". Go to the Gate of Truth, east (3 o'clock)." : "");
+	if (.@c >= 3) viewpoint 1, 282, 150, 4, 0xFFFF00;
+	end;
+}
+1@4mst,60,52,4	duplicate(Ghost Fire's Traces#d4mst6)	Ghost Fire's Traces#d4mst7	4_ENERGY_BLUE
+1@4mst,240,52,4	duplicate(Ghost Fire's Traces#d4mst6)	Ghost Fire's Traces#d4mst8	4_ENERGY_BLUE
+
+1@4mst,282,150,4	script	Gate of Truth#d4mst9	GATE_SKYBLUE,2,2,{
+	end;
+OnTouch:
+	for (.@i = 0; .@i < 3; .@i++) if ('mst_trace & (1 << .@i)) .@c++;
+	if (.@c < 3) {
+		dispbottom "The Gate of Truth is cold. Investigate the three Ghost Fire's Traces first (" + .@c + " / 3).";
+		end;
+	}
+	if ('mst_gate) end;
+	'mst_gate = 2;
+	movenpc instance_npcname("Maura Dash#d4mst5"), 280, 152;
+	viewpoint 2, 282, 150, 4, 0xFFFF00;
+	specialeffect EF_LORD;
+	mes "^777777Gate of Truth^000000";
+	mes "The gate lights up. Images flood your mind...";
+	next;
+	mes "An old engineer of Juperos, alone in the core after everyone left.";
+	mes "\"If I can't stay, my machines will remember for me.\"";
+	next;
+	mes "He opens his own chest plate of memories and pours them into the core. A pale fire starts to move through the halls...";
+	mes "The ^0000FFGhost Fire^000000 was never a ghost. It was the core, still doing his rounds.";
+	next;
+	mes "The vision fades. Maura Dash runs up to the gate.";
+	close2;
+	dispbottom "Talk to Maura Dash at the Gate of Truth.";
+	end;
+}
+
+//============================================================================
+// HYPER NOVICE (from Expanded Super Novice): Grape, the novice rooms and the Library of Memories
+//============================================================================
+// getarg(0): hair color, getarg(1): sex, getarg(2): hair style{, getarg(3): npc name (default: this instance NPC)}.
+// Dresses the NPC as a Super Novice.
+function	script	F_Duds4_HnvLook	{
+	if (getargcount() > 3)
+		.@id = getnpcid(0, getarg(3));
+	else
+		.@id = getnpcid(0, instance_npcname(strnpcinfo(0)));
+	if (.@id <= 0) return;
+	setunitdata .@id, UNPC_CLASS, Job_Super_Novice;
+	setunitdata .@id, UNPC_SEX, getarg(1);
+	setunitdata .@id, UNPC_HAIRSTYLE, getarg(2);
+	setunitdata .@id, UNPC_HAIRCOLOR, getarg(0);
+	return;
+}
+
+aldebaran,110,69,4	script	Grape#d4hnv1	4_M_SIT_NOVICE,{
+	.@n$ = "[Grape]";
+	if (Class == Job_Hyper_Novice) {
+		mes .@n$;
+		mes "Hyper Novice! We all started from Novice, and look how far you went.";
+		close;
+	}
+	if (Class != Job_Super_Novice_E) {
+		mes .@n$;
+		mes "Hi! I'm Grape. Everybody starts as a Novice, you know. Never forget that!";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_HNV) {
+	case 0:
+		mes "Hey, a Super Novice who never gave up! I'm Grape.";
+		mes "My friends and I keep the memories of every Novice who ever lived. If you can walk through them, you can become a ^0000FFHyper Novice^000000.";
+		next;
+		if (select("I accept the challenge:Not now") == 2) close;
+		DUDS4_HNV = 1;
+		mes .@n$;
+		mes "Great! Talk to me again when you're ready to go in.";
+		close;
+	case 1:
+		mes "Ready? Inside, talk to my friends in the right order. Yellow will help you at the end.";
+		next;
+		.@inst = instance_id(IM_CHAR);
+		switch (select("Challenge the Hyper Novice:Restart the challenge from the beginning:Not now")) {
+		case 2:
+			if (.@inst > 0) instance_destroy .@inst;
+			break;
+		case 3:
+			close;
+		}
+		close2;
+		callfunc "F_Duds4th_Enter", "Hyper Novice Challenge", 184, 14;
+		end;
+	default:
+		mes "You saw it all: Nodor's memory, Kachua's tricks, everyone's first steps.";
+		mes "From Novice to Super Novice, and now beyond. Become a ^0000FFHyper Novice^000000!";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Hyper_Novice;
+		DUDS4_HNV = 3;
+		mes .@n$;
+		mes "Don't forget us, okay?";
+		close;
+	}
+
+OnInit:
+	callfunc "F_Duds4_HnvLook", 4, SEX_MALE, 5, strnpcinfo(0);
+	end;
+}
+
+// --- room 1 (south-east): Yellow and the memory device ---
+1@exhn,182,20,4	script	Yellow#d4hnvy	4_F_NOVICE,{
+	mes "[Yellow]";
+	if ('hn_order < 6) {
+		mes "Hehe, don't mind me! The others are waiting in the room up north. Go through the portal.";
+		next;
+		if (select("Okay.:Leave the challenge") == 2) { close2; warp "aldebaran", 110, 65; end; }
+		close;
+	}
+	if ('hn_order == 6) {
+		mes "You talked to everyone in the right order? Not bad at all!";
+		mes "Then let me turn on the devices... There! Now talk to the ^0000FFmachine by the portal^000000.";
+		'hn_order = 7;
+		mapannounce instance_mapname("1@exhn"), "The memory devices have been activated. Talk to the machine by the portal.", bc_map, "0x77DDFF";
+		close;
+	}
+	mes "The machine by the portal will take you to the ^0000FFLibrary of Memories^000000.";
+	next;
+	if (select("Okay.:Leave the challenge") == 2) { close2; warp "aldebaran", 110, 65; end; }
+	close;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 1, SEX_FEMALE, 7;
+	end;
+}
+
+1@exhn,180,22,4	script	Memory Device#d4hnvm	4_MACHINE_DEVICE,{
+	if ('hn_order < 7) {
+		mes "A strange machine full of books and gears. It's silent.";
+		close;
+	}
+	mes "The device hums. Pages fly around it like birds.";
+	next;
+	if (select("Go to the Library of Memories:Not yet") == 2) close;
+	close2;
+	warp instance_mapname("1@exhn"), 77, 26;
+	end;
+}
+
+1@exhn,177,30,0	warp	d4hnv_w1	1,1,1@exhn,189,142
+1@exhn,189,138,0	warp	d4hnv_w2	1,1,1@exhn,178,26
+
+// --- room 2 (north-east): talk in order White, Red, Purple, Blue, Scarlet, Black, then Yellow in room 1 ---
+// getarg(0): position in the order (1-6), 0 for Green (optional, gives the order)
+function	script	F_Duds4_HnvRoom	{
+	setarray .@who$[1], "White", "Red", "Purple", "Blue", "Scarlet", "Black", "Yellow (in the first room)";
+	.@me = getarg(0);
+	mes "[" + (.@me ? .@who$[.@me] : "Green") + "]";
+	if (.@me == 0) {
+		mes "Lost? We like things done in order around here: ^0000FFWhite, Red, Purple, Blue, Scarlet, Black^000000, and ^0000FFYellow^000000 last, down in the first room.";
+		if ('hn_order < 7) mes "Next you should talk to ^0000FF" + .@who$['hn_order + 1] + "^000000.";
+		close;
+	}
+	if ('hn_order >= .@me) {
+		mes "We already talked! " + ('hn_order < 7 ? "Next is ^0000FF" + .@who$['hn_order + 1] + "^000000." : "");
+		close;
+	}
+	if ('hn_order < .@me - 1) {
+		mes "Hmm? It's not my turn yet. Talk to ^0000FF" + .@who$['hn_order + 1] + "^000000 first.";
+		close;
+	}
+	setarray .@line$[1],
+		"Me first, of course! I always woke up before everyone at the training grounds.",
+		"Hi. I remember everything... every face, every small step. Someone has to.",
+		"I wanted to be a Wizard once. But who would protect the others? So I stayed a Novice.",
+		"Hammers, nails, carts. I tried every job and none of them fit. This one does.",
+		"I prayed every night for my friends to come back safe. They always did!",
+		"Don't look at me like that. Black is a perfectly cheerful color.";
+	mes .@line$[.@me];
+	'hn_order = .@me;
+	mes "Next, talk to ^0000FF" + .@who$[.@me + 1] + "^000000.";
+	close;
+}
+
+1@exhn,186,153,4	script	White#d4hnvr1	4_F_NOVICE,{
+	callfunc "F_Duds4_HnvRoom", 1;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 6, SEX_FEMALE, 2;
+	end;
+}
+1@exhn,190,154,4	script	Red#d4hnvr2	4_M_SIT_NOVICE,{
+	callfunc "F_Duds4_HnvRoom", 2;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 8, SEX_MALE, 3;
+	end;
+}
+1@exhn,194,153,4	script	Purple#d4hnvr3	4_M_SIT_NOVICE,{
+	callfunc "F_Duds4_HnvRoom", 3;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 2, SEX_MALE, 9;
+	end;
+}
+1@exhn,196,149,4	script	Blue#d4hnvr4	4_M_SIT_NOVICE,{
+	callfunc "F_Duds4_HnvRoom", 4;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 5, SEX_MALE, 12;
+	end;
+}
+1@exhn,192,146,4	script	Scarlet#d4hnvr5	4_F_NOVICE,{
+	callfunc "F_Duds4_HnvRoom", 5;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 3, SEX_FEMALE, 4;
+	end;
+}
+1@exhn,186,146,4	script	Black#d4hnvr6	4_F_NOVICE,{
+	callfunc "F_Duds4_HnvRoom", 6;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 7, SEX_FEMALE, 10;
+	end;
+}
+1@exhn,185,149,4	script	Green#d4hnvr7	4_M_SIT_NOVICE,{
+	callfunc "F_Duds4_HnvRoom", 0;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 4, SEX_MALE, 5;
+	end;
+}
+
+// --- Library of Memories: 8 Fragments of Past (each shows two memories), then name the 8 friends ---
+// 'hn_frag: fragments completed (0-8), 'hn_mem: memories seen (bits), 'hn_name: friends named (bits)
+1@exhn,110,40,4	script	Fragment of Past#d4hnvf1	4_ENERGY_WHITE,{
+	.@f = atoi(charat(strnpcinfo(2), 6));
+	setarray .@fx[1], 110, 140, 135, 108, 70, 30, 20, 40;
+	setarray .@fy[1], 40, 75, 110, 140, 140, 115, 75, 35;
+	if ('hn_frag >= .@f) { mes "This memory has already been seen."; close; }
+	if ('hn_frag != .@f - 1) {
+		mes "The fragment is dim. Another memory must be seen first.";
+		viewpoint 1, .@fx['hn_frag + 1], .@fy['hn_frag + 1], 10, 0xFF77FF;
+		close;
+	}
+	mes "^777777Fragment of Past^000000";
+	mes "A floating page of light. When you touch it, figures from the past appear around it.";
+	mes "(Talk to every figure of this memory.)";
+	enablenpc instance_npcname("Memory#d4hnvm" + .@f + "a");
+	enablenpc instance_npcname("Memory#d4hnvm" + .@f + "b");
+	close;
+}
+1@exhn,140,75,4	duplicate(Fragment of Past#d4hnvf1)	Fragment of Past#d4hnvf2	4_ENERGY_WHITE
+1@exhn,135,110,4	duplicate(Fragment of Past#d4hnvf1)	Fragment of Past#d4hnvf3	4_ENERGY_WHITE
+1@exhn,108,140,4	duplicate(Fragment of Past#d4hnvf1)	Fragment of Past#d4hnvf4	4_ENERGY_WHITE
+1@exhn,70,140,4	duplicate(Fragment of Past#d4hnvf1)	Fragment of Past#d4hnvf5	4_ENERGY_WHITE
+1@exhn,30,115,4	duplicate(Fragment of Past#d4hnvf1)	Fragment of Past#d4hnvf6	4_ENERGY_WHITE
+1@exhn,20,75,4	duplicate(Fragment of Past#d4hnvf1)	Fragment of Past#d4hnvf7	4_ENERGY_WHITE
+1@exhn,40,35,4	duplicate(Fragment of Past#d4hnvf1)	Fragment of Past#d4hnvf8	4_ENERGY_WHITE
+
+// the memory figures: "Memory#d4hnvm<fragment><a|b>"; display names are set at instance start
+function	script	F_Duds4_HnvMemory	{
+	.@f = getarg(0);   // fragment 1-8
+	.@k = getarg(1);   // 0 = a, 1 = b
+	setarray .@fx[1], 110, 140, 135, 108, 70, 30, 20, 40;
+	setarray .@fy[1], 40, 75, 110, 140, 140, 115, 75, 35;
+	setarray .@a$[1],
+		"[Young Tzerero]", "I'll be the first one up, every single morning! Someone has to wake these sleepyheads.",
+		"[Young Nodor]", "I'm writing everything down. One day I'll forget, so the book has to remember for me.",
+		"[Young Windsor]", "I could become a Wizard... but if I leave, who keeps the others safe on the road?",
+		"[Young Deforte]", "Smith, merchant, alchemist... I failed every test. Maybe I'm just meant to stay a Novice.",
+		"[Young Holi]", "Goddess, please bring my friends home tonight. All of them. Even Kachua.",
+		"[Young Jade]", "Black is my favorite color. It goes with everything, even a Novice outfit!",
+		"[Young Kachua]", "Shh! If you buy my apple now, I'll tell you a secret. ...The secret is that it was YOUR apple.",
+		"[Young Grape]", "Nodor, why do we keep all these memories?";
+	setarray .@b$[1],
+		"[Training Instructor]", "Tzerero, the one with the white scarf. First in line, last to complain.",
+		"[Old Librarian]", "That boy, Nodor... this whole library grew out of his notebooks. These are his memories.",
+		"[Kafra Employee]", "Windsor turned down the Mage Guild three times. All to walk beside his friends.",
+		"[Alchemist]", "Deforte broke three of my flasks... and then fixed the guild's cart with a spoon. A strange talent.",
+		"[Priestess]", "Holi prays more than any acolyte I've trained, and she never even asked to become one.",
+		"[Knight]", "Jade held the line at the Prontera gate with a dagger and a smile. Don't underestimate her.",
+		"[Merchant]", "Kachua! The sly little one. Sold me my own apple and I thanked her for it.",
+		"[Young Nodor]", "Because we all start from Novice, Grape. Someone has to remember where we came from.";
+	if (.@k == 0) { mes .@a$[(.@f - 1) * 2 + 1]; mes .@a$[(.@f - 1) * 2 + 2]; }
+	else { mes .@b$[(.@f - 1) * 2 + 1]; mes .@b$[(.@f - 1) * 2 + 2]; }
+	if ('hn_frag != .@f - 1) close;
+	'hn_mem |= (1 << ((.@f - 1) * 2 + .@k));
+	if (!('hn_mem & (1 << ((.@f - 1) * 2))) || !('hn_mem & (1 << ((.@f - 1) * 2 + 1)))) close;
+	'hn_frag = .@f;
+	close2;
+	specialeffect EF_ANGEL2, AREA, instance_npcname("Fragment of Past#d4hnvf" + .@f);
+	disablenpc instance_npcname("Memory#d4hnvm" + .@f + "a");
+	disablenpc instance_npcname("Memory#d4hnvm" + .@f + "b");
+	if (.@f < 8) {
+		dispbottom "Fragment of Past " + .@f + " / 8 seen. Follow the path to the next one (pink mark).";
+		viewpoint 1, .@fx[.@f + 1], .@fy[.@f + 1], 10, 0xFF77FF;
+		end;
+	}
+	viewpoint 2, 1, 1, 10, 0xFF77FF;
+	mapannounce instance_mapname("1@exhn"), "All the memories are seen. Go back to the center and call each friend in the circle by name.", bc_map, "0x77DDFF";
+	end;
+}
+
+1@exhn,107,42,4	script	Memory#d4hnvm1a	4_F_NOVICE,{
+	callfunc "F_Duds4_HnvMemory", atoi(charat(strnpcinfo(2), 6)), (charat(strnpcinfo(2), 7) == "b");
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@exhn,110,44,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm1b	1_M_KNIGHTMASTER
+1@exhn,137,77,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm2a	4_M_SIT_NOVICE
+1@exhn,143,77,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm2b	4_M_SAGE_A
+1@exhn,132,112,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm3a	4_M_SIT_NOVICE
+1@exhn,138,112,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm3b	4_F_MAID
+1@exhn,105,137,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm4a	4_M_SIT_NOVICE
+1@exhn,112,137,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm4b	4_M_ALCHE_A
+1@exhn,67,142,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm5a	4_F_NOVICE2
+1@exhn,73,142,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm5b	4_F_MONK
+1@exhn,27,117,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm6a	4_F_NOVICE
+1@exhn,33,117,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm6b	4_M_JOB_KNIGHT1
+1@exhn,17,77,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm7a	4_F_NOVICE2
+1@exhn,23,77,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm7b	1_M_INNKEEPER
+1@exhn,37,37,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm8a	4_M_SIT_NOVICE
+1@exhn,43,37,4	duplicate(Memory#d4hnvm1a)	Memory#d4hnvm8b	4_M_SIT_NOVICE
+
+// the circle of friends around the mountain of books (Green is Grape, who climbs the tower at the end)
+// getarg(0): friend index 1-8 (Red, Yellow, Purple, Black, Green, White, Blue, Scarlet)
+function	script	F_Duds4_HnvCircle	{
+	.@i = getarg(0);
+	setarray .@col$[1], "Red", "Yellow", "Purple", "Black", "Green", "White", "Blue", "Scarlet";
+	setarray .@name$[1], "Nodor", "Kachua", "Windsor", "Jade", "Grape", "Tzerero", "Deforte", "Holi";
+	setarray .@hint$[1],
+		"This place... it feels like my old notebooks. Do you know who I am?",
+		"Hehe, I didn't sell anybody's apple. Not today, anyway.",
+		"I never became a Wizard. I don't regret it.",
+		"Do you like my outfit? It's black, obviously.",
+		"We're all here. Every one of us started from the same place.",
+		"I was the first one up, every morning. Still am!",
+		"Every guild said no to me. Funny how things work out.",
+		"I pray for my friends every night. Even now.";
+	mes "[" + .@col$[.@i] + "]";
+	if ('hn_frag < 8) {
+		mes .@hint$[.@i];
+		mes "(Find the ^0000FFFragments of Past^000000 around the library first.)";
+		next;
+		if (select("I'll look around.:Leave the challenge") == 2) { close2; warp "aldebaran", 110, 65; end; }
+		close;
+	}
+	if ('hn_name & (1 << .@i)) {
+		mes "You remembered me: ^0000FF" + .@name$[.@i] + "^000000. Thank you.";
+		close;
+	}
+	mes "You saw our memories. So... what's my name?";
+	next;
+	input .@s$;
+	if (strtolower(.@s$) != strtolower(.@name$[.@i])) {
+		mes "[" + .@col$[.@i] + "]";
+		mes "\"" + .@s$ + "\"? No... that's not me. Think about the memories you saw.";
+		close;
+	}
+	'hn_name |= (1 << .@i);
+	for (.@j = 1; .@j <= 8; .@j++) if ('hn_name & (1 << .@j)) .@c++;
+	mes "[" + .@name$[.@i] + "]";
+	mes "Yes! I'm " + .@name$[.@i] + ". (" + .@c + " / 8 friends named)";
+	if (.@c < 8) close;
+	close2;
+	movenpc instance_npcname("Green#d4hnvl5"), 81, 85;
+	mapannounce instance_mapname("1@exhn"), "Grape: You remembered all of us! Come up to the top of the book tower, I'm waiting.", bc_map, "0x77DDFF";
+	end;
+}
+
+1@exhn,81,93,4	script	Red#d4hnvl1	4_M_SIT_NOVICE,{
+	callfunc "F_Duds4_HnvCircle", 1;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 8, SEX_MALE, 3;
+	end;
+}
+1@exhn,88,90,4	script	Yellow#d4hnvl2	4_F_NOVICE,{
+	callfunc "F_Duds4_HnvCircle", 2;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 1, SEX_FEMALE, 7;
+	end;
+}
+1@exhn,91,82,4	script	Purple#d4hnvl3	4_M_SIT_NOVICE,{
+	callfunc "F_Duds4_HnvCircle", 3;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 2, SEX_MALE, 9;
+	end;
+}
+1@exhn,88,74,4	script	Black#d4hnvl4	4_F_NOVICE,{
+	callfunc "F_Duds4_HnvCircle", 4;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 7, SEX_FEMALE, 10;
+	end;
+}
+1@exhn,81,71,4	script	Green#d4hnvl5	4_M_SIT_NOVICE,{
+	if (('hn_name & 0x1FE) != 0x1FE) {   // bits 1-8: not everyone is named yet
+		callfunc "F_Duds4_HnvCircle", 5;
+		end;
+	}
+	.@n$ = "[Grape]";
+	mes .@n$;
+	if (DUDS4_HNV >= 2) {
+		mes "You passed! Go back to Aldebaran and talk to me there.";
+		close2;
+		warp "aldebaran", 110, 65;
+		end;
+	}
+	mes "You made it to the top! So, what do you think?";
+	next;
+	if (select("I think I've seen it all:Let me look around a bit more") == 2) close;
+	mes .@n$;
+	mes "Then let's see. ^0000FFWhich one of the following statements is correct?^000000";
+	next;
+	.@ok += (select("They were born as Super Novices:They all start from Novice:They never met each other") == 2);
+	mes .@n$;
+	mes "^0000FFWho is the owner of this memory?^000000";
+	next;
+	.@ok += (select("Grape:Tzerero:Nodor:Kachua") == 3);
+	mes .@n$;
+	mes "Last one. ^0000FFWho is the Sly one?^000000";
+	next;
+	.@ok += (select("Windsor:Holi:Jade:Kachua") == 4);
+	mes .@n$;
+	if (.@ok < 3) {
+		mes "Hmm, not quite (" + .@ok + " / 3 right). Think about the memories you saw and ask me again.";
+		close;
+	}
+	mes "All correct! You really saw it all.";
+	mes "Let's go back. Talk to me in ^0000FFAldebaran^000000 and you'll become a Hyper Novice.";
+	DUDS4_HNV = 2;
+	close2;
+	warp "aldebaran", 110, 65;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 4, SEX_MALE, 5;
+	end;
+}
+1@exhn,73,74,4	script	White#d4hnvl6	4_F_NOVICE,{
+	callfunc "F_Duds4_HnvCircle", 6;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 6, SEX_FEMALE, 2;
+	end;
+}
+1@exhn,70,82,4	script	Blue#d4hnvl7	4_M_SIT_NOVICE,{
+	callfunc "F_Duds4_HnvCircle", 7;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 5, SEX_MALE, 12;
+	end;
+}
+1@exhn,73,90,4	script	Scarlet#d4hnvl8	4_F_NOVICE,{
+	callfunc "F_Duds4_HnvCircle", 8;
+	end;
+OnInstanceInit:
+	callfunc "F_Duds4_HnvLook", 3, SEX_FEMALE, 4;
+	end;
+}

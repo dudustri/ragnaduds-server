@@ -1,0 +1,738 @@
+//===== RagnaDuds: 4th job change quests (renewal) ============================
+//= Cardinal, Biolo and Dragon Knight, following the official quests (iRO Wiki job change guides: steps, NPC
+//= names, places and trials). rAthena ships none of them; dialogue is ours. The Job Master in Prontera keeps
+//= its direct change. Each quest uses a private instance (re_db_import/instance_db.yml, Ids 916-918) on the
+//= official 4th job maps the 2026 client has (1@4cdn, 1@4drk) or a private copy of ver_eju (the lab).
+//= Requirements: base 200 / job 70 (like the Job Master). Monsters: official 4th job quest Ids (re_db_import/mob_db.yml).
+//= Reward, like the official quests: the job change + Hourglass Necklace (490087).
+//= Progress: DUDS4_CDN / DUDS4_CDN_K (Cardinal), DUDS4_DK (Dragon Knight), DUDS4_BIO / DUDS4_BIO_B (Biolo).
+
+// getarg(0): the 4th job. True if the player is a (non-baby) 3rd class whose 4th class is that job.
+function	script	F_Duds4th_Is	{
+	if (!(eaclass()&EAJL_THIRD) || (eaclass()&(EAJL_FOURTH|EAJL_BABY)))
+		return false;
+	return roclass(eaclass()|EAJL_FOURTH) == getarg(0);
+}
+
+// getarg(0): npc title, getarg(1): job level needed. Ends the dialogue if the levels are too low.
+function	script	F_Duds4th_Levels	{
+	if (BaseLevel >= 200 && JobLevel >= getarg(1))
+		return;
+	mes getarg(0);
+	mes "You have the calling, but not the strength yet.";
+	mes "Come back at ^0000FFbase level 200^000000 and ^0000FFjob level " + getarg(1) + "^000000.";
+	close;
+}
+
+// getarg(0): the 4th job. Same safety checks as the Job Master, then the change and the reward.
+function	script	F_Duds4th_Promote	{
+	if (checkfalcon() || checkcart() || checkriding() || ismounting()) {
+		mes "Remove your cart, falcon or mount first (equipment window), then talk to me again.";
+		close;
+	}
+	if (SkillPoint) {
+		mes "Use all your skill points first, or they'd be lost with the job change.";
+		close;
+	}
+	jobchange getarg(0);
+	getitem 490087, 1;   // Hourglass Necklace
+	specialeffect2 EF_ANGEL2;
+	announce strcharinfo(0) + " has become a " + jobname(getarg(0)) + "!", bc_all, "0xFFD700";
+	return;
+}
+
+// getarg(0): instance name, getarg(1): x, getarg(2): y. Creates (or reuses) the player's private instance.
+function	script	F_Duds4th_Enter	{
+	.@inst = instance_id(IM_CHAR);
+	if (.@inst > 0 && instance_live_info(ILI_NAME, .@inst) != getarg(0)) {
+		instance_destroy .@inst;   // one private instance per character (e.g. a Homunculus Room left open)
+		.@inst = 0;
+	}
+	if (.@inst <= 0)
+		.@inst = instance_create(getarg(0), IM_CHAR);
+	if (.@inst <= 0 || instance_enter(getarg(0), getarg(1), getarg(2), getcharid(0), .@inst) != IE_OK) {
+		dispbottom "The place is not available right now. Try again in a moment, or tell Duds.";
+		end;
+	}
+	return;
+}
+
+//============================================================================
+// CARDINAL (from Arch Bishop): Priest Jergus, the three Books of Illusion, the Last Ordeal
+//============================================================================
+prt_church,114,122,4	script	Priest Jergus#duds4	4_M_OLDFRIAR,{
+	.@n$ = "[Priest Jergus]";
+	if (Class == Job_Cardinal) {
+		mes .@n$;
+		mes "The illusions no longer fool you, Cardinal. Guide the faithful well.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Cardinal)) {
+		mes .@n$;
+		mes "Pray, traveller. The Goddess listens to everyone.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_CDN) {
+	case 0:
+		mes "An Arch Bishop... I can see the light around you is strong, but it can still be clouded.";
+		mes "Those who become ^0000FFCardinals^000000 must see through every illusion.";
+		next;
+		mes .@n$;
+		mes "Long ago, a monk wrote the ^0000FFBooks of Illusion^000000. Three volumes, hidden where darkness gathers:";
+		mes "- Volume 1: the ^0000FFPayon Cave^000000, first floor, south-west corner.";
+		mes "- Volume 2: the ^0000FFOrc Dungeon^000000, first floor, to the north.";
+		mes "- Volume 3: the ^0000FFGlast Heim Monastery^000000, north-east corner.";
+		next;
+		if (select("I will read them.:Not now.") == 2) {
+			mes .@n$;
+			mes "When your heart is ready, then.";
+			close;
+		}
+		DUDS4_CDN = 1;
+		mes .@n$;
+		mes "Read them in order. The last one will put you to the test. May the Goddess protect you.";
+		close;
+	case 1:
+		mes "Find the first Book of Illusion in the Payon Cave, first floor, south-west corner.";
+		close;
+	case 2:
+		mes "Now the second volume, in the Orc Dungeon, first floor, to the north.";
+		close;
+	default:
+		mes "The last volume rests in the Glast Heim Monastery, north-east corner. Face its ordeal.";
+		close;
+	}
+}
+
+pay_dun00,16,30,0	script	Book of Illusion#cdn1	4_4JOB_PHANTOMBOOK1,{
+	if (DUDS4_CDN != 1) {
+		mes "An old book floating in the air. Its letters keep moving; you can't read a word.";
+		close;
+	}
+	mes "^777777Book of Illusion, Volume 1^000000";
+	mes "\"What the eyes see first is rarely the truth. The faithful look twice.\"";
+	next;
+	if (select("Keep reading:Close the book") == 2) close;
+	DUDS4_CDN = 2;
+	mes "The words sink into your mind. The next volume is in the ^0000FFOrc Dungeon^000000.";
+	close;
+}
+
+orcsdun01,93,169,0	script	Book of Illusion#cdn2	4_4JOB_PHANTOMBOOK2,{
+	if (DUDS4_CDN != 2) {
+		mes "An old book floating in the air. Its letters keep moving; you can't read a word.";
+		close;
+	}
+	mes "^777777Book of Illusion, Volume 2^000000";
+	mes "\"Fear feeds illusion. Those who stand firm when all seems lost will see what is real.\"";
+	next;
+	if (select("Keep reading:Close the book") == 2) close;
+	DUDS4_CDN = 3;
+	mes "The last volume waits in the ^0000FFGlast Heim Monastery^000000, north-east corner.";
+	close;
+}
+
+gl_church,299,292,0	script	Book of Illusion#cdn3	4_4JOB_PHANTOMBOOK3,{
+	.@n$ = "^777777Book of Illusion, Volume 3^000000";
+	if (DUDS4_CDN < 3 || DUDS4_CDN > 5 || !callfunc("F_Duds4th_Is", Job_Cardinal)) {
+		mes "An old book floating in the air. Its letters keep moving; you can't read a word.";
+		close;
+	}
+	mes .@n$;
+	if (DUDS4_CDN == 3) {
+		getinventorylist;
+		if (@inventorylist_count >= 90) {
+			mes "\"Come with few belongings.\" (carry fewer than 90 kinds of items)";
+			close;
+		}
+		mes "\"Show me your faith in this cursed place. Free ^0000FF30 souls^000000 that wander here.\"";
+		DUDS4_CDN = 4;
+		DUDS4_CDN_K = 0;
+		close;
+	}
+	if (DUDS4_CDN == 4 && DUDS4_CDN_K < 30) {
+		mes "\"Free 30 souls that wander here.\" (" + DUDS4_CDN_K + " / 30)";
+		close;
+	}
+	mes "\"You have shown faith. One ordeal remains: your own illusion. Can you face it?\"";
+	next;
+	if (select("I can.:Not yet.") == 2) close;
+	DUDS4_CDN = 5;
+	if (select("Request the Last Ordeal:Leave") == 2) close;
+	close2;
+	callfunc "F_Duds4th_Enter", "Cardinal Last Ordeal", 128, 135;
+	end;
+}
+
+// counts the 30 Glast Heim Monastery kills of the Cardinal quest
+-	script	Duds4thKills	-1,{
+OnNPCKillEvent:
+	if (DUDS4_CDN == 4 && DUDS4_CDN_K < 30 && strcharinfo(3) == "gl_church") {
+		DUDS4_CDN_K++;
+		dispbottom "Book of Illusion: " + DUDS4_CDN_K + " / 30 souls freed" + (DUDS4_CDN_K >= 30 ? ". Return to the third volume." : "");
+	}
+	end;
+}
+
+// inside the Last Ordeal (instance on 1@4cdn)
+1@4cdn,140,155,4	script	Book of Trials#cdn	4_4JOB_PHANTOMBOOK3,{
+	.@n$ = "[Book of Trials]";
+	.@m$ = instance_mapname("1@4cdn");
+	.@ev$ = instance_npcname(strnpcinfo(0)) + "::OnIllusion";
+	if ('cdn_state == 2) {
+		mes .@n$;
+		mes "Your own darkness is gone. Rise, ^0000FFCardinal^000000.";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Cardinal;
+		DUDS4_CDN = 6;
+		mes .@n$;
+		mes "Go in peace.";
+		close2;
+		warp "prt_church", 114, 118;
+		end;
+	}
+	if ('cdn_state == 1 && mobcount(.@m$, .@ev$) > 0) {
+		mes .@n$;
+		mes "Your illusion stands before you. Defeat it!";
+		close;
+	}
+	mes .@n$;
+	mes "Every priest carries a shadow: the doubt that whispers the Goddess is not listening.";
+	mes "Here it takes form. It will drain you until you can barely stand. Then strike.";
+	next;
+	if (select("I'm ready.:Leave the ordeal") == 2) {
+		close2;
+		warp "gl_church", 299, 288;
+		end;
+	}
+	'cdn_state = 1;
+	close2;
+	dispbottom "The Dark Illusion is draining your life...";
+	for (.@i = 0; .@i < 10; .@i++) {
+		sleep2 3000;
+		if (Hp > 1)
+			heal -min(Hp - 1, MaxHp / 10 + 1), 0;
+	}
+	monster .@m$, 146, 143, "Dark Illusion", 1302, 1, .@ev$;
+	.@g = $@mobid[0];
+	setunitdata .@g, UMOB_MAXHP, 2000;
+	setunitdata .@g, UMOB_HP, 2000;
+	setunitdata .@g, UMOB_ATKMIN, 1;
+	setunitdata .@g, UMOB_ATKMAX, 1;
+	setunitdata .@g, UMOB_MATKMIN, 1;
+	setunitdata .@g, UMOB_MATKMAX, 1;
+	dispbottom "Now! Defeat the Dark Illusion.";
+	end;
+
+OnIllusion:
+	'cdn_state = 2;
+	mapannounce instance_mapname("1@4cdn"), "The Dark Illusion fades away. Talk to the Book of Trials.", bc_map, "0xFFFF77";
+	end;
+}
+
+//============================================================================
+// BIOLO (from Genetic): Aldina, the Piled Garbage mask, Gregor's laboratory
+//============================================================================
+verus04,157,165,4	script	Aldina#duds4	4_F_SCIENCE,{
+	.@n$ = "[Aldina]";
+	if (Class == Job_Biolo) {
+		mes .@n$;
+		mes "Gregor says you're the best assistant he ever had. Take care of those Mandragoras!";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Biolo)) {
+		mes .@n$;
+		mes "Careful around here, the air near the laboratory isn't safe.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	switch (DUDS4_BIO) {
+	case 0:
+		mes "A Genetic! Perfect timing. I work with ^0000FFGregor^000000, a biologist. He's looking for someone to carry on his research.";
+		mes "Only... his laboratory is full of toxic gas. Nobody gets in without protection.";
+		next;
+		if (select("I'll help.:Not now.") == 2) close;
+		DUDS4_BIO = 1;
+		mes .@n$;
+		mes "Thank you! People throw all sorts of things in the ^0000FFPiled Garbage^000000 to the south-west. Maybe you can make a mask from it.";
+		close;
+	case 1:
+	case 2:
+		mes "Check the ^0000FFPiled Garbage^000000 to the south-west. You need something to protect you from the gas.";
+		close;
+	case 3:
+		mes "A gas mask! And an airtight box too, nice. Gregor will want that.";
+		mes "His laboratory is to the north-west. ^0000FFKnock on the door^000000.";
+		DUDS4_BIO = 4;
+		close;
+	default:
+		mes "The laboratory is to the north-west. Knock on the door, Gregor is inside.";
+		close;
+	}
+}
+
+verus04,28,115,0	script	Piled Garbage#duds4	4_EP17_BUCKETS,{
+	if (DUDS4_BIO == 1) {
+		mes "A pile of junk from the old city. The smell is awful.";
+		next;
+		if (select("What do I do?:Leave it") == 2) close;
+		mes "The laboratory gas burns your throat even from here. You need protection.";
+		next;
+		if (select("I'd better make a mask.:I'll just hold my breath.") == 2) { mes "That won't last long..."; close; }
+		mes "One layer of cloth won't stop the gas.";
+		next;
+		if (select("Use a single cloth:Layer multiple materials") == 1) { mes "Too thin. Think again."; close; }
+		mes "What should the layers be made of?";
+		next;
+		if (select("Paper:Dense Fabric") == 1) { mes "Paper would fall apart. Think again."; close; }
+		mes "And to sew them together?";
+		next;
+		if (select("Needle Packet:Glue") == 2) { mes "Glue would melt in the gas. Think again."; close; }
+		mes "And something to filter the gas...";
+		next;
+		if (select("Sand:Black Charcoal") == 1) { mes "Sand won't filter it. Think again."; close; }
+		DUDS4_BIO = 2;
+		mes "That's it! Bring the materials and make the mask here:";
+		mes "- 20 ^0000FFPiece of Black Cloth^000000";
+		mes "- 1 ^0000FFNeedle Packet^000000";
+		mes "- 10 ^0000FFBlack Charcoal^000000";
+		close;
+	}
+	if (DUDS4_BIO == 2) {
+		if (countitem(7205) < 20 || countitem(7213) < 1 || countitem(6251) < 10) {
+			mes "You need: 20 Piece of Black Cloth (" + countitem(7205) + "), 1 Needle Packet (" + countitem(7213) + "), 10 Black Charcoal (" + countitem(6251) + ").";
+			close;
+		}
+		mes "You layer the cloth, sew it tight and fill it with charcoal...";
+		next;
+		if (select("Make the mask:Not yet") == 2) close;
+		delitem 7205, 20;
+		delitem 7213, 1;
+		delitem 6251, 10;
+		getitem 5005, 1;   // Gas Mask
+		DUDS4_BIO = 3;
+		mes "You made a ^0000FFGas Mask^000000! With the scraps you also seal an ^0000FFAirtight Box^000000. Show it to Aldina.";
+		close;
+	}
+	mes "A pile of junk from the old city. Nothing useful left.";
+	close;
+}
+
+verus04,53,263,0	script	Laboratory Door#duds4	4_BULLETIN_BOARD2,{
+	if (DUDS4_BIO < 4 || DUDS4_BIO > 7 || !callfunc("F_Duds4th_Is", Job_Biolo)) {
+		mes "A heavy door. A sharp chemical smell leaks from the gaps.";
+		close;
+	}
+	mes "^777777Biologist's Laboratory^000000";
+	next;
+	if (select("Knock on the door:Leave") == 2) close;
+	close2;
+	callfunc "F_Duds4th_Enter", "Biologist's Laboratory", 55, 179;
+	end;
+}
+
+// inside the laboratory (private copy of ver_eju; hidden on the public map)
+ver_eju,59,195,4	script	Gregor#duds4	4_M_ALCHE_B,{
+	.@n$ = "[Gregor]";
+	if (Class == Job_Biolo) {
+		mes .@n$;
+		mes "Ah, my successor. The Mandragoras like you.";
+		next;
+		if (select("Leave the laboratory:Stay") == 1) { close2; warp "verus04", 53, 258; end; }
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Biolo)) {
+		mes .@n$;
+		mes "Who let you in? Out, out!";
+		close2;
+		warp "verus04", 53, 258;
+		end;
+	}
+	mes .@n$;
+	switch (DUDS4_BIO) {
+	case 4:
+		mes "A visitor who survived the gas? Interesting. What do you want?";
+		next;
+		if (select("Show the airtight box:Leave") == 2) { close2; warp "verus04", 53, 258; end; }
+		mes .@n$;
+		mes "An airtight box! Then you know how to keep a specimen alive. What do you want to grow in it?";
+		next;
+		if (select("Wait, I forgot something.:Nothing") == 2) close;
+		mes .@n$;
+		mes "Forgot what?";
+		next;
+		if (select("Mandragora Incubator:Never mind") == 2) close;
+		mes .@n$;
+		mes "Ha! You want to raise Mandragoras like me. Then build your own incubator. Bring me:";
+		mes "- 10 ^0000FFTangled Chain^000000 and 10 ^0000FFCoral Reef^000000";
+		mes "- and one set: 1 Dead Branch + 10 Beautiful Flower, ^0000FFor^000000 1 Mysterious Flower + 10 Elder Branch, ^0000FFor^000000 10 Shoot + 10 Elegant Flower.";
+		DUDS4_BIO = 5;
+		close;
+	case 5:
+		mes "Do you have the materials?";
+		next;
+		.@s = select("Dead Branch + 10 Beautiful Flower:Mysterious Flower + 10 Elder Branch:10 Shoot + 10 Elegant Flower:Not yet");
+		if (.@s == 4) close;
+		setarray .@a[1], 604, 6509, 711;   // first item of each set
+		setarray .@an[1], 1, 1, 10;
+		setarray .@b[1], 6511, 7939, 6510; // second item of each set
+		if (countitem(7221) < 10 || countitem(7013) < 10 || countitem(.@a[.@s]) < .@an[.@s] || countitem(.@b[.@s]) < 10) {
+			mes .@n$;
+			mes "That's not everything. 10 Tangled Chain, 10 Coral Reef and the set you chose.";
+			close;
+		}
+		delitem 7221, 10;
+		delitem 7013, 10;
+		delitem .@a[.@s], .@an[.@s];
+		delitem .@b[.@s], 10;
+		DUDS4_BIO = 6;
+		mes .@n$;
+		mes "Good. Now learn how it's done: ^0000FFread at least three of the books^000000 lying around, then use the ^0000FFClean Desk^000000.";
+		close;
+	case 6:
+		mes "Read at least three of the books, then use the Clean Desk.";
+		close;
+	case 7:
+		mes "Your own Mandragora Incubator... and it works. You're not my assistant any more.";
+		mes "You are a ^0000FFBiolo^000000.";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Biolo;
+		DUDS4_BIO = 8;
+		mes .@n$;
+		mes "Come back whenever you like.";
+		close2;
+		warp "verus04", 53, 258;
+		end;
+	}
+	close;
+
+OnInit:
+	if (strnpcinfo(4) == "ver_eju") disablenpc strnpcinfo(0);   // only inside the private laboratory
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+ver_eju,41,175,4	script	Dusty Book#1	4_VR_BOOK_GREEN,{
+	if (DUDS4_BIO != 6) { mes "A dusty book about plants."; close; }
+	.@b = atoi(strnpcinfo(2));
+	if (DUDS4_BIO_B & (1 << .@b)) { mes "You already read this one."; close; }
+	mes "A dusty book. The title is barely readable.";
+	next;
+	if (select("Shake off the dust and read:Leave it") == 2) close;
+	setarray .@txt$[1], "Mandragoras sleep in warm, dark soil. Light wakes them screaming.",
+		"An incubator needs a steady temperature: coral keeps the warmth, chains hold the frame.",
+		"Feed the young roots with flowers, never with blood.",
+		"A Mandragora that trusts its keeper fights for it.",
+		"Seal the incubator well: the spores are worse than the gas outside.";
+	DUDS4_BIO_B |= (1 << .@b);
+	for (.@i = 1; .@i <= 5; .@i++) if (DUDS4_BIO_B & (1 << .@i)) .@c++;
+	mes "\"" + .@txt$[.@b] + "\"";
+	mes "(" + .@c + " / 3 books read" + (.@c >= 3 ? ". Use the Clean Desk." : "") + ")";
+	close;
+
+OnInit:
+	if (strnpcinfo(4) == "ver_eju") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+ver_eju,49,199,4	duplicate(Dusty Book#1)	Dusty Book#2	4_VR_BOOK_BLUE
+ver_eju,77,200,4	duplicate(Dusty Book#1)	Dusty Book#3	4_VR_BOOK_RED
+ver_eju,77,178,4	duplicate(Dusty Book#1)	Dusty Book#4	4_VR_BOOK_YELLOW
+ver_eju,59,173,4	duplicate(Dusty Book#1)	Dusty Book#5	4_VR_BOOK_WHITE
+
+ver_eju,74,190,4	script	Clean Desk#duds4	4_EP17_TABLET,{
+	if (DUDS4_BIO != 6) { mes "A clean desk. Everything is in its place."; close; }
+	for (.@i = 1; .@i <= 5; .@i++) if (DUDS4_BIO_B & (1 << .@i)) .@c++;
+	if (.@c < 3) { mes "You don't know how to use these tools yet. Read the books first (" + .@c + " / 3)."; close; }
+	mes "Following the books, you fit the chains, coral and plants together...";
+	next;
+	if (select("Assemble the incubator:Not yet") == 2) close;
+	DUDS4_BIO = 7;
+	specialeffect2 EF_HEAL2;
+	mes "You built a ^0000FFMandragora Incubator^000000! Show it to Gregor.";
+	close;
+
+OnInit:
+	if (strnpcinfo(4) == "ver_eju") disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+//============================================================================
+// DRAGON KNIGHT (from Rune Knight): Oscar and Letizia's four trials at Abyss Lake (instance on 1@4drk)
+//============================================================================
+gef_fild08,54,101,4	script	Oscar#duds4	4_ED_OSCAR,{
+	.@n$ = "[Oscar]";
+	if (Class == Job_Dragon_Knight) {
+		mes .@n$;
+		mes "Letizia still talks about you, Dragon Knight. Fly high.";
+		close;
+	}
+	if (!callfunc("F_Duds4th_Is", Job_Dragon_Knight)) {
+		mes .@n$;
+		mes "Dragons... only Rune Knights who truly understand them may ride beside them.";
+		close;
+	}
+	callfunc "F_Duds4th_Levels", .@n$, 70;
+	mes .@n$;
+	mes "A Rune Knight who wants to become a ^0000FFDragon Knight^000000? Letizia, the guardian dragon of Abyss Lake, tests every candidate.";
+	mes "Four trials: ^0000FFLife Force^000000, ^0000FFthe Protector^000000, ^0000FFStrength^000000 and ^0000FFPatience^000000.";
+	next;
+	if (select("I'm ready!:Not now.") == 2) close;
+	close2;
+	callfunc "F_Duds4th_Enter", "Dragon Knight Trials", 60, 58;
+	end;
+}
+
+1@4drk,63,62,4	script	Oscar#dk	4_ED_OSCAR,{
+	.@n$ = "[Oscar]";
+	mes .@n$;
+	switch ('dk_stage) {
+	case 0:
+		mes "^0000FFTrial of Life Force^000000: the dragon eggs along the road are fading.";
+		mes "Give them your life force until they recover. ^0000FF7 eggs^000000. Rest or use potions when you run out.";
+		'dk_stage = 1;
+		close;
+	case 1:
+		if ('dk_eggs < 7) {
+			mes "Recover the dragon eggs along the road: " + 'dk_eggs + " / 7.";
+			break;
+		}
+		mes "All seven eggs are alive. Well done.";
+		next;
+		mes .@n$;
+		mes "^0000FFTrial of the Protector^000000: 10 Fountains of Life will appear one at a time.";
+		mes "Kill the ^0000FFBone Acidus^000000 at the fountain, then lure the ^0000FFGolden Acidus^000000 to it. ^FF0000Don't kill the Golden Acidus!^000000";
+		next;
+		if (select("Start:Wait") == 2) close;
+		'dk_stage = 2;
+		'dk_f = 1;
+		close2;
+		donpcevent instance_npcname("Oscar#dk") + "::OnFountain";
+		end;
+	case 2:
+		if ('dk_fail) {
+			mes "The Golden Acidus fell... Try again from the first fountain.";
+			next;
+			if (select("Start again:Wait") == 2) close;
+			'dk_fail = 0;
+			'dk_f = 1;
+			close2;
+			donpcevent instance_npcname("Oscar#dk") + "::OnFountain";
+			end;
+		}
+		mes "Lead the Golden Acidus to Fountain of Life " + 'dk_f + " / 10.";
+		break;
+	default:
+		mes "Letizia is waiting for you at the top of the path, to the north-east.";
+		break;
+	}
+	next;
+	if (select("Continue:Leave the trials") == 2) { close2; warp "gef_fild08", 54, 98; end; }
+	close;
+
+OnFountain:   // shows fountain 'dk_f and its Bone Acidus
+	setarray .@fx[1], 60, 82, 102, 112, 84, 132, 142, 127, 155, 72;
+	setarray .@fy[1], 50, 36, 35, 45, 52, 44, 58, 56, 51, 54;
+	.@m$ = instance_mapname("1@4drk");
+	killmonster .@m$, instance_npcname("Oscar#dk") + "::OnBone";
+	killmonster .@m$, instance_npcname("Oscar#dk") + "::OnGolden";
+	for (.@i = 1; .@i <= 10; .@i++)
+		disablenpc instance_npcname("Fountain of Life#" + .@i);
+	enablenpc instance_npcname("Fountain of Life#" + 'dk_f);
+	monster .@m$, .@fx['dk_f], .@fy['dk_f], "Bone Acidus", 20617, 1, instance_npcname("Oscar#dk") + "::OnBone";
+	mapannounce .@m$, "Fountain of Life " + 'dk_f + " / 10: defeat the Bone Acidus.", bc_map, "0x77DDFF";
+	end;
+
+OnBone:   // Bone Acidus down: the Golden Acidus appears at the previous fountain (or the start)
+	setarray .@fx[0], 66, 60, 82, 102, 112, 84, 132, 142, 127, 155, 72;
+	setarray .@fy[0], 54, 50, 36, 35, 45, 52, 44, 58, 56, 51, 54;
+	.@m$ = instance_mapname("1@4drk");
+	monster .@m$, .@fx['dk_f - 1], .@fy['dk_f - 1], "Golden Acidus", 20876, 1, instance_npcname("Oscar#dk") + "::OnGolden";
+	'dk_gold = $@mobid[0];
+	setunitdata 'dk_gold, UMOB_MAXHP, 30000;
+	setunitdata 'dk_gold, UMOB_HP, 30000;
+	setunitdata 'dk_gold, UMOB_ATKMIN, 1;
+	setunitdata 'dk_gold, UMOB_ATKMAX, 1;
+	setunitdata 'dk_gold, UMOB_MATKMIN, 1;
+	setunitdata 'dk_gold, UMOB_MATKMAX, 1;
+	mapannounce .@m$, "A Golden Acidus appeared! Lure it to Fountain of Life " + 'dk_f + ".", bc_map, "0xFFD700";
+	initnpctimer;
+	end;
+
+OnTimer1000:   // is the Golden Acidus at the fountain yet?
+	stopnpctimer;
+	if ('dk_stage != 2 || 'dk_fail) end;
+	setarray .@fx[1], 60, 82, 102, 112, 84, 132, 142, 127, 155, 72;
+	setarray .@fy[1], 50, 36, 35, 45, 52, 44, 58, 56, 51, 54;
+	if (getunitdata('dk_gold, .@d) == -1) end;
+	.@dx = .@d[UMOB_X] - .@fx['dk_f];
+	.@dy = .@d[UMOB_Y] - .@fy['dk_f];
+	if (.@dx * .@dx + .@dy * .@dy > 9) {
+		initnpctimer;
+		end;
+	}
+	.@m$ = instance_mapname("1@4drk");
+	killmonster .@m$, instance_npcname("Oscar#dk") + "::OnGolden";   // no death event: not a failure
+	specialeffect EF_HEAL2, AREA, instance_npcname("Fountain of Life#" + 'dk_f);
+	if ('dk_f >= 10) {
+		disablenpc instance_npcname("Fountain of Life#10");
+		'dk_stage = 3;
+		enablenpc instance_npcname("Letizia#dk");
+		mapannounce .@m$, "The Fountains of Life are restored! Letizia awaits at the top of the path (north-east).", bc_map, "0xFFD700";
+		end;
+	}
+	'dk_f++;
+	donpcevent instance_npcname("Oscar#dk") + "::OnFountain";
+	end;
+
+OnGolden:   // the Golden Acidus was killed: trial failed
+	if ('dk_stage != 2) end;
+	'dk_fail = 1;
+	stopnpctimer;
+	killmonster instance_mapname("1@4drk"), instance_npcname("Oscar#dk") + "::OnBone";
+	mapannounce instance_mapname("1@4drk"), "The Golden Acidus died! Talk to Oscar to try the Trial of the Protector again.", bc_map, "0xFF7777";
+	end;
+}
+
+1@4drk,75,45,4	script	Dragon Egg#1	4_DRAGON_EGG,{
+	.@e = atoi(strnpcinfo(2));
+	if ('dk_stage != 1) { mes "A dragon egg. It looks fragile."; close; }
+	if ('dk_egg[.@e] >= 100) { mes "This egg is warm and healthy now."; close; }
+	mes "The egg is cold, its life fading. (" + 'dk_egg[.@e] + "%)";
+	mes "Each attempt costs some of your HP and SP.";
+	next;
+	if (select("Start:Not now") == 2) close;
+	close2;
+	while ('dk_egg[.@e] < 100) {
+		if (Hp <= MaxHp / 10 || Sp <= MaxSp / 10) {
+			dispbottom "You're out of strength. Recover (potions, sit, Relax) and try again.";
+			end;
+		}
+		heal -(MaxHp / 10), -(MaxSp / 10);
+		'dk_egg[.@e] = min(100, 'dk_egg[.@e] + rand(10, 25));
+		specialeffect EF_HEAL;
+		dispbottom "Dragon Egg " + .@e + ": " + 'dk_egg[.@e] + "%";
+		sleep2 700;
+	}
+	'dk_eggs++;
+	specialeffect EF_ANGEL2;
+	dispbottom "The dragon egg recovered! (" + 'dk_eggs + " / 7)" + ('dk_eggs >= 7 ? " Return to Oscar." : "");
+	end;
+}
+1@4drk,100,47,4	duplicate(Dragon Egg#1)	Dragon Egg#2	4_DRAGON_EGG
+1@4drk,128,49,4	duplicate(Dragon Egg#1)	Dragon Egg#3	4_DRAGON_EGG
+1@4drk,150,60,4	duplicate(Dragon Egg#1)	Dragon Egg#4	4_DRAGON_EGG
+1@4drk,168,78,4	duplicate(Dragon Egg#1)	Dragon Egg#5	4_DRAGON_EGG
+1@4drk,188,96,4	duplicate(Dragon Egg#1)	Dragon Egg#6	4_DRAGON_EGG
+1@4drk,190,113,4	duplicate(Dragon Egg#1)	Dragon Egg#7	4_DRAGON_EGG
+
+1@4drk,60,50,4	script	Fountain of Life#1	4_ENERGY_BLUE,{
+	mes "A Fountain of Life. Bring the Golden Acidus here.";
+	close;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@4drk,82,36,4	duplicate(Fountain of Life#1)	Fountain of Life#2	4_ENERGY_BLUE
+1@4drk,102,35,4	duplicate(Fountain of Life#1)	Fountain of Life#3	4_ENERGY_BLUE
+1@4drk,112,45,4	duplicate(Fountain of Life#1)	Fountain of Life#4	4_ENERGY_BLUE
+1@4drk,84,52,4	duplicate(Fountain of Life#1)	Fountain of Life#5	4_ENERGY_BLUE
+1@4drk,132,44,4	duplicate(Fountain of Life#1)	Fountain of Life#6	4_ENERGY_BLUE
+1@4drk,142,58,4	duplicate(Fountain of Life#1)	Fountain of Life#7	4_ENERGY_BLUE
+1@4drk,127,56,4	duplicate(Fountain of Life#1)	Fountain of Life#8	4_ENERGY_BLUE
+1@4drk,155,51,4	duplicate(Fountain of Life#1)	Fountain of Life#9	4_ENERGY_BLUE
+1@4drk,72,54,4	duplicate(Fountain of Life#1)	Fountain of Life#10	4_ENERGY_BLUE
+
+1@4drk,186,126,4	script	Letizia#dk	4_4JOB_LETICIA,{
+	.@n$ = "[Letizia]";
+	.@m$ = instance_mapname("1@4drk");
+	mes .@n$;
+	switch ('dk_stage) {
+	case 3:
+		mes "So you're the Rune Knight Oscar keeps talking about.";
+		mes "^0000FFTrial of Strength^000000: defeat ^0000FF50 of my soldiers within 5 minutes^000000.";
+		next;
+		if (select("Bring them on!:Wait") == 2) close;
+		'dk_kills = 0;
+		'dk_stage = 4;
+		areamonster .@m$, 172, 113, 196, 133, "Letizia's Soldier", 20616, 50, instance_npcname("Letizia#dk") + "::OnSoldier";
+		initnpctimer;
+		mapannounce .@m$, "Trial of Strength: 50 soldiers, 5 minutes. Go!", bc_map, "0xFFD700";
+		close;
+	case 4:
+		mes "Soldiers defeated: " + 'dk_kills + " / 50. Hurry!";
+		close;
+	case 5:
+		mes "Strong, yes. But a Dragon Knight also needs ^0000FFpatience^000000.";
+		mes "^0000FFTrial of Patience^000000: face me in my true form. Bring me down to ^0000FF91% of my life^000000. No more.";
+		next;
+		if (select("I'm ready.:Wait") == 2) close;
+		'dk_stage = 6;
+		close2;
+		disablenpc instance_npcname("Letizia#dk");
+		monster .@m$, 186, 126, "Letizia", 20875, 1, instance_npcname("Letizia#dk") + "::OnDragon";
+		'dk_dragon = $@mobid[0];
+		mapannounce .@m$, "Letizia takes her dragon form! Bring her down to 91% HP.", bc_map, "0xFF7777";
+		donpcevent instance_npcname("Letizia#dk") + "::OnWatch";
+		end;
+	case 7:
+		mes "Enough! You held back when you could have pressed on. That is the heart of a Dragon Knight.";
+		next;
+		callfunc "F_Duds4th_Promote", Job_Dragon_Knight;
+		DUDS4_DK = 1;
+		mes .@n$;
+		mes "Rise, ^0000FFDragon Knight^000000. The dragons will answer your call.";
+		close2;
+		warp "gef_fild08", 54, 98;
+		end;
+	}
+	close;
+
+OnSoldier:
+	if ('dk_stage != 4) end;
+	'dk_kills++;
+	if ('dk_kills < 50) end;
+	stopnpctimer;
+	'dk_stage = 5;
+	mapannounce instance_mapname("1@4drk"), "All 50 soldiers defeated! Talk to Letizia.", bc_map, "0xFFD700";
+	end;
+
+OnTimer300000:   // 5 minutes: Trial of Strength failed
+	stopnpctimer;
+	if ('dk_stage != 4) end;
+	killmonster instance_mapname("1@4drk"), instance_npcname("Letizia#dk") + "::OnSoldier";
+	'dk_stage = 3;
+	mapannounce instance_mapname("1@4drk"), "Time's up! Talk to Letizia to try the Trial of Strength again.", bc_map, "0xFF7777";
+	end;
+
+OnWatch:   // Trial of Patience: stop at 91% HP
+	if ('dk_stage != 6) end;
+	if (getunitdata('dk_dragon, .@d) == -1) end;
+	if (.@d[UMOB_HP] * 100 > .@d[UMOB_MAXHP] * 91) {
+		sleep 500;
+		donpcevent instance_npcname("Letizia#dk") + "::OnWatch";
+		end;
+	}
+	killmonster instance_mapname("1@4drk"), instance_npcname("Letizia#dk") + "::OnDragon";
+	// fall through
+OnDragon:
+	if ('dk_stage != 6) end;
+	'dk_stage = 7;
+	enablenpc instance_npcname("Letizia#dk");
+	mapannounce instance_mapname("1@4drk"), "Letizia returns to her human form. Talk to her.", bc_map, "0xFFD700";
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
