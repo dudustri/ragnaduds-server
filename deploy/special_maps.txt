@@ -470,17 +470,3 @@ izlude_c,134,92,4	duplicate(Agente VIP)	Agente VIP#izlc	4_F_EDEN_OFFICER
 izlude_d,134,92,4	duplicate(Agente VIP)	Agente VIP#izld	4_F_EDEN_OFFICER
 
 
-// TEMP TEST
--	script	DudsTestCH	-1,{
-OnInit:
-	sleep 15000;
-	freeloop(1);
-	.@m$ = $@CH_map$[1];
-	killmonster .@m$, "Portal Fantasma#ch::OnBossKill";
-	debugmes "TEST killed room1: " + mobcount(.@m$, "Portal Fantasma#ch::OnBossKill") + " ; room2 " + mobcount($@CH_map$[2], "Portal Fantasma#ch::OnBossKill");
-	for (.@k = 1; .@k <= 4; .@k++) {
-		donpcevent "Portal Fantasma#ch::OnTimer120000";
-		debugmes "TEST tick " + .@k + ": room1 bosses " + mobcount(.@m$, "Portal Fantasma#ch::OnBossKill") + " ; room2 " + mobcount($@CH_map$[2], "Portal Fantasma#ch::OnBossKill");
-	}
-	end;
-}
