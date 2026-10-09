@@ -1,0 +1,58 @@
+{{define "title"}}Admin{{end}}
+{{define "content"}}
+<h1>ADMIN</h1>
+{{if .Link}}<section class="frame"><h2>SET-PASSWORD LINK</h2><p>Sent by e-mail{{if not .SMTP}} (not really: SMTP is off, it's in the <a href="/admin/outbox">outbox</a>){{end}}. You can also send it yourself:</p><div class="linkbox">{{.Link}}</div></section>{{end}}
+{{if not .SMTP}}<div class="err">E-mail is not configured (SMTP_HOST / MAIL_FROM): mails are only kept in the <a href="/admin/outbox">outbox</a>.</div>{{end}}
+
+<section class="frame">
+  <h2>PENDING REQUESTS ({{len .Pending}})</h2>
+  {{range .Pending}}
+  <div class="frame" style="margin:12px 0;padding:12px 14px">
+    <p><b>{{.Username}}</b> · {{.FirstName}} {{.LastName}} · <a href="mailto:{{.Email}}">{{.Email}}</a><br>
+       <span class="muted">{{date .CreatedAt}} · terms {{.TermsVersion}} · both statements accepted</span></p>
+    {{if .Message}}<p style="white-space:pre-wrap;background:#15121f;border:2px solid #000;padding:6px 10px">{{.Message}}</p>{{end}}
+    <form method="post" action="/admin/request">
+      <input type="hidden" name="csrf" value="{{$.CSRF}}"><input type="hidden" name="id" value="{{.ID}}">
+      <label>Note (optional, goes in the e-mail)</label><input type="text" name="note" maxlength="300">
+      <label class="check"><input type="checkbox" name="notify" value="yes" checked><span>E-mail them if I reject</span></label>
+      <div class="actions">
+        <button class="go" name="action" value="approve">APPROVE ✔</button>
+        <button class="no" name="action" value="reject" onclick="return confirm('Reject {{.Username}}?')">REJECT ✖</button>
+      </div>
+    </form>
+  </div>
+  {{else}}<p class="muted">Nothing waiting. 🎉</p>{{end}}
+</section>
+
+<section class="frame">
+  <h2>USERS ({{len .Users}})</h2>
+  <div class="scroll"><table>
+    <tr><th>USER</th><th>E-MAIL</th><th>SINCE</th><th></th></tr>
+    {{range .Users}}
+    <tr><td><b>{{.Username}}</b> {{if .IsAdmin}}<span class="tag adm">ADMIN</span>{{end}} {{if .Disabled}}<span class="tag off">OFF</span>{{end}} {{if not .PwHash}}<span class="tag">NO PASSWORD</span>{{end}}</td>
+        <td><form method="post" action="/admin/user" class="inline-edit">
+          <input type="hidden" name="csrf" value="{{$.CSRF}}"><input type="hidden" name="id" value="{{.ID}}">
+          <input type="email" name="email" value="{{.Email}}" maxlength="120" placeholder="no e-mail" aria-label="E-mail of {{.Username}}">
+          <button name="action" value="email" title="Save the e-mail (website + game)">SAVE</button>
+        </form></td><td class="muted">{{date .CreatedAt}}</td>
+        <td><form method="post" action="/admin/user" style="display:flex;gap:6px;flex-wrap:wrap;margin:0">
+          <input type="hidden" name="csrf" value="{{$.CSRF}}"><input type="hidden" name="id" value="{{.ID}}">
+          <button name="action" value="link">LINK</button>
+          {{if .Disabled}}<button name="action" value="enable">ENABLE</button>{{else}}<button name="action" value="disable">DISABLE</button>{{end}}
+          {{if .IsAdmin}}<button name="action" value="unadmin">-ADMIN</button>{{else}}<button name="action" value="admin">+ADMIN</button>{{end}}
+        </form></td></tr>
+    {{end}}
+  </table></div>
+  <p class="muted">E-MAIL: edit and SAVE; it changes on the website and on both game servers (the game asks for it to delete a character). LINK: new set-password link (e-mailed, and shown here to copy). DISABLE: no website login (the game account stays; ban it in game if needed).</p>
+</section>
+
+<section class="frame">
+  <h2>RECENTLY DECIDED</h2>
+  <div class="scroll"><table>
+    <tr><th>USER</th><th>E-MAIL</th><th>STATUS</th><th>WHEN</th></tr>
+    {{range .Approved}}<tr><td>{{.Username}}</td><td>{{.Email}}</td><td>approved</td><td class="muted">{{date .DecidedAt}}</td></tr>{{end}}
+    {{range .Rejected}}<tr><td>{{.Username}}</td><td>{{.Email}}</td><td>rejected{{with .Note}}: {{.}}{{end}}</td><td class="muted">{{date .DecidedAt}}</td></tr>{{end}}
+  </table></div>
+  <p><a href="/admin/outbox">E-mail outbox ▶</a></p>
+</section>
+{{end}}

@@ -1,0 +1,7 @@
+{{template "top" .}}
+<p style="font-size:20px;color:#ff8fb1;font-weight:bold;margin:0 0 12px;">About your request</p>
+<p>Hi {{.Name}},</p>
+<p>Thanks for your interest in RagnaDuds. It's a small server for a group of friends, and we can't open an account for you right now.</p>
+{{with .Note}}<p style="background:#15121f;border:2px solid #000;padding:10px 12px;">{{.}}</p>{{end}}
+<p>Your request and its data will be deleted within 30 days.</p>
+{{template "bottom" .}}

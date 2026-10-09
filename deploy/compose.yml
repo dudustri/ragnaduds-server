@@ -105,6 +105,8 @@ services:
             - "./fourth_quests_b.txt:/rathena/npc/custom/duds_fourth_quests_b.txt:ro,z"
             - "./fourth_quests_c.txt:/rathena/npc/custom/duds_fourth_quests_c.txt:ro,z"
             - "./fourth_quests_d.txt:/rathena/npc/custom/duds_fourth_quests_d.txt:ro,z"
+            - "./casino.txt:/rathena/npc/custom/duds_casino.txt:ro,z"                      # Comodo Casino (art: casino/build_casino_art.py)
+            - "./mvp_room.txt:/rathena/npc/custom/etc/mvp_room.txt:ro,z"   # Private MVP Room (Prontera): our copy, more MVPs
             # bRO special maps (Mapas Especiais, Cheffenia, Turn In): script + rooms, tickets, cash shop
             - "./special_maps.txt:/rathena/npc/custom/duds_special_maps.txt:ro,z"
             - "./re_db_import/instance_db.yml:/rathena/db/import/instance_db.yml:ro,z"
@@ -134,6 +136,26 @@ services:
         ports: ["${HTTP_PORT:-80}:80", "${HTTPS_PORT:-443}:443"]
         volumes: ["./files:/srv/files:ro,z", "web_data:/data", "status:/srv/site/status:ro"]
         networks: [web]
+        depends_on: [portal]
+
+    # ---------------- account requests, website login, password reset, admin (build/portal) ----------------
+    portal:
+        image: "ghcr.io/dudustri/duds-server-portal:${TAG:-latest}"
+        restart: unless-stopped
+        environment:
+            TZ: "CET-1CEST,M3.5.0,M10.5.0/3"
+            SITE_URL: "${PORTAL_URL:-https://ragnaduds.duckdns.org}"
+            RE_DB_PASS: "${RE_DB_PASS}"
+            PRERE_DB_PASS: "${PRERE_DB_PASS}"
+            GAME_MD5: "${GAME_MD5:-1}"                 # game passwords stored as MD5 (login_conf use_MD5_passwords: yes)
+            ADMIN_EMAIL: "${ADMIN_EMAIL:-}"            # daily "requests waiting" e-mail
+            SMTP_HOST: "${SMTP_HOST:-}"                # e.g. smtp.gmail.com (with an app password) (empty: mails only kept in the outbox)
+            SMTP_PORT: "${SMTP_PORT:-587}"
+            SMTP_USER: "${SMTP_USER:-}"
+            SMTP_PASS: "${SMTP_PASS:-}"
+            MAIL_FROM: "${MAIL_FROM:-}"                # e.g. "RagnaDuds <ragnaduds@gmail.com>" (the SMTP account's own address)
+        volumes: ["portal_data:/data"]
+        networks: [web, prere, re]
 
     # ---------------- server status + Hall of Fame for the website (deploy/status.sh) ----------------
     status:
@@ -153,4 +175,5 @@ volumes:
     prere_db: { name: "${PRERE_DB_VOLUME:-duds_prere_db}" }
     re_db: { name: "${RE_DB_VOLUME:-duds_re_db}" }
     web_data: {}
+    portal_data: {}
     status: {}

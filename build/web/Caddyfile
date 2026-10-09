@@ -1,31 +1,55 @@
 # SITE_ADDRESS: ":80" (plain IP, HTTP) or a domain name (automatic HTTPS)
-# Login: site/login.html sets the cookie rd_auth = sha256("rd:<user>:<password>"). Everything except the login
-# page needs that cookie to match DL_TOKEN (set it with ./duds.sh set-password <host> <user>).
+# Login: every player has their own username/password, checked by the portal (build/portal): account
+# requests, login, password reset, admin. Caddy asks the portal (forward_auth /auth) before serving anything
+# private. The launchers keep downloading updates with the cookie rd_auth=DL_TOKEN (./duds.sh set-password).
 {$SITE_ADDRESS::80} {
 	root * /srv/site
+	encode zstd gzip
 
-	# what the login page itself needs
-	@public path /login.html /favicon.ico /img/favicon.ico /img/favicon-32.png /img/ragnaduds-npc.png
+	# the portal's own pages (public: it checks the login itself where needed)
+	@portal path /login /logout /join /forgot /set-password /account /account/* /admin /admin/* /portal-static/*
+	handle @portal {
+		reverse_proxy portal:8000
+	}
+
+	# what public pages need (icons) + the old login page → the new one
+	@public path /favicon.ico /img/favicon.ico /img/favicon-32.png /img/ragnaduds-256.png /img/ragnaduds-npc.png
 	handle @public {
 		file_server
 	}
+	redir /login.html /login 301
 
-	# no (or wrong) login cookie → login page
-	@guest not header Cookie *rd_auth={$DL_TOKEN}*
-	handle @guest {
-		redir * /login.html 302
+	# launchers: update files with the shared launcher token (no player login inside the launcher)
+	@launcher {
+		path /files/patch/*
+		header Cookie *rd_auth={$DL_TOKEN}*
 	}
-
-	# the big client zips: resumable (range requests), always "save as"
-	handle_path /files/* {
+	handle @launcher {
+		uri strip_prefix /files
 		root * /srv/files
-		header Content-Disposition attachment
 		file_server
 	}
 
+	# everything else: logged-in players only (the portal redirects to /login otherwise)
 	handle {
-		encode zstd gzip
-		try_files {path} {path}.html	# /features -> features.html
-		file_server
+		forward_auth portal:8000 {
+			uri /auth
+			copy_headers X-Portal-User
+		}
+		# the browser must check with us every time (a cheap 304 when unchanged), so the login is checked too:
+		# without this it reuses its saved copy and a logged-out visitor still sees the pages
+		header Cache-Control "private, no-cache"
+
+		# the big client zips: resumable (range requests), always "save as"
+		handle_path /files/* {
+			root * /srv/files
+			header Content-Disposition attachment
+			file_server
+		}
+
+		handle {
+			try_files {path} {path}.html	# /features -> features.html
+			file_server
+		}
 	}
 }

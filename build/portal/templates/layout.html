@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RagnaDuds · {{block "title" .}}Account{{end}}</title>
+<link rel="icon" href="/img/favicon.ico?v=round" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/portal-static/portal.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/">RAGNADUDS</a>
+    <div class="nav">
+      {{if .Me}}
+        {{/* a menu that stays the same on every page, with the current page highlighted */}}
+        <a href="/">SITE</a>
+        <a href="/account"{{if eq .Page "account"}} aria-current="page"{{end}}>ACCOUNT</a>
+        {{if .Me.IsAdmin}}<a href="/admin"{{if or (eq .Page "admin") (eq .Page "outbox")}} aria-current="page"{{end}}>ADMIN</a>{{end}}
+        <form method="post" action="/logout" style="margin:0"><button>LOG OUT</button></form>
+      {{else}}
+        {{/* logged out: only the other way in (no link to the page you are already on) */}}
+        {{if ne .Page "login"}}<a href="/login">LOG IN</a>{{end}}
+        {{if not (or (eq .Page "join") (eq .Page "join_done"))}}<a href="/join">REQUEST AN ACCOUNT</a>{{end}}
+      {{end}}
+    </div>
+  </div>
+  {{if .Msg}}<div class="ok">{{.Msg}}</div>{{end}}
+  {{template "content" .}}
+  <footer>Friends-only fan server. Not affiliated with, endorsed or sponsored by Gravity. Ragnarok Online belongs to its owners.</footer>
+</div>
+</body>
+</html>

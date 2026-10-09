@@ -1,0 +1,67 @@
+{{define "title"}}Request an account{{end}}
+{{define "content"}}
+<h1>JOIN RAGNADUDS</h1>
+<p class="sub">A private, friends-only fan server. Ask for an account below; Duds reads every request.</p>
+{{if .Errors}}<div class="err">{{range .Errors}}{{.}}<br>{{end}}</div>{{end}}
+<form method="post" action="/join" id="joinform">
+  <section class="frame step" id="s1">
+    <h2>1 · THE TERMS</h2>
+    <div class="terms"><ol>
+      <li>RagnaDuds is a <b>private, non-commercial fan project</b> run for friends. Nothing is sold; cash points are earned by playing.</li>
+      <li>RagnaDuds is <b>not affiliated with, endorsed, sponsored or approved by Gravity Co., Ltd.</b> or any official Ragnarok Online publisher. Ragnarok Online, its names, art and data belong to their owners.</li>
+      <li>Accounts are personal. Don't share them, don't cheat, don't use bots, and be decent to other players. Duds can suspend or remove any account at any time.</li>
+      <li>The server is offered as it is, without guarantees: it can go down, be wiped or close at any time.</li>
+      <li>We store only what you send here (name, e-mail, username, your message) to run your account and to contact you. Ask Duds at any time and it is deleted. Rejected requests are deleted after 30 days.</li>
+      <li>If you have any legal concern about this project, you agree to contact Duds first and to raise it only through proper, lawful channels.</li>
+    </ol></div>
+    <label class="check"><input type="checkbox" name="agree_terms" value="yes" id="c1" {{if .Agreed}}checked{{end}} required>
+      <span>I have read and <b>agree to the terms</b> (version {{.Terms}}).</span></label>
+    <div class="actions"><button type="button" class="go" data-next="s2" data-need="c1">I AGREE ▶</button></div>
+  </section>
+
+  <section class="frame step" id="s2">
+    <h2>2 · NO CONNECTION WITH GRAVITY</h2>
+    <p>Please confirm, explicitly:</p>
+    <ul>
+      <li>I am <b>not an employee, contractor, agent or representative of Gravity Co., Ltd.</b>, of any of its subsidiaries or licensees, or of any official Ragnarok Online publisher, and I am not asking for an account on their behalf.</li>
+      <li>I am not joining to collect evidence or information for any legal action. Any legal concern I may have will be raised with Duds first and only through lawful channels.</li>
+    </ul>
+    <label class="check"><input type="checkbox" name="agree_gravity" value="yes" id="c2" {{if .Agreed}}checked{{end}} required>
+      <span>I confirm I have <b>no connection with Gravity at all</b>.</span></label>
+    <div class="actions"><button type="button" class="go" data-next="s3" data-need="c2">I CONFIRM ▶</button></div>
+  </section>
+
+  <section class="frame step" id="s3">
+    <h2>3 · ABOUT YOU</h2>
+    <label for="message">Anything you'd like to tell us? (optional: who you know here, why you want to play...)</label>
+    <textarea id="message" name="message" maxlength="1000">{{with .Req}}{{.Message}}{{end}}</textarea>
+    <div class="row2">
+      <div><label for="first_name">Name</label><input type="text" id="first_name" name="first_name" maxlength="40" required value="{{with .Req}}{{.FirstName}}{{end}}"></div>
+      <div><label for="last_name">Surname</label><input type="text" id="last_name" name="last_name" maxlength="40" required value="{{with .Req}}{{.LastName}}{{end}}"></div>
+    </div>
+    <label for="email">E-mail (your approval and password link go here)</label>
+    <input type="email" id="email" name="email" maxlength="120" required value="{{with .Req}}{{.Email}}{{end}}">
+    <label for="username">Username you want (4 to 23 letters, numbers or _ ; for the game and this website)</label>
+    <input type="text" id="username" name="username" maxlength="23" pattern="[A-Za-z0-9_]{4,23}" required value="{{with .Req}}{{.Username}}{{end}}" autocomplete="username">
+    <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="muted">You choose your password later, from the link in the approval e-mail.</p>
+    <div class="actions"><button class="go" type="submit">SEND MY REQUEST ▶</button></div>
+  </section>
+</form>
+<script>
+// one step at a time (without JavaScript all three steps simply show)
+(function () {
+  if ({{.Agreed}}) return;
+  ["s2", "s3"].forEach(function (id) { document.getElementById(id).hidden = true; });
+  document.querySelectorAll("[data-next]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var need = document.getElementById(b.dataset.need);
+      if (!need.checked) { need.focus(); need.parentNode.style.outline = "2px solid #ff6b6b"; return; }
+      need.parentNode.style.outline = "";
+      var next = document.getElementById(b.dataset.next);
+      next.hidden = false; next.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+})();
+</script>
+{{end}}

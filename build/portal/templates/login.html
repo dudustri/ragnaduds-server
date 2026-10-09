@@ -1,0 +1,17 @@
+{{define "title"}}Log in{{end}}
+{{define "content"}}
+<h1>LOG IN</h1>
+<section class="frame" style="max-width:520px;margin:18px auto">
+  {{if .Error}}<div class="err">{{.Error}}</div>{{end}}
+  <form method="post" action="/login">
+    <input type="hidden" name="next" value="{{.Next}}">
+    <label for="u">Username (same as in the game)</label>
+    <input type="text" id="u" name="username" required autocomplete="username" value="{{.Username}}" autofocus>
+    <label for="p">Password</label>
+    <input type="password" id="p" name="password" required autocomplete="current-password">
+    <div class="actions"><button class="go" type="submit">LOG IN ▶</button></div>
+  </form>
+  <p><a href="/forgot">Forgot your username or password?</a><br>
+     No account yet? <a href="/join">Request one</a>.</p>
+</section>
+{{end}}

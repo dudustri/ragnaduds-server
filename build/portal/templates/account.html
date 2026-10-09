@@ -1,0 +1,25 @@
+{{define "title"}}Your account{{end}}
+{{define "content"}}
+<h1>YOUR ACCOUNT</h1>
+<section class="frame">
+  <h2>{{.Me.Username}}</h2>
+  <p>E-mail: {{if .Me.Email}}<b>{{.Me.Email}}</b>{{else}}<span class="muted">none (ask Duds to add one, it's how you reset your password)</span>{{end}}<br>
+     Same username and password in the <b>game</b> (both servers) and on this website.</p>
+  <p><a class="btn go" href="/">▶ GO TO THE SITE / DOWNLOADS</a></p>
+</section>
+<section class="frame">
+  <h2>CHANGE PASSWORD</h2>
+  {{if .Error}}<div class="err">{{.Error}}</div>{{end}}
+  <form method="post" action="/account/password">
+    <input type="hidden" name="csrf" value="{{.CSRF}}">
+    <input type="text" name="username" value="{{.Me.Username}}" autocomplete="username" hidden>
+    <label for="c">Current password</label>
+    <input type="password" id="c" name="current" required autocomplete="current-password">
+    <div class="row2">
+      <div><label for="p1">New password (6 to 23)</label><input type="password" id="p1" name="password" minlength="6" maxlength="23" required autocomplete="new-password"></div>
+      <div><label for="p2">Again</label><input type="password" id="p2" name="password2" minlength="6" maxlength="23" required autocomplete="new-password"></div>
+    </div>
+    <div class="actions"><button class="go" type="submit">CHANGE ▶</button></div>
+  </form>
+</section>
+{{end}}

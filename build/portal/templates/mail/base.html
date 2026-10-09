@@ -1,0 +1,22 @@
+{{define "top"}}<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{.Subject}}</title></head>
+<body style="margin:0;padding:0;background:#14121f;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#14121f;padding:24px 10px;">
+<tr><td align="center">
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#221d33;border:4px solid #6b4f2a;box-shadow:6px 6px 0 #000;">
+<tr><td style="padding:26px 26px 6px;text-align:center;font-family:'Courier New',Courier,monospace;">
+  <div style="font-size:28px;font-weight:bold;letter-spacing:4px;color:#ffd166;text-shadow:3px 3px 0 #7a3e12;">RAGNADUDS</div>
+  <div style="font-size:13px;color:#b9ab8a;letter-spacing:2px;margin-top:4px;">✦ PRIVATE RAGNAROK SERVER FOR FRIENDS ✦</div>
+</td></tr>
+<tr><td style="padding:14px 30px 24px;font-family:'Courier New',Courier,monospace;font-size:16px;line-height:1.55;color:#f6ecd2;">
+{{end}}
+{{define "button"}}<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px auto;"><tr><td style="background:#7ee081;border:3px solid #000;box-shadow:4px 4px 0 #000;">
+  <a href="{{.Link}}" style="display:inline-block;padding:14px 24px;font-family:'Courier New',Courier,monospace;font-size:16px;font-weight:bold;color:#10131f;text-decoration:none;letter-spacing:1px;">{{.Label}}</a>
+</td></tr></table>
+<p style="font-size:12px;color:#b9ab8a;word-break:break-all;">Button not working? Open: <a href="{{.Link}}" style="color:#7cc4ff;">{{.Link}}</a></p>{{end}}
+{{define "bottom"}}
+</td></tr>
+<tr><td style="padding:14px 26px 22px;border-top:2px dashed #4a3f63;font-family:'Courier New',Courier,monospace;font-size:11px;color:#b9ab8a;text-align:center;">
+  Friends-only fan server. Not affiliated with, endorsed or sponsored by Gravity.<br>Ragnarok Online belongs to its owners.
+</td></tr>
+</table></td></tr></table></body></html>{{end}}

@@ -61,9 +61,12 @@
   .srv-switch button[aria-pressed="true"].re { background: var(--blue); color: #10131f; }
   .srv-switch button[aria-pressed="true"].pre { background: var(--pink); color: #1f1018; }
   .srv-note { text-align: center; color: var(--ink-dim); margin: -6px 0 12px; }
-  .toc { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 4px 0 10px; }
+  /* section buttons: balanced rows (4 + 4 with 8 sections), 2 per row on phones */
+  .toc { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 4px 0 10px; }
+  .toc a { text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.5; }
   .toc a { font: 8px "Press Start 2P", monospace; color: var(--ink); text-decoration: none; background: var(--panel-2);
            padding: 7px 8px; border: 2px solid #000; }
+  .toc a { line-height: 1.7; }   /* after the font shorthand, which resets it */
   .toc a:hover { background: var(--gold); color: #1b1203; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 8px 0; }
   .stat { background: var(--panel-2); border: 3px solid #000; padding: 10px; text-align: center; }
@@ -71,13 +74,26 @@
   .stat .l { color: var(--ink-dim); font-size: 19px; }
   .scroll { overflow-x: auto; }
   footer { text-align: center; color: var(--ink-dim); font-size: 18px; margin-top: 28px; }
-  @media (max-width: 600px) { body { font-size: 20px; } table { font-size: 18px; } .lang { top: 8px; right: 8px; } .wrap { padding-top: 56px; } }
+  @media (max-width: 600px) { .toc { grid-template-columns: repeat(2, minmax(0, 1fr)); } body { font-size: 20px; } table { font-size: 18px; } }
+  /* top bar: in the page flow (never over the title); language = a setting on the left, account actions on the right */
+  .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+  .topbar .lang { position: static; margin: 0; width: auto; }
+  .user { display: flex; gap: 8px; }
+  .user a { font: 10px "Press Start 2P", monospace; padding: 8px 10px; text-decoration: none; border: 3px solid #000; box-shadow: 3px 3px 0 #000;
+            background: var(--panel-2); color: var(--ink); }
+  .user a:hover, .user a:focus-visible { background: var(--gold); color: #1b1203; }
+  .user a.quiet { background: transparent; color: var(--ink-dim); box-shadow: none; border-color: transparent; text-decoration: underline; }
+  .user a.quiet:hover, .user a.quiet:focus-visible { color: var(--ink); background: transparent; }
+  @media (max-width: 480px) { .user { gap: 4px; } .user .my { display: none; } .user a.quiet { padding: 8px 4px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="lang" role="group" aria-label="Language">
-    <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
+  <div class="topbar">
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
+    </div>
+    <nav class="user" aria-label="Account"><a href="/account"><span class="my">MY </span>ACCOUNT</a><a class="quiet" href="/logout">LOG OUT</a></nav>
   </div>
   <p><a class="back" href="/" data-i18n="back"></a></p>
   <h1 data-i18n="title"></h1>

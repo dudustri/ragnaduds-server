@@ -1,0 +1,9 @@
+{{define "title"}}Request sent{{end}}
+{{define "content"}}
+<h1>REQUEST SENT!</h1>
+<section class="frame">
+  <p>Thanks{{with .Name}}, {{.}}{{end}}! Your request is in the queue. Duds goes through them every day.</p>
+  <p>When it's approved you get an e-mail with a link to <b>choose your password</b>. With it you log in to the game and to this website (downloads included).</p>
+  <p class="muted">Nothing in your inbox? Check the spam folder.</p>
+</section>
+{{end}}

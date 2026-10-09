@@ -1,0 +1,18 @@
+{{define "title"}}Choose your password{{end}}
+{{define "content"}}
+<h1>{{if .Welcome}}WELCOME!{{else}}NEW PASSWORD{{end}}</h1>
+<section class="frame" style="max-width:560px;margin:18px auto">
+  {{if .Welcome}}<p>Your account <b>{{.Username}}</b> is ready. Choose your password: it's the same for the <b>game</b> and this <b>website</b>.</p>
+  {{else}}<p>New password for <b>{{.Username}}</b> (game and website).</p>{{end}}
+  {{if .Error}}<div class="err">{{.Error}}</div>{{end}}
+  <form method="post" action="/set-password">
+    <input type="hidden" name="t" value="{{.Token}}">
+    <input type="text" name="username" value="{{.Username}}" autocomplete="username" hidden>
+    <label for="p1">Password (6 to 23 characters)</label>
+    <input type="password" id="p1" name="password" minlength="6" maxlength="23" required autocomplete="new-password" autofocus>
+    <label for="p2">Same password again</label>
+    <input type="password" id="p2" name="password2" minlength="6" maxlength="23" required autocomplete="new-password">
+    <div class="actions"><button class="go" type="submit">SAVE ▶</button></div>
+  </form>
+</section>
+{{end}}

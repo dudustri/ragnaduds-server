@@ -1,0 +1,13 @@
+{{define "title"}}Forgot password{{end}}
+{{define "content"}}
+<h1>FORGOT IT?</h1>
+<section class="frame" style="max-width:560px;margin:18px auto">
+  <p>Write the e-mail of your account. We send you your <b>username</b> and a link to choose a <b>new password</b> (game and website).</p>
+  <form method="post" action="/forgot">
+    <label for="e">E-mail</label>
+    <input type="email" id="e" name="email" required autofocus>
+    <div class="actions"><button class="go" type="submit">SEND ME THE LINK ▶</button></div>
+  </form>
+  <p class="muted">No e-mail on your account (an old account)? Ask Duds for a link.</p>
+</section>
+{{end}}

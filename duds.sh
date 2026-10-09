@@ -35,6 +35,7 @@ Run (host = local | vm)
   ps <host>                    container status
   logs <host> [service...]     follow logs (Ctrl+C to stop)
   online <host>                players online per server
+  portal <host> <cmd>       website accounts: import | md5 | admin <user> | link <user> (set-password link)
   gm <host> <re|pre> @cmd   run a GM command on a running map server, no restart (e.g. gm vm re @reloadscript)
 
 Configs (hosts/<host>/, never baked into images)
@@ -90,14 +91,14 @@ sync_vm() {
     ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/files"
     rsync -av --inplace --delete --exclude 'hosts/local/' --exclude 'files/' --exclude 'accounts.txt' \
         "$DEPLOY/compose.yml" "$DEPLOY/gm_commands.txt" "$DEPLOY/special_maps.txt" "$DEPLOY/re_db_import" \
-        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" "$DEPLOY/homunculus_room.txt" "$DEPLOY/ticket_refiner.txt" "$DEPLOY/jobmaster.txt" "$DEPLOY/stylist.txt" "$DEPLOY/fourth_quests.txt" "$DEPLOY/fourth_quests_a.txt" "$DEPLOY/fourth_quests_b.txt" "$DEPLOY/fourth_quests_c.txt" "$DEPLOY/fourth_quests_d.txt" \
+        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" "$DEPLOY/homunculus_room.txt" "$DEPLOY/ticket_refiner.txt" "$DEPLOY/jobmaster.txt" "$DEPLOY/stylist.txt" "$DEPLOY/fourth_quests.txt" "$DEPLOY/fourth_quests_a.txt" "$DEPLOY/fourth_quests_b.txt" "$DEPLOY/fourth_quests_c.txt" "$DEPLOY/fourth_quests_d.txt" "$DEPLOY/casino.txt" "$DEPLOY/mvp_room.txt" \
         "$DEPLOY/hosts" "$SSH_HOST:$REMOTE_DIR/"
 }
 
 cmd="${1:-help}"; shift || true
 case "$cmd" in
   release)
-    imgs=("$@"); [[ ${#imgs[@]} -eq 0 ]] && imgs=(pre_renewal renewal db web)
+    imgs=("$@"); [[ ${#imgs[@]} -eq 0 ]] && imgs=(pre_renewal renewal db web portal)
     export TAG="$(git -C "$ROOT" rev-parse --short HEAD)" BUILDX_BUILDER="${BUILDX_BUILDER:-multiarch}"
     steps ${#imgs[@]}
     echo "Releasing ${imgs[*]} as :latest and :$TAG (x86 + ARM)"
@@ -145,6 +146,9 @@ case "$cmd" in
   ps)      need_host "${1:-}"; dc "$1" ps --format 'table {{.Service}}\t{{.Status}}\t{{.Ports}}';;
   logs)    host="${1:-}"; need_host "$host"; shift; dc "$host" logs -f -t --tail 100 "$@";;
   online)  need_host "${1:-}"; online_count "$1";;
+  portal)
+    host="${1:-}"; need_host "$host"; shift; [[ $# -gt 0 ]] || die "usage: portal <host> import|md5|admin <user>|link <user>"
+    dc "$host" exec -T portal portal "$@";;
   gm)
     host="${1:-}"; need_host "$host"; srv="${2:-}"
     [[ "$srv" == re || "$srv" == pre ]] && [[ $# -ge 3 ]] || die "usage: gm <host> <re|pre> @command [args]   e.g. gm vm re @reloadscript"
@@ -152,7 +156,7 @@ case "$cmd" in
     # the map server reads console lines from stdin ("admin:@cmd"); print what it logged right after
     gm_script=$(cat <<EOS
 cid=\$(docker compose --env-file hosts/$host/.env ps -q $svc); since=\$(date -u +%Y-%m-%dT%H:%M:%SZ)
-printf '%s\\n' $(printf '%q' "admin:$*") | timeout 3 docker attach --sig-proxy=false "\$cid" >/dev/null 2>&1
+printf '%s\\n' $(printf '%q' "admin:$*") | timeout -s KILL 3 docker attach --sig-proxy=false "\$cid" >/dev/null 2>&1
 sleep 2; docker logs --since "\$since" "\$cid" 2>&1 | tail -20
 EOS
 )

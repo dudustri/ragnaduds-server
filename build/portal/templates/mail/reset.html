@@ -1,0 +1,7 @@
+{{template "top" .}}
+<p style="font-size:20px;color:#ff8fb1;font-weight:bold;margin:0 0 12px;">Your account</p>
+<p>Your username is <b style="color:#ffd166;font-size:18px;">{{.Username}}</b>.</p>
+<p>To choose a new password (game and website):</p>
+{{template "button" (dict "Link" .Link "Label" "▶ CHOOSE A NEW PASSWORD")}}
+<p style="font-size:14px;color:#b9ab8a;">Didn't ask for this? Just ignore this e-mail: nothing changes.</p>
+{{template "bottom" .}}

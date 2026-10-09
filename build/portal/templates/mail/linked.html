@@ -1,0 +1,12 @@
+{{template "top" .}}
+<p style="font-size:20px;color:#7ee081;font-weight:bold;margin:0 0 12px;">Your e-mail is linked!</p>
+<p>This e-mail address is now linked to the RagnaDuds account <b style="color:#ffd166;font-size:18px;">{{.Username}}</b>.</p>
+<p>From now on it is used to:</p>
+<ul style="margin:0 0 6px;padding-left:22px;">
+  <li>reset your password (game and website) when you forget it;</li>
+  <li>delete a character in the game: the client asks for <b>this e-mail</b>.</li>
+</ul>
+{{template "button" (dict "Link" .Site "Label" "▶ OPEN RAGNADUDS")}}
+<p style="font-size:14px;color:#b9ab8a;">Forgot your password? Use <a href="{{.Site}}/forgot" style="color:#7cc4ff;">{{.Site}}/forgot</a> with your username or this e-mail.</p>
+<p style="font-size:14px;color:#b9ab8a;">Don't know RagnaDuds or didn't expect this? Just reply to this e-mail and we'll remove it.</p>
+{{template "bottom" .}}

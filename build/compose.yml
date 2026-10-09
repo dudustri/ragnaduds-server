@@ -27,6 +27,12 @@ services:
             dockerfile: duds_server/build/db/Dockerfile
             platforms: *platforms
             tags: ["ghcr.io/dudustri/duds-server-db:latest"]
+    portal:
+        image: "ghcr.io/dudustri/duds-server-portal:${TAG:-latest}"
+        build:
+            context: portal
+            platforms: *platforms
+            tags: ["ghcr.io/dudustri/duds-server-portal:latest"]
     web:
         image: "ghcr.io/dudustri/duds-server-web:${TAG:-latest}"
         build:

@@ -1,0 +1,13 @@
+{{define "title"}}Outbox{{end}}
+{{define "content"}}
+<h1>OUTBOX</h1>
+<section class="frame">
+  <p>{{if .SMTP}}Every e-mail the portal sent (last 100).{{else}}<b>SMTP is off:</b> these e-mails were NOT sent. Open one to copy its link.{{end}}</p>
+  <div class="scroll"><table>
+    <tr><th>WHEN</th><th>TO</th><th>SUBJECT</th><th>STATUS</th></tr>
+    {{range .Mails}}<tr><td class="muted">{{date .CreatedAt}}</td><td>{{.To}}</td><td><a href="/admin/mail/{{.ID}}" target="_blank">{{.Subject}}</a></td>
+      <td>{{if .Sent}}sent{{else if .Error}}<span style="color:var(--red)">{{.Error}}</span>{{else}}not sent{{end}}</td></tr>{{end}}
+  </table></div>
+  <p><a href="/admin">◀ Admin</a></p>
+</section>
+{{end}}

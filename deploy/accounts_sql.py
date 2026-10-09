@@ -3,6 +3,7 @@
 
   python3 accounts_sql.py hosts/vm/accounts.txt hosts/vm/pre_renewal/import/char_conf.txt
 
+- Passwords are stored as MD5 (login_conf use_MD5_passwords: yes).
 - Server-to-server login (account 1): set to the userid/passwd in char_conf.txt (a fresh database has s1/p1).
 - Every line of accounts.txt ("username password sex group"): created if missing, otherwise password/sex/group
   updated. The account number (account_id) is given by the database automatically.
@@ -24,7 +25,7 @@ def conf_value(path, key):
 
 def main(accounts_path, char_conf_path):
     sql = [f"UPDATE login SET userid='{esc(conf_value(char_conf_path, 'userid'))}', "
-           f"user_pass='{esc(conf_value(char_conf_path, 'passwd'))}', sex='S' WHERE account_id=1;"]
+           f"user_pass=MD5('{esc(conf_value(char_conf_path, 'passwd'))}'), sex='S' WHERE account_id=1;"]
     for n, line in enumerate(open(accounts_path, encoding="utf-8"), 1):
         line = line.split("#", 1)[0].strip() if line.lstrip().startswith("#") else line.strip()
         if not line: continue
@@ -36,9 +37,9 @@ def main(accounts_path, char_conf_path):
         if sex not in ("M", "F"): sys.exit(f"line {n}: sex must be M or F")
         if not group.isdigit(): sys.exit(f"line {n}: group must be a number (0 = player, 99 = admin)")
         u, p = esc(user), esc(pw)
-        sql.append(f"INSERT INTO login (userid, user_pass, sex, email, group_id) SELECT '{u}', '{p}', '{sex}', "
+        sql.append(f"INSERT INTO login (userid, user_pass, sex, email, group_id) SELECT '{u}', MD5('{p}'), '{sex}', "
                    f"'a@a.com', {group} FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM login WHERE userid='{u}');")
-        sql.append(f"UPDATE login SET user_pass='{p}', sex='{sex}', group_id={group} WHERE userid='{u}';")
+        sql.append(f"UPDATE login SET user_pass=MD5('{p}'), sex='{sex}', group_id={group} WHERE userid='{u}';")
     sql.append("SELECT account_id, userid, sex, group_id FROM login ORDER BY account_id;")
     print("\n".join(sql))
 

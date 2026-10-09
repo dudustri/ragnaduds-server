@@ -1,0 +1,10 @@
+{{template "top" .}}
+<p style="font-size:22px;color:#7ee081;font-weight:bold;margin:0 0 12px;">★ YOU'RE IN! ★</p>
+<p>Hi {{.Name}},</p>
+<p>Your RagnaDuds account <b style="color:#ffd166;">{{.Username}}</b> was approved. Welcome!</p>
+{{with .Note}}<p style="background:#15121f;border:2px solid #000;padding:10px 12px;">Duds: {{.}}</p>{{end}}
+<p>Choose your password: it's the same for the <b style="color:#ffd166;">game</b> and the <b style="color:#ffd166;">website</b> (where you download the game).</p>
+{{template "button" (dict "Link" .Link "Label" "▶ CHOOSE MY PASSWORD")}}
+<p style="font-size:14px;color:#b9ab8a;">The link works for 7 days. After that, use "Forgot password" on the website.</p>
+<p><b style="color:#ff8fb1;">Then:</b> log in on <a href="{{.Site}}" style="color:#7cc4ff;">{{.Site}}</a>, download Renewal or Pre-Renewal, install, and log in to the game with the same username and password.</p>
+{{template "bottom" .}}
