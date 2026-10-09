@@ -88,6 +88,48 @@ AS_VAN_BLES = {} -- Chaotic Blessings
 AS_VAN_BLES.MinSP=40
 AS_VAN_BLES.Level=0 -- lvl 4 heals chances: 36% enemy, 60% self, 4% owner
 
+-- Homunculus S skills (RagnaDuds) -------------
+-- Level: the level the AI asks for. The server lowers it to what your homunculus really learned, and a skill it
+-- doesn't know is simply not cast, so the max level works at every stage. Level = 0 turns a skill off.
+-- MinSP: SP the homunculus keeps before using the skill.
+-- The newer skills (2nd page of the S skill tree) are off: turn them on once your homunculus learned them,
+-- otherwise the AI keeps trying them instead of the older ones.
+AOE_MIN_ENEMIES = 3   -- area skills only when at least this many monsters are around the target
+-- Eira
+AS_EIR_ERAS = {Level=10, MinSP=70}    -- Eraser Cutter (single target)
+AS_EIR_XENO = {Level=10, MinSP=130}   -- Xeno Slasher (area, on the target)
+AS_EIR_TWIS = {Level=0,  MinSP=160}   -- Twister Cutter (newer, single target)
+AS_EIR_ZEPH = {Level=0,  MinSP=185}   -- Absolute Zephyr (newer, single target)
+AS_EIR_OVER = {Level=0,  MinSP=150}   -- Overed Boost (off: when it ends the homunculus gets very hungry)
+-- Bayeri
+AS_BAY_STAH = {Level=10, MinSP=70}    -- Steel Horn (single target)
+AS_BAY_STAN = {Level=10, MinSP=102}   -- Holy Pole / Heilige Stange (single target)
+AS_BAY_GOLD = {Level=5,  MinSP=80}    -- Golden Heel / Goldene Ferse (self buff)
+AS_BAY_ANGR = {Level=5,  MinSP=80}    -- Attack Mode / Angriffs Modus (self buff)
+AS_BAY_STEI = {Level=5,  MinSP=120}   -- Stone Wall / Steinwand (when the homunculus is in danger)
+AS_BAY_GLAN = {Level=0,  MinSP=105}   -- Glanzen Spies (newer, single target)
+AS_BAY_PFER = {Level=0,  MinSP=185}   -- Heilige Pferd (newer, area around the homunculus)
+AS_BAY_TONE = {Level=0,  MinSP=205}   -- Goldene Tone (newer, self buff)
+-- Sera
+AS_SER_NEED = {Level=10, MinSP=96}    -- Needle of Paralyze (single target)
+AS_SER_MIST = {Level=5,  MinSP=105}   -- Poison Mist (area, on the target)
+AS_SER_LEGI = {Level=5,  MinSP=140}   -- Summon Legion (at the start of a fight)
+AS_SER_PAIN = {Level=10, MinSP=84}    -- Pain Killer (buff on you, the owner)
+AS_SER_STIN = {Level=0,  MinSP=146}   -- Needle Stinger (newer, single target)
+AS_SER_TOXI = {Level=0,  MinSP=105}   -- Toxin of Mandara (newer, single target)
+-- Dieter
+AS_DIE_LAVA = {Level=10, MinSP=85}    -- Lava Slide (on the target)
+AS_DIE_ASH  = {Level=5,  MinSP=80}    -- Volcanic Ash (area, on the target)
+AS_DIE_MAGM = {Level=5,  MinSP=50}    -- Magma Flow (self buff)
+AS_DIE_PYRO = {Level=10, MinSP=70}    -- Pyroclastic (self buff)
+AS_DIE_GRAN = {Level=5,  MinSP=70}    -- Granitic Armor (when the homunculus is in danger)
+AS_DIE_BLAS = {Level=0,  MinSP=115}   -- Blast Forge (newer, area around the homunculus)
+AS_DIE_TEMP = {Level=0,  MinSP=155}   -- Tempering (newer, buff)
+-- Eleanor (Fighter style, the one it starts in)
+AS_ELE_SONI = {Level=5,  MinSP=40}    -- Sonic Claw (single target)
+AS_ELE_SILV = {Level=10, MinSP=35}    -- Silvervein Rush (combo right after Sonic Claw)
+AS_ELE_MIDN = {Level=10, MinSP=45}    -- Midnight Frenzy (combo right after Silvervein Rush)
+
 -- Tact list: behaviour for each monster ---------
 -- format: Tact[ID] = {"Name", behaviour, skill mode}
 -- ID: please check ROEmpire database for more IDs: http://www.roempire.com/database/?page=monsters

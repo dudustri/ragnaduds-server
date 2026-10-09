@@ -63,6 +63,7 @@ OwnerID     = 0
 HomunType   = 0
 HomunS      = false -- added for Homunculus S support
 LRASID      = 0     -- Long Range Attack Skill ID
+EleanorStep = 0     -- Eleanor's combo: 0 = start, 1 = after Sonic Claw, 2 = after Silvervein Rush (RagnaDuds)
 StartupTime = 0
 isCircling  = false
 
@@ -180,6 +181,44 @@ AS_VAN_BLES.SkillID = 8014
 AS_VAN_BLES.HowLast = 5000
 AS_VAN_BLES.Engaged = false
 AS_VAN_BLES.TimeOut = 0
+
+-- Homunculus S (RagnaDuds): skill id, ms before using it again (buffs: their duration), cast on the ground
+function SkillS(Skill, ID, HowLast, Ground)
+	Skill.SkillID = ID
+	Skill.HowLast = HowLast
+	Skill.Ground  = Ground or false
+	Skill.Engaged = false
+	Skill.TimeOut = 0
+end
+SkillS(AS_EIR_ERAS, 8024, 1000)
+SkillS(AS_EIR_XENO, 8025, 1500, true)
+SkillS(AS_EIR_TWIS, 8047, 1000)
+SkillS(AS_EIR_ZEPH, 8048, 1000)
+SkillS(AS_EIR_OVER, 8023, 90000)
+SkillS(AS_BAY_STAH, 8031, 1000)
+SkillS(AS_BAY_STAN, 8034, 1000)
+SkillS(AS_BAY_GOLD, 8032, 85000)
+SkillS(AS_BAY_ANGR, 8035, 85000)
+SkillS(AS_BAY_STEI, 8033, 20000)
+SkillS(AS_BAY_GLAN, 8056, 1000)
+SkillS(AS_BAY_PFER, 8057, 1500)
+SkillS(AS_BAY_TONE, 8058, 120000)
+SkillS(AS_SER_NEED, 8019, 1000)
+SkillS(AS_SER_MIST, 8020, 15000, true)
+SkillS(AS_SER_LEGI, 8018, 60000)
+SkillS(AS_SER_PAIN, 8021, 595000)
+SkillS(AS_SER_STIN, 8054, 1000)
+SkillS(AS_SER_TOXI, 8053, 7000)
+SkillS(AS_DIE_LAVA, 8041, 1000, true)
+SkillS(AS_DIE_ASH,  8043, 20000, true)
+SkillS(AS_DIE_MAGM, 8039, 85000)
+SkillS(AS_DIE_PYRO, 8042, 595000)
+SkillS(AS_DIE_GRAN, 8040, 55000)
+SkillS(AS_DIE_BLAS, 8044, 3000, true)
+SkillS(AS_DIE_TEMP, 8045, 175000)
+SkillS(AS_ELE_SONI, 8028, 1000)
+SkillS(AS_ELE_SILV, 8029, 800)
+SkillS(AS_ELE_MIDN, 8030, 800)
 
 --------------------------------------------------
 -- ############ COMMAND PROCESS ###########
@@ -881,7 +920,13 @@ function OnEVADE_ST()
 	------- Evading skills ------------------------
 	local HomunSP = GetV(V_SP, MyID)
 
-	if(HomunType == AMISTR	or HomunType == AMISTR_H
+	if (HomunType >= EIRA and HomunType <= ELEANOR) then -- Homunculus S (RagnaDuds)
+		if HomunType == BAYERI then
+			DoSkill(AS_BAY_STEI, MyID) -- Stone Wall
+		elseif HomunType == DIETER then
+			DoSkill(AS_DIE_GRAN, MyID) -- Granitic Armor
+		end
+	elseif(HomunType == AMISTR	or HomunType == AMISTR_H
 	or HomunType == AMISTR2 or HomunType == AMISTR_H2
 	or (HomunS == true and OLD_HOMUN_TYPE == AMISTR)) then
 		DoSkill(AS_AMI_BULW, MyID) -- Amistr: Bulwark
@@ -1394,8 +1439,12 @@ function DoCombat()
 		local EnemyType = GetV(V_HOMUNTYPE, MyEnemy)
 		if (EnemyType < 1078 or EnemyType > 1085) then -- don't waste SP on plants and mushrooms
 
+			-- Homunculus S: their own skills (RagnaDuds) --
+			if (HomunType >= EIRA and HomunType <= ELEANOR) then
+				DoCombatS()
+
 			-- Amistr ----------------------------------
-			if(HomunType == AMISTR	or HomunType == AMISTR_H
+			elseif(HomunType == AMISTR	or HomunType == AMISTR_H
 			or HomunType == AMISTR2 or HomunType == AMISTR_H2
 			or (HomunS == true and OLD_HOMUN_TYPE == AMISTR)) then
 			--------------------------------------------
@@ -1457,6 +1506,78 @@ function DoCombat()
 	end
 
 	CheckForAutoAtk()
+end
+
+--------------------------------------------------
+function CountEnemiesNear(id, r) -- monsters within r cells of an actor (RagnaDuds)
+--------------------------------------------------
+	local X, Y = GetV(V_POSITION, id)
+	local n = 0
+	for i,v in ipairs(GetActors()) do
+		if IsMonster(v) == 1 then
+			local x, y = GetV(V_POSITION, v)
+			if math.abs(x - X) <= r and math.abs(y - Y) <= r then
+				n = n + 1
+			end
+		end
+	end
+	return n
+end
+
+--------------------------------------------------
+function DoCombatS() -- Homunculus S skills (RagnaDuds, settings in Config.lua)
+--------------------------------------------------
+	-- an aggressive skill: counted like Moonlight / Caprice (see SKILL_TIME_OUT and the Tact skill modes)
+	local function Atk(Skill, Target)
+		if CanDoAtkSkillsNow() and DoSkill(Skill, Target or MyEnemy) then
+			AtkSkillDoneCount = AtkSkillDoneCount + 1
+			return true
+		end
+		return false
+	end
+	local aoe = (CountEnemiesNear(MyEnemy, 2) >= AOE_MIN_ENEMIES)
+
+	if HomunType == EIRA then
+		DoSkill(AS_EIR_OVER, MyID)
+		if aoe and Atk(AS_EIR_XENO) then return end
+		if Atk(AS_EIR_ZEPH) or Atk(AS_EIR_TWIS) then return end
+		Atk(AS_EIR_ERAS)
+
+	elseif HomunType == BAYERI then
+		DoSkill(AS_BAY_GOLD, MyID)
+		DoSkill(AS_BAY_ANGR, MyID)
+		DoSkill(AS_BAY_TONE, MyID)
+		if aoe and Atk(AS_BAY_PFER, MyID) then return end
+		if Atk(AS_BAY_GLAN) or Atk(AS_BAY_STAN) then return end
+		Atk(AS_BAY_STAH)
+
+	elseif HomunType == SERA then
+		DoSkill(AS_SER_PAIN, OwnerID)
+		DoSkill(AS_SER_LEGI, MyID)
+		if aoe and Atk(AS_SER_MIST) then return end
+		if Atk(AS_SER_TOXI) or Atk(AS_SER_STIN) then return end
+		Atk(AS_SER_NEED)
+
+	elseif HomunType == DIETER then
+		DoSkill(AS_DIE_MAGM, MyID)
+		DoSkill(AS_DIE_PYRO, MyID)
+		DoSkill(AS_DIE_TEMP, MyID)
+		if aoe and (Atk(AS_DIE_ASH) or Atk(AS_DIE_BLAS, MyID)) then return end
+		Atk(AS_DIE_LAVA)
+
+	elseif HomunType == ELEANOR then
+		-- Fighter combo, in order: Sonic Claw -> Silvervein Rush -> Midnight Frenzy (each step only works right
+		-- after the previous one; a step that doesn't land just restarts the chain)
+		if EleanorStep == 1 then
+			if DoSkill(AS_ELE_SILV, MyID) then EleanorStep = 2; return end
+		elseif EleanorStep == 2 then
+			if DoSkill(AS_ELE_MIDN, MyID) then EleanorStep = 0; return end
+		end
+		if CastDelayEnd <= GetTick() then
+			EleanorStep = 0
+			if Atk(AS_ELE_SONI) then EleanorStep = 1 end
+		end
+	end
 end
 
 --------------------------------------------------
@@ -1545,7 +1666,12 @@ function DoSkill(Skill, Target)
 			end
 			Skill.TimeOut = CurrTime + Skill.HowLast
 			Skill.Engaged = true
-			SkillObject(MyID, MySkillLevel, MySkill, Target)
+			if Skill.Ground then -- area skills (Homunculus S) are cast on the target's cell
+				local X, Y = GetV(V_POSITION, Target)
+				SkillGround(MyID, MySkillLevel, MySkill, X, Y)
+			else
+				SkillObject(MyID, MySkillLevel, MySkill, Target)
+			end
 			Log(string.format("Done skill %d lvl %d on target %d", MySkill, MySkillLevel, Target))
 			CastDelayEnd = CurrTime + 1000
 			result = true
