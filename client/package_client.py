@@ -54,10 +54,13 @@ STORED = {".grf", ".zip", ".mp3", ".bmp", ".jpg", ".png", ".avi", ".bik"}   # al
 #    The launcher (launch.ps1 / ragnaduds.sh) points DATA.INI line 0 at a random one at every start.
 SCREENS = os.path.join(HERE, "login")                  # build/installer/make_assets.py
 GRF_ITEMS = os.path.join(HERE, "grf_items")            # cashshop/build_shop.py
+GRF_CASINO = os.path.join(HERE, "grf_casino")          # casino/build_casino_art.py (renewal only)
+CASINO_BGM = os.path.join(HERE, "casino_media", "BGM")  # your own casino music, duds_casino<N>.mp3 (git-ignored)
 ITEMINFO = {"System/itemInfo_true.lub": os.path.join(HERE, "itemInfo_true.lub"),   # renewal item info loader
             "System/itemInfo_RD.lua": os.path.join(HERE, "itemInfo_RD.lua")}       # + our fixes (build_shop.py)
 UI = "data\\texture\\유저인터페이스"
 MAIN_GRF, LOGIN_GRF = "ragnaduds.grf", "ragnaduds_login{}.grf"
+CASINO_GRF = "ragnaduds_casino.grf"   # its own archive: an item update doesn't re-download the casino, and back
 # screens copied loose into the dev clients by earlier versions: never ship them (they'd win over the GRFs)
 LOOSE_SCREENS = re.compile(r"(?i)^data/texture/[^/]+/(t_login\.jpg|bgi_temp\.bmp|login_interface/warning\d?\.bmp)$")
 
@@ -77,6 +80,14 @@ def game_grfs(edition, tmpdir):
     out, logins = {}, []
     if main:
         grf.write(os.path.join(tmpdir, MAIN_GRF), main); out[MAIN_GRF] = os.path.join(tmpdir, MAIN_GRF)
+    if edition == "re" and os.path.isdir(GRF_CASINO):   # the Comodo Casino animations (NPC cutins)
+        casino = {}
+        for root, _, files in os.walk(GRF_CASINO):
+            for f in files:
+                rel = os.path.relpath(os.path.join(root, f), GRF_CASINO).replace(os.sep, "\\")
+                casino[rel] = open(os.path.join(root, f), "rb").read()
+        if casino:
+            grf.write(os.path.join(tmpdir, CASINO_GRF), casino); out[CASINO_GRF] = os.path.join(tmpdir, CASINO_GRF)
     n = 1
     while os.path.exists(os.path.join(SCREENS, f"{n}.jpg")):
         files = {f"{UI}\\t_login.jpg": open(os.path.join(SCREENS, f"{n}.jpg"), "rb").read()}
@@ -211,6 +222,13 @@ def build_game_zip(c, edition, addr, path):
                 if not os.path.exists(src): sys.exit(f"missing {src} (run: python3 cashshop/build_shop.py)")
                 z.write(src, rel, zipfile.ZIP_DEFLATED)
                 files_meta[rel] = os.path.getsize(src); n += 1; size += files_meta[rel]
+        # the Comodo Casino music (loose files: the client plays BGM only from its BGM folder)
+        if edition == "re" and os.path.isdir(CASINO_BGM):
+            for f in sorted(os.listdir(CASINO_BGM)):
+                if re.fullmatch(r"duds_casino\d+\.mp3", f, re.I):
+                    rel = f"BGM/{f.lower()}"
+                    z.write(os.path.join(CASINO_BGM, f), rel, zipfile.ZIP_STORED)
+                    files_meta[rel] = os.path.getsize(os.path.join(CASINO_BGM, f)); n += 1; size += files_meta[rel]
         # homunculus AI: same files in every AI folder the exe may read (AI/, AI_sakray/)
         for ai_dir in sorted(d for d in os.listdir(c["src"]) if re.fullmatch(r"AI(_\w+)?", d) and os.path.isdir(os.path.join(c["src"], d))):
             for f in sorted(os.listdir(HOMUN_AI)):

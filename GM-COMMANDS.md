@@ -83,7 +83,7 @@ announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and 
 | `@item2 <id> <qty> <identified> <refine> <broken> <c1> <c2> <c3> <c4>` | item with refine + cards, e.g. `@item2 1201 1 1 10 0 4001 0 0 0` |
 | `@zeny <amount>` | get zeny (negative removes) |
 | `@cash <amount>` · `!cash "<name>" <amount>` | Cash Shop points for you / for a player (renewal; negative removes) |
-| `@points` | (everyone) your Cash Shop points and how to earn more: +1000 daily login, +500/hour played, +5000/MVP, +3000/PvP kill |
+| `@points` | (everyone) your Cash Shop points and how to earn more: +200 daily login, +60/hour played, +50/MVP (+5 in Cheffenia), +30/PvP kill |
 | `@refine <position> <+/- n>` | refine equipped gear (`@refine` alone lists positions) |
 | `@refine 0 10` | **refine everything you're wearing to the max** (+10 pre-renewal; use `@refine 0 20` on renewal) |
 | `@identify` / `@repairall` | identify / repair everything |
@@ -108,6 +108,12 @@ announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and 
 | `@showexp` | show exp gained per kill |
 
 ---
+
+## Casino (renewal)
+| Command | What |
+|---|---|
+| `@lottodraw` | Draw the Comodo Casino lottery now (in game; the console can't run script commands) |
+| `@bichodraw` | Draw the Jogo do Bicho now (in game) |
 
 ## Quick "test character" recipe
 ```

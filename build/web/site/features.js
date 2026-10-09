@@ -10,6 +10,7 @@ const NPCS = [   // [name, where, servers, { en, pt, da } what]
   ["Reset Girl", "Prontera 150,193", "re", { en: "Reset stats and/or skills", pt: "Reseta status e/ou skills", da: "Nulstil stats og/eller skills" }],
   ["Platinum Skill NPC", "Prontera 128,200", "re", { en: "Your class' quest skills", pt: "Skills de quest da sua classe", da: "Din klasses quest-skills" }],
   ["Stylist", "Prontera 170,180", "re", { en: "Hair style, hair colour, clothes colour (only the colours your class really has, no more crashes)", pt: "Penteado, cor do cabelo, cor da roupa (só as cores que a sua classe tem de verdade, sem travar o jogo)", da: "Frisure, hårfarve, tøjfarve (kun de farver din klasse faktisk har, ingen nedbrud)" }],
+  ["Casino Hostess", "Prontera 168,190", "re", { en: "Takes you into the Comodo Casino (2 floors): animated Blackjack, Roulette, 10 slot machines with a shared jackpot, a daily lottery (21:00 UTC) and the Jogo do Bicho (5 draws a day). Bets in zeny.", pt: "Leva você pro Cassino de Comodo (2 andares): Blackjack, Roleta, 10 caça-níqueis com jackpot acumulado, loteria diária (21:00 UTC) e Jogo do Bicho (5 extrações por dia), tudo animado. Apostas em zeny.", da: "Tager dig ind i Comodo Casino (2 etager): animeret Blackjack, Roulette, 10 spilleautomater med fælles jackpot, et dagligt lotteri (21:00 UTC) og Jogo do Bicho (5 trækninger om dagen). Indsatser i zeny." }],
   ["Item Disposal", "Prontera 193,177", "re", { en: "Destroys items you can't drop or sell (starter gear, bound items)", pt: "Destrói itens que não dá pra dropar nem vender (equipamento inicial, itens presos)", da: "Destruerer items du ikke kan smide eller sælge (startudstyr, bundne items)" }],
   ["Private MVP Room", "Prontera 148,174", "re", { en: "Rent a room (100k zeny, 1 hour, party/guild/account) and summon MVPs (100k) or bosses (50k). These MVPs give no cash points.", pt: "Aluga uma sala (100k zeny, 1 hora, grupo/clã/conta) e invoca MVPs (100k) ou chefes (50k). Esses MVPs não dão pontos de cash.", da: "Lej et rum (100k zeny, 1 time, party/guild/konto) og tilkald MVP'er (100k) eller bosser (50k). Disse MVP'er giver ingen cash points." }],
   ["Refine Master", "Prontera 184,177", "re", { en: "Safe refine with the +14 / +19 certificates", pt: "Refino seguro com os certificados +14 / +19", da: "Sikker refine med +14 / +19 certifikaterne" }],
@@ -38,10 +39,10 @@ const T = {
       ["shop", "re", "CASH SHOP &amp; POINTS", `
         <p>Earn <b>cash points</b> by playing, spend them in the Cash Shop (the shop button in game). Type <code>@points</code> to see yours.</p>
         <table><tr><th>HOW</th><th>POINTS</th></tr>
-          <tr><td>First login of the day</td><td class="c">+1,000</td></tr>
-          <tr><td>Every hour played (not AFK)</td><td class="c">+500</td></tr>
-          <tr><td>Every MVP you kill (last hit)</td><td class="c">+5,000</td></tr>
-          <tr><td>Every PvP kill (not the same victim twice in 10 min)</td><td class="c">+3,000</td></tr></table>
+          <tr><td>First login of the day</td><td class="c">+200</td></tr>
+          <tr><td>Every hour played (not AFK)</td><td class="c">+60</td></tr>
+          <tr><td>Every MVP you kill (last hit)</td><td class="c">+50 (Cheffenia +5)</td></tr>
+          <tr><td>Every PvP kill (not the same victim twice in 10 min)</td><td class="c">+30</td></tr></table>
         <p>Tabs by playstyle: <em>Popular</em> (the best picks and <b>featured full builds</b>: Creator and Genetic Acid Demonstration, Rune Knight Dragon Breath, with cards and shadow gear), <em>Melee</em>, <em>Ranged</em>, <em>Magic &amp; Support</em>, <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manuals, speed, stat foods, acid packs, <b>weapon element converters</b> incl. a Ghost one, pet eggs) and <em>Visuals</em> (the ride, wings and costumes).</p>`],
       ["refine", "re", "REFINING", `<ul>
           <li><b>Refine Master</b> (Prontera 184,177): safe refine with the <em>Safe to +14</em> / <em>Safe to +19</em> certificates from the shop.</li>
@@ -71,10 +72,10 @@ const T = {
           <tr><td>Shinkiro / Shiranui</td><td>Seoyeon</td><td class="c">amatsu 82,118</td></tr>
           <tr><td>Hyper Novice</td><td>Grape</td><td class="c">aldebaran 110,69</td></tr>
           <tr><td>Spirit Handler</td><td>Doram job quest</td><td class="c">official</td></tr></table></div>`],
-      ["maps", "re", "SPECIAL MAPS (bRO EVENTS)", `
+      ["maps", "re", "MAPAS ESPECIAIS", `
         <div class="scroll"><table><tr><th>WHAT</th><th>WHERE</th><th>WHAT'S INSIDE</th></tr>
-          <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 rooms packed with monsters that respawn instantly, no EXP loss on death. Base 70+. Ticket: 1 point.</td></tr>
-          <tr><td><b>Cheffenia</b></td><td class="c">Portal Fantasma · Comodo 208,187</td><td>4 MVP rooms, bosses with double HP and +50% damage. Free storage and healer inside. After 1,000 kills a day, no drops there until tomorrow. Base 90+. Ticket: 1 point.</td></tr>
+          <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 rooms packed with monsters that respawn instantly, no EXP loss on death. Exit NPC where you land. Base 70+. Ticket: 1 point.</td></tr>
+          <tr><td><b>Cheffenia</b></td><td class="c">Portal Fantasma · Comodo 208,187</td><td>4 MVP rooms, bosses with double HP and +50% damage. Free storage, healer and exit inside. Fallen bosses come back slowly, one every 2 minutes. Base 90+. Ticket: 1 point.</td></tr>
           <tr><td><b>Turn In</b></td><td class="c">Mateus Alem · Geffen 128,117</td><td>Kill 400 of one monster, get 400x its EXP. Once a day. Hunting caves by level.</td></tr></table></div>`],
       ["homun", "both", "HOMUNCULUS", {
         re: `<p><b>Homunculus Room</b> · <b>Homunculus Trainer</b>, Prontera 190,177. Alchemist line only, free, enter as often as you want.</p>
@@ -112,10 +113,10 @@ const T = {
       ["shop", "re", "CASH SHOP E PONTOS", `
         <p>Ganhe <b>pontos de cash</b> jogando e gaste na Cash Shop (o botão da loja no jogo). Digite <code>@points</code> pra ver os seus.</p>
         <table><tr><th>COMO</th><th>PONTOS</th></tr>
-          <tr><td>Primeiro login do dia</td><td class="c">+1.000</td></tr>
-          <tr><td>Cada hora jogada (sem AFK)</td><td class="c">+500</td></tr>
-          <tr><td>Cada MVP que você mata (último golpe)</td><td class="c">+5.000</td></tr>
-          <tr><td>Cada kill de PvP (não a mesma vítima 2x em 10 min)</td><td class="c">+3.000</td></tr></table>
+          <tr><td>Primeiro login do dia</td><td class="c">+200</td></tr>
+          <tr><td>Cada hora jogada (sem AFK)</td><td class="c">+60</td></tr>
+          <tr><td>Cada MVP que você mata (último golpe)</td><td class="c">+50 (Cheffenia +5)</td></tr>
+          <tr><td>Cada kill de PvP (não a mesma vítima 2x em 10 min)</td><td class="c">+30</td></tr></table>
         <p>Abas por estilo de jogo: <em>Popular</em> (os melhores itens e <b>builds completas em destaque</b>: Criador e Bioquímico de Demonstração Ácida, Cavaleiro Rúnico de Sopro do Dragão, com cartas e equipamento sombrio), <em>Melee</em>, <em>Ranged</em>, <em>Magic &amp; Support</em>, <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manuais, velocidade, comidas de status, pacotes de ácido, <b>conversores de elemento da arma</b>, inclusive um Fantasma, ovos de mascote) e <em>Visuals</em> (a montaria, asas e visuais).</p>`],
       ["refine", "re", "REFINO", `<ul>
           <li><b>Refine Master</b> (Prontera 184,177): refino seguro com os certificados <em>Safe to +14</em> / <em>Safe to +19</em> da loja.</li>
@@ -145,10 +146,10 @@ const T = {
           <tr><td>Shinkiro / Shiranui</td><td>Seoyeon</td><td class="c">amatsu 82,118</td></tr>
           <tr><td>Hyper Novice</td><td>Grape</td><td class="c">aldebaran 110,69</td></tr>
           <tr><td>Spirit Handler</td><td>Doram job quest</td><td class="c">official</td></tr></table></div>`],
-      ["maps", "re", "MAPAS ESPECIAIS (EVENTOS DO bRO)", `
+      ["maps", "re", "MAPAS ESPECIAIS", `
         <div class="scroll"><table><tr><th>O QUE</th><th>ONDE</th><th>O QUE TEM</th></tr>
-          <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 salas lotadas de monstros que renascem na hora, sem perder EXP ao morrer. Base 70+. Ingresso: 1 ponto.</td></tr>
-          <tr><td><b>Cheffenia</b></td><td class="c">Portal Fantasma · Comodo 208,187</td><td>4 salas de MVP, chefes com o dobro de HP e +50% de dano. Armazém e curandeira grátis lá dentro. Depois de 1.000 kills no dia, sem drop lá até amanhã. Base 90+. Passe: 1 ponto.</td></tr>
+          <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 salas lotadas de monstros que renascem na hora, sem perder EXP ao morrer. NPC de saída onde você chega. Base 70+. Ingresso: 1 ponto.</td></tr>
+          <tr><td><b>Cheffenia</b></td><td class="c">Portal Fantasma · Comodo 208,187</td><td>4 salas de MVP, chefes com o dobro de HP e +50% de dano. Armazém, curandeira e saída lá dentro. Chefes mortos voltam aos poucos, um a cada 2 minutos. Base 90+. Passe: 1 ponto.</td></tr>
           <tr><td><b>Turn In</b></td><td class="c">Mateus Alem · Geffen 128,117</td><td>Mate 400 de um monstro e ganhe 400x a EXP dele. Uma vez por dia. Cavernas de caça por nível.</td></tr></table></div>`],
       ["homun", "both", "HOMÚNCULO", {
         re: `<p><b>Sala do Homúnculo</b> · <b>Homunculus Trainer</b>, Prontera 190,177. Só pra linha do Alquimista, grátis, entra quantas vezes quiser.</p>
@@ -186,10 +187,10 @@ const T = {
       ["shop", "re", "CASH SHOP OG POINTS", `
         <p>Tjen <b>cash points</b> ved at spille, og brug dem i Cash Shop (butiksknappen i spillet). Skriv <code>@points</code> for at se dine.</p>
         <table><tr><th>HVORDAN</th><th>POINTS</th></tr>
-          <tr><td>Dagens første login</td><td class="c">+1.000</td></tr>
-          <tr><td>Hver time spillet (ikke AFK)</td><td class="c">+500</td></tr>
-          <tr><td>Hver MVP du dræber (sidste slag)</td><td class="c">+5.000</td></tr>
-          <tr><td>Hvert PvP-kill (ikke samme offer 2x på 10 min)</td><td class="c">+3.000</td></tr></table>
+          <tr><td>Dagens første login</td><td class="c">+200</td></tr>
+          <tr><td>Hver time spillet (ikke AFK)</td><td class="c">+60</td></tr>
+          <tr><td>Hver MVP du dræber (sidste slag)</td><td class="c">+50 (Cheffenia +5)</td></tr>
+          <tr><td>Hvert PvP-kill (ikke samme offer 2x på 10 min)</td><td class="c">+30</td></tr></table>
         <p>Faner efter spillestil: <em>Popular</em> (de bedste valg og <b>fremhævede fulde builds</b>: Creator og Genetic Acid Demonstration, Rune Knight Dragon Breath, med kort og shadow gear), <em>Melee</em>, <em>Ranged</em>, <em>Magic &amp; Support</em>, <em>MVP Cards</em>, <em>Refine</em>, <em>Items &amp; Pets</em> (manualer, speed, stat-mad, syrepakker, <b>våben-element-konvertere</b> inkl. en Ghost, kæledyrsæg) og <em>Visuals</em> (ridedyret, vinger og kostumer).</p>`],
       ["refine", "re", "REFINING", `<ul>
           <li><b>Refine Master</b> (Prontera 184,177): sikker refine med <em>Safe to +14</em> / <em>Safe to +19</em> certifikaterne fra butikken.</li>
@@ -219,10 +220,10 @@ const T = {
           <tr><td>Shinkiro / Shiranui</td><td>Seoyeon</td><td class="c">amatsu 82,118</td></tr>
           <tr><td>Hyper Novice</td><td>Grape</td><td class="c">aldebaran 110,69</td></tr>
           <tr><td>Spirit Handler</td><td>Doram job quest</td><td class="c">official</td></tr></table></div>`],
-      ["maps", "re", "SPECIAL MAPS (bRO-EVENTS)", `
+      ["maps", "re", "MAPAS ESPECIAIS", `
         <div class="scroll"><table><tr><th>HVAD</th><th>HVOR</th><th>HVAD ER DER</th></tr>
-          <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 rum fyldt med monstre der respawner med det samme, intet EXP-tab ved død. Base 70+. Billet: 1 point.</td></tr>
-          <tr><td><b>Cheffenia</b></td><td class="c">Portal Fantasma · Comodo 208,187</td><td>4 MVP-rum, bosser med dobbelt HP og +50% skade. Gratis storage og healer derinde. Efter 1.000 kills på en dag: ingen drops der før i morgen. Base 90+. Billet: 1 point.</td></tr>
+          <tr><td><b>Mapas Especiais</b></td><td class="c">Nanaru · Morroc 152,272</td><td>8 rum fyldt med monstre der respawner med det samme, intet EXP-tab ved død. Udgangs-NPC hvor du lander. Base 70+. Billet: 1 point.</td></tr>
+          <tr><td><b>Cheffenia</b></td><td class="c">Portal Fantasma · Comodo 208,187</td><td>4 MVP-rum, bosser med dobbelt HP og +50% skade. Gratis storage, healer og udgang derinde. Dræbte bosser kommer langsomt tilbage, én hvert 2. minut. Base 90+. Billet: 1 point.</td></tr>
           <tr><td><b>Turn In</b></td><td class="c">Mateus Alem · Geffen 128,117</td><td>Dræb 400 af ét monster, få 400x dets EXP. Én gang om dagen. Jagtgrotter efter niveau.</td></tr></table></div>`],
       ["homun", "both", "HOMUNCULUS", {
         re: `<p><b>Homunculus Room</b> · <b>Homunculus Trainer</b>, Prontera 190,177. Kun Alchemist-linjen, gratis, gå ind så tit du vil.</p>
