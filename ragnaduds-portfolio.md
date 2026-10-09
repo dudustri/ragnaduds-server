@@ -60,7 +60,7 @@ The server is the easy part. The **client** is a 2000s-era 32-bit Windows progra
 
 Brazil's official server (bRO) shut down in 2026, and my Brazilian friends missed its events. Using the **Wayback Machine**, I rebuilt three of them from archived announcements, matching Portuguese monster names to IDs via community databases:
 - **Mapas Especiais:** 8 rooms with instant respawn and no EXP loss.
-- **Cheffenia:** an MVP arena with +100% boss HP and a 1,000-kill daily fatigue.
+- **Cheffenia:** an MVP arena with +100% boss HP, bosses trickling back one every 2 minutes.
 - **Turn In:** a hunting quest.
 
 The special maps are **shared instances**: private copies of existing maps, reachable only through event NPCs, so the normal maps stay untouched and no client changes are needed. A **buff NPC** stands at the same 36 town coordinates bRO used.

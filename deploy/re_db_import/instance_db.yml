@@ -8,7 +8,7 @@ Body:
   - Id: 900
     Name: Mapas Especiais 1
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: ra_fild09
       X: 190
@@ -16,7 +16,7 @@ Body:
   - Id: 901
     Name: Mapas Especiais 2
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: moc_fild14
       X: 200
@@ -24,7 +24,7 @@ Body:
   - Id: 902
     Name: Mapas Especiais 3
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: moc_fild15
       X: 200
@@ -32,7 +32,7 @@ Body:
   - Id: 903
     Name: Mapas Especiais 4
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: moc_fild05
       X: 200
@@ -40,7 +40,7 @@ Body:
   - Id: 904
     Name: Mapas Especiais 5
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: moc_fild04
       X: 200
@@ -48,7 +48,7 @@ Body:
   - Id: 905
     Name: Mapas Especiais 6
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: moc_fild06
       X: 200
@@ -56,7 +56,7 @@ Body:
   - Id: 906
     Name: Mapas Especiais 7
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: moc_fild08
       X: 200
@@ -64,7 +64,7 @@ Body:
   - Id: 907
     Name: Mapas Especiais 8
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: moc_fild10
       X: 200
@@ -72,7 +72,7 @@ Body:
   - Id: 908
     Name: Cheffenia 1
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: bossnia_01
       X: 117
@@ -80,7 +80,7 @@ Body:
   - Id: 909
     Name: Cheffenia 2
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: bossnia_02
       X: 117
@@ -88,7 +88,7 @@ Body:
   - Id: 910
     Name: Cheffenia 3
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: bossnia_03
       X: 117
@@ -96,7 +96,7 @@ Body:
   - Id: 911
     Name: Cheffenia 4
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: bossnia_04
       X: 117
@@ -104,7 +104,7 @@ Body:
   - Id: 912
     Name: Turn In 1
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: pay_dun01
       X: 150
@@ -112,7 +112,7 @@ Body:
   - Id: 913
     Name: Turn In 2
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: gef_dun01
       X: 152
@@ -120,7 +120,7 @@ Body:
   - Id: 914
     Name: Turn In 3
     TimeLimit: 31536000
-    IdleTimeout: 31536000
+    IdleTimeOut: 31536000
     Enter:
       Map: abyss_01
       X: 150
@@ -128,7 +128,7 @@ Body:
   - Id: 915
     Name: Homunculus Room
     TimeLimit: 0
-    IdleTimeout: 900
+    IdleTimeOut: 900
     NoNpc: false
     Destroyable: false
     Enter:
@@ -138,7 +138,7 @@ Body:
   - Id: 916
     Name: Cardinal Last Ordeal
     TimeLimit: 3600
-    IdleTimeout: 600
+    IdleTimeOut: 600
     Enter:
       Map: 1@4cdn
       X: 128
@@ -146,7 +146,7 @@ Body:
   - Id: 917
     Name: Dragon Knight Trials
     TimeLimit: 7200
-    IdleTimeout: 900
+    IdleTimeOut: 900
     Enter:
       Map: 1@4drk
       X: 60
@@ -154,7 +154,7 @@ Body:
   - Id: 918
     Name: Biologist's Laboratory
     TimeLimit: 3600
-    IdleTimeout: 600
+    IdleTimeOut: 600
     Enter:
       Map: ver_eju
       X: 55
@@ -162,7 +162,7 @@ Body:
   - Id: 919
     Name: Tourney Hall of Trials
     TimeLimit: 3600
-    IdleTimeout: 900
+    IdleTimeOut: 900
     Enter:
       Map: 1@4igd
       X: 50
@@ -170,7 +170,7 @@ Body:
   - Id: 920
     Name: Inquisitor Underground Ward
     TimeLimit: 3600
-    IdleTimeout: 900
+    IdleTimeOut: 900
     Enter:
       Map: 1@4inq
       X: 80
@@ -178,7 +178,7 @@ Body:
   - Id: 921
     Name: Juperos Core Investigation
     TimeLimit: 3600
-    IdleTimeout: 600
+    IdleTimeOut: 600
     Enter:
       Map: 1@4mst
       X: 150
@@ -186,7 +186,7 @@ Body:
   - Id: 922
     Name: Hyper Novice Challenge
     TimeLimit: 3600
-    IdleTimeout: 900
+    IdleTimeOut: 900
     Enter:
       Map: 1@exhn
       X: 184
@@ -194,7 +194,7 @@ Body:
   - Id: 927
     Name: Shadow Cross Trial
     TimeLimit: 3600
-    IdleTimeout: 600
+    IdleTimeOut: 600
     Enter:
       Map: ve_fild05
       X: 80
@@ -202,7 +202,7 @@ Body:
   - Id: 928
     Name: Abyss Chaser Trial
     TimeLimit: 600
-    IdleTimeout: 300
+    IdleTimeOut: 300
     Enter:
       Map: ve_fild05
       X: 115
@@ -210,7 +210,7 @@ Body:
   - Id: 929
     Name: Yeongwi's Battleground
     TimeLimit: 3600
-    IdleTimeout: 600
+    IdleTimeOut: 600
     Enter:
       Map: ama_dun02
       X: 125
@@ -218,7 +218,7 @@ Body:
   - Id: 930
     Name: Night Watch Exam
     TimeLimit: 3600
-    IdleTimeout: 600
+    IdleTimeOut: 600
     Enter:
       Map: 1@exnw
       X: 30
@@ -226,7 +226,7 @@ Body:
   - Id: 931
     Name: Windhawk Survival
     TimeLimit: 9000
-    IdleTimeout: 900
+    IdleTimeOut: 900
     Enter:
       Map: 1@4win
       X: 72
@@ -234,7 +234,7 @@ Body:
   - Id: 932
     Name: Celestial Branch Office
     TimeLimit: 3600
-    IdleTimeout: 900
+    IdleTimeOut: 900
     Enter:
       Map: 1@exse
       X: 50
@@ -242,7 +242,7 @@ Body:
   - Id: 933
     Name: The Foot of an Unknown Mountain
     TimeLimit: 3600
-    IdleTimeout: 900
+    IdleTimeOut: 900
     Enter:
       Map: 1@exsr
       X: 38
@@ -250,7 +250,7 @@ Body:
   - Id: 923
     Name: Arch Mage Trial
     TimeLimit: 3600
-    IdleTimeout: 600
+    IdleTimeOut: 600
     Enter:
       Map: 1@4mag
       X: 114
@@ -258,7 +258,7 @@ Body:
   - Id: 924
     Name: Elemental Master Trial
     TimeLimit: 3600
-    IdleTimeout: 600
+    IdleTimeOut: 600
     Enter:
       Map: 1@4mag
       X: 114
@@ -266,7 +266,7 @@ Body:
   - Id: 925
     Name: Troubadour Trial
     TimeLimit: 3600
-    IdleTimeout: 900
+    IdleTimeOut: 900
     Enter:
       Map: 1@4tro
       X: 48

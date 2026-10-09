@@ -1,10 +1,11 @@
 //===== RagnaDuds: cash points by playing ======================================
 //= Cash points (#CASHPOINTS, shared by all characters of the account) buy items in the Cash Shop
 //= (deploy/re_db_import/item_cash.yml). Players earn them by playing:
-//=   +1000 first login of the day (per account)
-//=   +500  every hour played (idle minutes, 10+ min without doing anything, don't count)
-//=   +5000 every MVP killed (the one who lands the last hit)
-//=   +3000 every PvP kill (not the same victim twice within 10 minutes)
+//=   +200 first login of the day (per account)
+//=   +60  every hour played (idle minutes, 10+ min without doing anything, don't count)
+//=   +50  every MVP killed (the one who lands the last hit); +5 in Cheffenia, where MVPs come by the hundred
+//=   +30  every PvP kill (not the same victim twice within 10 minutes)
+//= Balance: most Cash Shop items cost 100-900 points (median ~200), so 3 hours a day buys about one of them.
 //= GMs can give points: !cash "<character name>" <amount>   (@cash <amount> for yourself)
 //= Players see their points and how to earn more with @points.
 //= Loaded on the renewal server (hosts/<host>/renewal/import/map_conf.txt).
@@ -12,10 +13,11 @@
 
 -	script	DudsCashPoints	-1,{
 OnInit:
-	.daily = 1000;
-	.hourly = 500;
-	.mvp = 5000;
-	.pvp = 3000;
+	.daily = 200;
+	.hourly = 60;
+	.mvp = 50;
+	.mvp_cheffenia = 5;	// Cheffenia rooms hold ~200 MVPs each
+	.pvp = 30;
 	.idle = 600;		// seconds without activity = AFK
 	.pvp_repeat = 600;	// seconds before the same victim gives points again
 	bindatcmd "points", strnpcinfo(3) + "::OnPoints", 0, 99;
@@ -29,7 +31,7 @@ OnInit:
 
 OnPoints:
 	dispbottom "[Cash] You have " + #CASHPOINTS + " points. Spend them in the Cash Shop.";
-	dispbottom "[Cash] Earn: +" + .daily + " first login of the day, +" + .hourly + " per hour played (not AFK), +" + .mvp + " per MVP, +" + .pvp + " per PvP kill.";
+	dispbottom "[Cash] Earn: +" + .daily + " first login of the day, +" + .hourly + " per hour played (not AFK), +" + .mvp + " per MVP (+" + .mvp_cheffenia + " in Cheffenia), +" + .pvp + " per PvP kill.";
 	dispbottom "[Cash] Next hour bonus in " + (60 - DUDS_ACTIVE_MIN) + " active minutes.";
 	end;
 
@@ -54,8 +56,13 @@ OnMinute:	// once a minute per player: count active minutes, pay every 60
 	end;
 
 OnNPCKillEvent:	// not in the Private MVP Rooms (06guild_01-08): MVPs summoned there on demand would be endless points
-	if (getmonsterinfo(killedrid, MOB_MVPEXP) > 0 && compare(strcharinfo(3), "06guild_0") == 0)
-		callsub S_Give, .mvp, "MVP " + getmonsterinfo(killedrid, MOB_NAME);
+	if (getmonsterinfo(killedrid, MOB_MVPEXP) <= 0 || compare(strcharinfo(3), "06guild_0"))
+		end;
+	.@pts = .mvp;
+	for (.@r = 1; .@r <= 4; .@r++)	// Cheffenia room copies (deploy/special_maps.txt keeps their map names)
+		if ($@CH_map$[.@r] == strcharinfo(3))
+			.@pts = .mvp_cheffenia;
+	callsub S_Give, .@pts, "MVP " + getmonsterinfo(killedrid, MOB_NAME);
 	end;
 
 OnPCKillEvent:

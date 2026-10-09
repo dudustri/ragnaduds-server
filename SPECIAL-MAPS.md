@@ -14,6 +14,7 @@ Three events rebuilt from bRO (Ragnarok Online Brasil) announcements. Each room 
 ## Mapas Especiais (bRO, April 2020, monster amounts ×2)
 
 8 rooms. Every monster **respawns instantly**, and there's **no EXP loss** on death.
+You land in the middle of the room, next to an **Exit** NPC (back to Nanaru in Morroc).
 
 | Room | Map | Monsters |
 |---|---|---|
@@ -29,10 +30,12 @@ Three events rebuilt from bRO (Ragnarok Online Brasil) announcements. Each room 
 ## Cheffenia (bRO, July 2023)
 
 4 rooms on the Boss Nia maps.
-- **Monsters:** the official Boss Nia spawns (169 bosses per room, respawn 30 min–2 h), plus one "exclusive" MVP per room. bRO's own versions don't exist in rAthena, so each room gets the closest original: Moonlight Flower, Turtle General, Dracula, Ktullanux.
+- **Monsters:** the official Boss Nia spawns (169 bosses per room), plus one "exclusive" MVP per room. bRO's own versions don't exist in rAthena, so each room gets the closest original: Moonlight Flower, Turtle General, Dracula, Ktullanux.
+- **RagnaDuds MVPs** (one of each per room): White Lady, Valkyrie Randgris, Ifrit, Gopinich, Wounded Morocc, Boitata, Scaraba Queen, Leak, Kraken, Angry Student Pyuriel, Gioia, General Daehyun, Dark Guardian Kades, Nightmare Amon Ra, Nightmare Baphomet, Venomous Chimera.
+- **One Bio Lab MVP per room** (Seyren, Eremes, Howard, Margaretha, Cecil, Kathryne, Randel, Flamel, Celia, Chen, Gertie, Alphoccio, Trentini): never more than one at a time; when it dies, the next one in line comes back through the respawn above.
+- **Respawn:** slow and steady: every 2 minutes each room gets back **one** boss it's missing (a random one, weighted by how many of each are gone), until it's full. Kill faster than that and the room thins out. No kill cap.
 - **Bosses there:** +100% HP and +50% damage.
-- **Fatigue:** after **1,000 kills in a day**, your drops in Cheffenia are 0 until the next day.
-- **Services:** a Kafra (storage) and a healer in every room.
+- **Services:** a Kafra (storage), a healer and an Exit (back to Comodo) in every room.
 
 ## Turn In (bRO, September 2020)
 
@@ -86,6 +89,32 @@ Script: `deploy/homunculus_room.txt` (sets are in its OnInit). Homunculi everywh
 `deploy/gm_commands.txt` (never starve or run away) and not sent to rest when their owner dies
 (`homunculus_auto_vapor: 0` in the hosts' battle_conf).
 
+## Comodo Casino (renewal)
+NPC **Casino Hostess**, Prontera (168,190), warps into the official Comodo casino hall (`cmd_in02`); the
+**Doorman** next to the arrival takes players back. The hall's two stairs (168,113 and 187,78) lead to the 2nd floor. Script: `deploy/casino.txt`. Animations: cutins drawn by
+`casino/build_casino_art.py` (790 PNG frames, ~10 MB) into `client/grf_casino/`, shipped as `ragnaduds_casino.grf`
+by `package_client.py` (renewal only; players get it from the launcher update), with the sounds synthesized by
+`casino/build_casino_sounds.py`. Your own media goes in `client/casino_media/` (git-ignored): `wav/<sound name>.*`
+replaces a sound (`duds_cheer`, played to the whole casino on 1M+ wins, is cut to 3 s), `BGM/duds_casino<N>.mp3`
+is casino music (set `.tracks` in the `Casino Music#duds` NPC to N). Then rebuild: sounds, `./duds.sh package re`,
+`./duds.sh files vm`. Bets are zeny, settled before the
+animation plays (walking away mid-animation never loses a win).
+
+| Game | Where | Rules | Return to player |
+|---|---|---|---|
+| Blackjack (Dealer Lucia) | 168,95 (left table) | fresh 6-deck shoe, dealer stands on 17, BJ pays 3:2, double, one split, 1k-1M | ~99.5% |
+| Roulette (Croupier Marcel) | 182,89 (middle table) | European single zero, one bet per spin, 1k-1M | 97.3% |
+| Slot machines x5 | 187-195,117 (east room) | 1k / 10k / 100k; 3 Golden Thief Bugs = jackpot (`$duds_slot_pot`, 3% of every bet, floor 1M) | ~94% |
+| Blackjack 2 (Dealer Bruno) | 104,55 (2nd floor) | same as Lucia's | ~99.5% |
+| Roulette 2 (Croupier Paulo) | 81,56 (2nd floor) | same as Marcel's | 97.3% |
+| Slot machines #6-10 | 72-80,66 (2nd floor) | same machines, same jackpot | ~94% |
+| Jogo do Bicho (Seu Ze) | 75,41 (2nd floor) | grupo 18x, dezena 60x, centena 600x, milhar 4000x on the 1st prize, or 1/5 per prize on 1st-5th; 5 draws a day at 14 17 19 21 00 UTC (Rio's times); max 10 pules a draw | 72% (grupo) to 40% (milhar), like the real one |
+| Lottery (Lottery Cat) | 163,116 (west room) | 10k ticket, 3 of 1-25, max 5 per draw, daily 21:00 UTC; 3 hits share the pot, 2 hits 50k | 70% of tickets to the pot |
+
+Players walk to their seat and sit down. Big wins (1M+) are announced in the casino, slot and lottery jackpots
+server-wide. Every play is logged (`logmes`, npclog table). GMs: `@lottodraw` / `@bichodraw` draw the lottery / the bicho now (in game only:
+script commands don't run from the server console). Change bet limits in the `OnInit` of each NPC.
+
 ## Item Disposal (renewal)
 NPC **Item Disposal**, Prontera (193,177), right of the Homunculus Trainer. Destroys items players can't drop or
 sell: the Paradise starter shadow set, Mace of Madness and other bound items. Scripts can't read an item's trade
@@ -134,5 +163,5 @@ are defined with their client Ids in `re_db_import/mob_db.yml`. Spirit Handler u
 | Reset Girl | prontera 150,193 | resets stats and/or skills (zeny) |
 | Platinum Skill NPC | prontera 128,200 | quest skills of your class (the Job Master also gives them on job change) |
 | Stylist | prontera 170,180 | hair style / hair colour / clothes colour. Our copy (`deploy/stylist.txt`) offers only the clothes colours the class has: `getclothmax()` / `pc_cloth_color_max` (src/map/pc.cpp) cap every class to the body palettes in the 2026 client (Novice 8, 1st/2nd 4, trans 2nd + Crusader/Monk/Sage/Rogue/Assassin/Bard/Dancer 3, 3rd/4th 7, Royal Guard on a gryphon 3); `max_cloth_color: 8` is only the overall ceiling |
-| Private MVP Room | prontera 148,174 | rent a room (100k zeny, 60 min, party/guild/account) and summon MVPs (100k) or bosses (50k). MVPs killed there give **no** cash points (deploy/cash_points.txt) |
+| Private MVP Room | prontera 148,174 | rent a room (100k zeny, 60 min, party/guild/account) and summon MVPs (100k) or bosses (50k). Our copy (deploy/mvp_room.txt) adds 14 MVPs: Boitata, Scaraba Queens, Leak, Kraken, Pyuriel, Gioia, Daehyun, Kades, Nightmare Amon Ra/Baphomet, Venomous Chimera, Time Holder and Bestia. MVPs killed there give **no** cash points (deploy/cash_points.txt) |
 | Marriage (Vomars, Happy Marry, Sister Lisa) | prt_church (Prontera church) | weddings |
