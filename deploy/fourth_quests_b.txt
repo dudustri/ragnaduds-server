@@ -1113,7 +1113,7 @@ OnInstanceInit:
 	mes "You play the hymn of longing, the sea's patience and the hope of the old story, and the Inspiration Pieces fill the gaps.";
 	mes "The Guardian Tree answers. Its leaves sing with you.";
 	next;
-	.@job = roclass(eaclass()|EAJL_FOURTH);
+	.@job = roclass((eaclass()&~EAJL_UPPER)|EAJL_FOURTH);
 	callfunc "F_Duds4th_Promote", .@job;
 	DUDS4_TRO = 4;
 	mes .@n$;

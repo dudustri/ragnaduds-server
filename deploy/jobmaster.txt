@@ -61,7 +61,7 @@ function	Can_Change_Fourth	{
 		return false; // Not a (non-baby) Third Class
 	if( eaclass()&EAJL_FOURTH )
 		return false; // Already Fourth Class
-	if( roclass(eaclass()|EAJL_FOURTH) < 0 )
+	if( roclass((eaclass()&~EAJL_UPPER)|EAJL_FOURTH) < 0 )   // RagnaDuds: transcendent 3rd classes too
 		return false; // Job has no Fourth Class
 	return true;
 }
@@ -178,7 +178,7 @@ function	Job_Options	{
 	if( .@fourth_possible ) {
 		// Fourth Job change (displayed below rebirth)
 		Require_Level(.Req_Fourth[0], .Req_Fourth[1]);
-		Job_Options(.@job_opt, roclass(.@eac|EAJL_FOURTH));
+		Job_Options(.@job_opt, roclass((.@eac&~EAJL_UPPER)|EAJL_FOURTH));
 	}
 	 
 	if (.SecondExpanded && 

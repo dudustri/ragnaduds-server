@@ -8,10 +8,12 @@
 //= Progress: DUDS4_CDN / DUDS4_CDN_K (Cardinal), DUDS4_DK (Dragon Knight), DUDS4_BIO / DUDS4_BIO_B (Biolo).
 
 // getarg(0): the 4th job. True if the player is a (non-baby) 3rd class whose 4th class is that job.
+// Transcendent or not: 4th classes are defined from the plain 3rd class, so the "upper" bit goes away first
+// (with it, an Arch Bishop (Trans) found no 4th class at all and every quest NPC ignored him).
 function	script	F_Duds4th_Is	{
 	if (!(eaclass()&EAJL_THIRD) || (eaclass()&(EAJL_FOURTH|EAJL_BABY)))
 		return false;
-	return roclass(eaclass()|EAJL_FOURTH) == getarg(0);
+	return roclass((eaclass()&~EAJL_UPPER)|EAJL_FOURTH) == getarg(0);
 }
 
 // getarg(0): npc title, getarg(1): job level needed. Ends the dialogue if the levels are too low.
