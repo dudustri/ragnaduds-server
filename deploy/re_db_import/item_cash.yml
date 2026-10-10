@@ -781,6 +781,8 @@ Body:
         Price: 100
       - Item: S_Archbishop_Weapon    # Arch Bishop Shadow Weapon (24292)
         Price: 100
+      - Item: Record_Acol_TH    # Record of Acolyte (490334)
+        Price: 200
       - Item: SoulWeight    # Spirit Pendulum (26154)
         Price: 300
       - Item: GEMS_DarkBlood    # God-Devouring Demonic Shield (460077)
@@ -889,6 +891,8 @@ Body:
         Price: 200
       - Item: Cardinal_Ring    # Cardinal Ring (490244)
         Price: 600
+      - Item: Demon_Hunting_Bible_LT    # Exorcist's Bible-LT (540035)
+        Price: 900
       - Item: FullFaith_Crown_US    # Full Faith Crown (400697)
         Price: 200
       - Item: Astraea_Ring    # Asteria's Ring (32219)
