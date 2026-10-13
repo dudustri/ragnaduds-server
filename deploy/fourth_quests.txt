@@ -62,7 +62,8 @@ function	script	F_Duds4th_Enter	{
 //============================================================================
 // CARDINAL (from Arch Bishop): Priest Jergus, the three Books of Illusion, the Last Ordeal
 //============================================================================
-prt_church,114,122,4	script	Priest Jergus#duds4	4_M_OLDFRIAR,{
+// In the back room of the church (official spot: the doorway warp at 115,122 leads there; standing on it, he could not be talked to)
+prt_church,172,109,3	script	Priest Jergus#duds4	4_M_OLDFRIAR,{
 	.@n$ = "[Priest Jergus]";
 	if (Class == Job_Cardinal) {
 		mes .@n$;

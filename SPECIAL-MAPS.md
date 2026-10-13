@@ -144,7 +144,7 @@ are defined with their client Ids in `re_db_import/mob_db.yml`. Spirit Handler u
 | Elemental Master (Sorcerer) | Elma | gef_tower 108,166 | _b |
 | Windhawk (Ranger) | Drunk Old Man | payon 100,177 (then Luluka Forest um_fild01 47,345) | _d |
 | Troubadour / Trouvere (Minstrel / Wanderer) | Flyer Part-timer | lighthalzen 186,124 | _b |
-| Cardinal (Arch Bishop) | Priest Jergus | prt_church 114,122 | fourth_quests.txt |
+| Cardinal (Arch Bishop) | Priest Jergus | prt_church 172,109 (back room, through the door at the top right) | fourth_quests.txt |
 | Inquisitor (Sura) | Inn Employee | prt_in 253,133 (Prontera hotel) | _a |
 | Meister (Mechanic) | Roday / Mist | yuno 112,208 | _a |
 | Biolo (Genetic) | Aldina | verus04 157,165 | fourth_quests.txt |
