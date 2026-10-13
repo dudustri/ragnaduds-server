@@ -682,7 +682,8 @@ veins,236,110,4	script	Troubled Person#d4sky1	4_EXJOB_CHUL_HO,{
 	end;
 }
 
-einbech,155,243,4	script	Troubled Person#d4sky2	4_EXJOB_CHUL_HO,{
+// A few steps from the two Einbech mine workers (Olive 156,243 and Atri 154,244): right between them he was hard to click
+einbech,159,240,4	script	Troubled Person#d4sky2	4_EXJOB_CHUL_HO,{
 	.@n$ = "[Troubled Person]";
 	if (DUDS4_SKY < 3 || DUDS4_SKY > 4) {
 		mes .@n$;
