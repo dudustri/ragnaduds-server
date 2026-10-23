@@ -1,11 +1,15 @@
 # rAthena server image: pre-renewal, client 2021-11-03.
 # Compiles inside Docker, keeps only the servers + conf/db/npc in the final image.
-# Built by duds_server/build/compose.yml (context = repo root). Configs are mounted at run time.
+# Built by build/compose.yml (context = repo root): official rAthena (rathena/ submodule) + our patches/.
+# Configs are mounted at run time.
 
 FROM alpine:3.23 AS build
-RUN apk add --no-cache cmake make gcc g++ zlib-dev mariadb-dev linux-headers bash
+RUN apk add --no-cache cmake make gcc g++ zlib-dev mariadb-dev linux-headers bash patch
 WORKDIR /rathena
-COPY . .
+COPY rathena/ .
+COPY patches/ /patches/
+# A patch that no longer applies (rAthena changed the same lines) stops the build here
+RUN for p in /patches/*.patch; do patch -p1 --forward < "$p" || exit 1; done
 ARG CONFIGURE="--enable-prere=yes --enable-packetver=20211103"
 RUN ./configure $CONFIGURE && make clean && make -j"$(nproc)" server
 

@@ -1,7 +1,13 @@
 # RagnaDuds
 
-Private Ragnarok Online servers for friends (Denmark + Brazil), built on this rAthena repo.
-Everything of ours is in `duds_server/`; rAthena itself is untouched.
+Private Ragnarok Online servers for friends (Denmark + Brazil), built on [rAthena](https://github.com/rathena/rathena).
+
+- `rathena/`: official rAthena as a git submodule, pinned to one commit (`git clone --recurse-submodules`)
+- `patches/`: our few engine changes, applied on top when the server images are built
+- everything else is ours
+
+Update rAthena: `git -C rathena fetch && git -C rathena checkout <commit>`, then build the images (`./duds.sh release`);
+the build stops if a patch no longer applies. Check `rathena/sql-files/upgrades/` for database changes before deploying.
 
 | | Pre-renewal | Renewal |
 |---|---|---|

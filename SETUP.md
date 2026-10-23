@@ -92,10 +92,4 @@ Install them: `cp client/ro20* ~/.local/bin/`.
 - `deploy/files/*.zip`: client zips
 - `backups/`: database dumps
 
-On a new clone, add them to `.git/info/exclude` before `git add`:
-```
-/duds_server/deploy/hosts/*/
-/duds_server/deploy/files/*.zip
-/duds_server/backups/
-```
-Old leftovers you can delete: `pre_renewal/`, `renewal/`, `downloads/`, the root `gm_commands.txt`.
+They're listed in `.gitignore`, so a new clone never commits them.

@@ -6,7 +6,7 @@ text). It reads what the server really applies: "bonus bStr,3;" -> "STR +3", "if
 """
 import os, re, yaml
 
-RATHENA = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+RATHENA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "rathena")
 SEP = "________________________"
 
 STAT = {  # bonus <name>,<value>   ->  label, unit ("" or "%" or "s" for ms->seconds)

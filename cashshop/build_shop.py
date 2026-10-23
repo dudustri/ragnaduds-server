@@ -21,7 +21,7 @@ import os, re, shutil, sys, yaml
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-RATHENA = os.path.dirname(ROOT)
+RATHENA = os.path.join(ROOT, "rathena")
 sys.path.insert(0, os.path.join(ROOT, "client"))
 import grf  # noqa: E402
 import item_assets  # noqa: E402

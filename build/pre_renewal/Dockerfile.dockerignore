@@ -1,16 +1,18 @@
 # Used automatically for "Dockerfile" in this folder (build context = repo root).
-# Skips git data, local build output (rebuilt inside the image) and local secrets.
-.git
-tools/docker
-duds_server
-**/obj
-**/Makefile
-config.log
-config.status
-login-server
-char-server
-map-server
-web-server
-conf/import
-conf/msg_conf/import
-db/import
+# Only the rAthena source and our patches go in; local build output and secrets stay out.
+*
+!rathena
+!patches
+rathena/.git
+rathena/tools/docker
+rathena/**/obj
+rathena/**/Makefile
+rathena/config.log
+rathena/config.status
+rathena/login-server
+rathena/char-server
+rathena/map-server
+rathena/web-server
+rathena/conf/import
+rathena/conf/msg_conf/import
+rathena/db/import

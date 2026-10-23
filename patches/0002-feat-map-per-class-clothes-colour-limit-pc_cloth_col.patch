@@ -1,0 +1,175 @@
+From b95195afce03f798d6e25bb16cdcc2ff04ad12b0 Mon Sep 17 00:00:00 2001
+From: dudustri <eduardostrindade@gmail.com>
+Date: Wed, 7 Oct 2026 23:17:54 +0200
+Subject: [PATCH 2/3] feat(map): per-class clothes colour limit
+ (pc_cloth_color_max) and getclothmax() script command
+
+---
+ src/map/pc.cpp     | 54 +++++++++++++++++++++++++++++++++++++++++++++-
+ src/map/pc.hpp     |  1 +
+ src/map/script.cpp | 21 +++++++++++++++---
+ src/map/status.cpp |  4 ++--
+ 4 files changed, 74 insertions(+), 6 deletions(-)
+
+diff --git a/src/map/pc.cpp b/src/map/pc.cpp
+index eceefa9fc..89cb6df5f 100755
+--- a/src/map/pc.cpp
++++ b/src/map/pc.cpp
+@@ -11109,6 +11109,58 @@ void pc_equiplookall(map_session_data *sd)
+ /*==========================================
+  * Tell client player sd has change look (hair,equip...)
+  *------------------------------------------*/
++/**
++ * RagnaDuds: highest cloth colour (body palette) the client has for the player's current look.
++ * Counted from the 2026 client's data/palette/몸 files: a colour above this makes the client crash
++ * ("CPaletteRes ... cannot find ..._N.pal"). Never above max_cloth_color.
++ */
++int32 pc_cloth_color_max( map_session_data* sd ){
++	uint64 c = sd->class_;
++	int32 max;
++
++	if( c & ( JOBL_THIRD | JOBL_FOURTH ) ){
++		max = 7; // 3rd, 4th, Expanded Super Novice, Star Emperor, Soul Reaper
++		// Royal Guard on a gryphon only has 3
++		if( ( ( c & MAPID_THIRDMASK ) == ( MAPID_ROYAL_GUARD & MAPID_THIRDMASK ) || ( c & MAPID_THIRDMASK ) == ( MAPID_ROYAL_GUARD_T & MAPID_THIRDMASK ) ) && pc_isriding( sd ) )
++			max = 3;
++	}else{
++		switch( c & MAPID_FIRSTMASK ){
++			case MAPID_NOVICE:
++				max = ( c & JOBL_2 ) ? 7 : 8; // Super Novice / Novice
++				break;
++			case MAPID_TAEKWON:
++			case MAPID_GUNSLINGER:
++			case MAPID_NINJA:
++			case MAPID_SUMMONER:
++				max = 7; // and their 2nd classes
++				break;
++			default:
++				if( !( c & JOBL_2 ) )
++					max = 4; // 1st classes
++				else if( c & JOBL_UPPER )
++					max = 3; // transcendent 2nd classes
++				else{
++					switch( c & MAPID_SECONDMASK ){
++						case MAPID_CRUSADER:
++						case MAPID_MONK:
++						case MAPID_SAGE:
++						case MAPID_ROGUE:
++						case MAPID_ASSASSIN:
++						case MAPID_BARDDANCER:
++							max = 3;
++							break;
++						default:
++							max = 4; // Knight, Priest, Wizard, Blacksmith, Hunter, Alchemist
++							break;
++					}
++				}
++				break;
++		}
++	}
++
++	return min( max, battle_config.max_cloth_color );
++}
++
+ void pc_changelook(map_session_data *sd,int32 type,int32 val) {
+ 	nullpo_retv(sd);
+ 
+@@ -11149,7 +11201,7 @@ void pc_changelook(map_session_data *sd,int32 type,int32 val) {
+ 		}
+ 		break;
+ 	case LOOK_CLOTHES_COLOR:	//Use the battle_config limits! [Skotlex]
+-		val = cap_value(val, MIN_CLOTH_COLOR, MAX_CLOTH_COLOR);
++		val = cap_value(val, MIN_CLOTH_COLOR, pc_cloth_color_max(sd)); // RagnaDuds: per class
+ 
+ 		sd->status.clothes_color = val;
+ 		break;
+diff --git a/src/map/pc.hpp b/src/map/pc.hpp
+index 4cb5e9386..f043ea3e0 100644
+--- a/src/map/pc.hpp
++++ b/src/map/pc.hpp
+@@ -1557,6 +1557,7 @@ bool pc_setcart(map_session_data* sd, int32 type);
+ void pc_setfalcon(map_session_data* sd, int32 flag);
+ void pc_setriding(map_session_data* sd, int32 flag);
+ void pc_setmadogear(map_session_data* sd, bool flag, e_mado_type type = MADO_ROBOT);
++int32 pc_cloth_color_max( map_session_data* sd );
+ void pc_changelook(map_session_data *,int32,int32);
+ void pc_equiplookall(map_session_data *sd);
+ void pc_set_costume_view(map_session_data *sd);
+diff --git a/src/map/script.cpp b/src/map/script.cpp
+index c05f24b04..37dd71853 100644
+--- a/src/map/script.cpp
++++ b/src/map/script.cpp
+@@ -16374,6 +16374,20 @@ BUILDIN_FUNC(npcstop)
+ /**
+  * getlook(<type>{,<char_id>})
+  **/
++/// RagnaDuds: highest cloth colour the attached player's class can use without crashing the client.
++/// getclothmax() -> <int>
++BUILDIN_FUNC(getclothmax)
++{
++	map_session_data* sd;
++
++	if( !script_rid2sd( sd ) ){
++		script_pushint( st, 0 );
++		return SCRIPT_CMD_SUCCESS;
++	}
++	script_pushint( st, pc_cloth_color_max( sd ) );
++	return SCRIPT_CMD_SUCCESS;
++}
++
+ BUILDIN_FUNC(getlook)
+ {
+ 	int32 type,val;
+@@ -27859,7 +27873,7 @@ BUILDIN_FUNC(mesemotion){
+ 	// Validates emotion range
+ 	if (id < ET_SURPRISE || id >= ET_MAX) {
+ 		ShowError("buildin_mesemotion: Emotion ID %d is invalid.\n", id);
+-		st->state = END;
++		st->state = END;
+ 		return SCRIPT_CMD_FAILURE;
+ 	}
+ 
+@@ -27870,8 +27884,8 @@ BUILDIN_FUNC(mesemotion){
+ 	return SCRIPT_CMD_SUCCESS;
+ #else
+ 	ShowError( "buildin_mesemotion: This command requires PACKETVER 2023-03-02 or newer.\n" );
+-	st->state = END;
+-	return SCRIPT_CMD_FAILURE;
++	st->state = END;
++	return SCRIPT_CMD_FAILURE;
+ #endif
+ }
+ 
+@@ -28219,6 +28233,7 @@ struct script_function buildin_func[] = {
+ 	BUILDIN_DEF(chatmes,"s?"), // [Jey]
+ 	BUILDIN_DEF(mobcount,"ss"),
+ 	BUILDIN_DEF(getlook,"i?"),
++	BUILDIN_DEF(getclothmax,""), // RagnaDuds
+ 	BUILDIN_DEF(getsavepoint,"i?"),
+ 	BUILDIN_DEF(npcspeed,"i?"),
+ 	BUILDIN_DEF(npcwalkto,"ii?"),
+diff --git a/src/map/status.cpp b/src/map/status.cpp
+index 87e0d4196..c55ff706a 100644
+--- a/src/map/status.cpp
++++ b/src/map/status.cpp
+@@ -9428,7 +9428,7 @@ void status_set_viewdata(block_list *bl, int32 class_)
+ 				sd->vd.look[LOOK_HEAD_BOTTOM] = sd->status.head_bottom;
+ 				sd->vd.look[LOOK_HAIR] = cap_value(sd->status.hair, MIN_HAIR_STYLE, MAX_HAIR_STYLE);
+ 				sd->vd.look[LOOK_HAIR_COLOR] = cap_value(sd->status.hair_color, MIN_HAIR_COLOR, MAX_HAIR_COLOR);
+-				sd->vd.look[LOOK_CLOTHES_COLOR] = cap_value(sd->status.clothes_color, MIN_CLOTH_COLOR, MAX_CLOTH_COLOR);
++				sd->vd.look[LOOK_CLOTHES_COLOR] = cap_value(sd->status.clothes_color, MIN_CLOTH_COLOR, pc_cloth_color_max(sd)); // RagnaDuds: per class
+ 				sd->vd.look[LOOK_BODY2] = sd->status.body;
+ 				sd->vd.sex = sd->status.sex;
+ 				sd->vd.look[LOOK_ROBE] = sd->status.robe;
+@@ -14092,7 +14092,7 @@ int32 status_change_end( block_list* bl, enum sc_type type, int32 tid ){
+ 			sd->update_look( LOOK_SHIELD );
+ 			clif_changelook(bl,LOOK_WEAPON,sd->vd.look[LOOK_WEAPON]);
+ 			clif_changelook(bl,LOOK_SHIELD,sd->vd.look[LOOK_SHIELD]);
+-			clif_changelook(bl,LOOK_CLOTHES_COLOR,cap_value(sd->status.clothes_color,0,battle_config.max_cloth_color));
++			clif_changelook(bl,LOOK_CLOTHES_COLOR,cap_value(sd->status.clothes_color,0,pc_cloth_color_max(sd))); // RagnaDuds: per class
+ 			clif_changelook( bl, LOOK_BODY2, sd->status.body );
+ 		}
+ 	}
+-- 
+2.54.0
+

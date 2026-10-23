@@ -7,7 +7,7 @@ if [ -z "$RO_DETACHED" ]; then
   echo "Ragnarok 2026 starting in the background (log: $LOG)"
   exit 0
 fi
-"$HOME/rathena/duds_server/duds.sh" up local re-db re-login re-char re-map </dev/null || echo "warning: could not start the renewal server"
+"$HOME/ragnaduds-server/duds.sh" up local re-db re-login re-char re-map </dev/null || echo "warning: could not start the renewal server"
 export WINEPREFIX="$HOME/games/kro2026/wine" WINEDEBUG="${WINEDEBUG:--all}"
 cd "$WINEPREFIX/drive_c/Gravity/kRO2026"
 exec wine ragexe_2026_patched.exe 1rag1 "$@"

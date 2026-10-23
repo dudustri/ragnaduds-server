@@ -9,22 +9,22 @@ services:
     pre_renewal:
         image: "ghcr.io/dudustri/duds-server-pre-renewal:${TAG:-latest}"
         build:
-            context: ../..
-            dockerfile: duds_server/build/pre_renewal/Dockerfile
+            context: ..
+            dockerfile: build/pre_renewal/Dockerfile
             platforms: *platforms
             tags: ["ghcr.io/dudustri/duds-server-pre-renewal:latest"]
     renewal:
         image: "ghcr.io/dudustri/duds-server-renewal:${TAG:-latest}"
         build:
-            context: ../..
-            dockerfile: duds_server/build/renewal/Dockerfile
+            context: ..
+            dockerfile: build/renewal/Dockerfile
             platforms: *platforms
             tags: ["ghcr.io/dudustri/duds-server-renewal:latest"]
     db:
         image: "ghcr.io/dudustri/duds-server-db:${TAG:-latest}"
         build:
-            context: ../..
-            dockerfile: duds_server/build/db/Dockerfile
+            context: ..
+            dockerfile: build/db/Dockerfile
             platforms: *platforms
             tags: ["ghcr.io/dudustri/duds-server-db:latest"]
     portal:

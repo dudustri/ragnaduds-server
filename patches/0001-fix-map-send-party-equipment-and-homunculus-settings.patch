@@ -1,0 +1,39 @@
+From 4a97547b74020068340e8727f516d1adc1a43976 Mon Sep 17 00:00:00 2001
+From: dudustri <eduardostrindade@gmail.com>
+Date: Sat, 3 Oct 2026 22:51:31 +0200
+Subject: [PATCH 1/3] fix(map): send party, equipment and homunculus settings
+ only at login, not on every map change
+
+---
+ src/map/clif.cpp | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/map/clif.cpp b/src/map/clif.cpp
+index 83060544d..f186520f0 100644
+--- a/src/map/clif.cpp
++++ b/src/map/clif.cpp
+@@ -11012,7 +11012,10 @@ void clif_parse_LoadEndAck(int32 fd,map_session_data *sd)
+ 			npc_event_dequeue(sd);
+ 	}
+ 
+-	if( sd->state.changemap ) {// restore information that gets lost on map-change
++	// RagnaDuds: the player's settings (party invitations, equipment window, call/summon, pet and homunculus
++	// autofeed, costumes) are sent once at login only. Sent on every map change, the client printed a chat line
++	// for each of them every time.
++	if( sd->state.changemap && sd->state.connect_new ) {
+ 		clif_partyinvitationstate( *sd );
+ #if PACKETVER >= 20070918
+ 		clif_equipcheckbox( *sd );
+@@ -11038,7 +11041,9 @@ void clif_parse_LoadEndAck(int32 fd,map_session_data *sd)
+ #if PACKETVER >= 20230419
+ 		clif_configuration( sd, CONFIG_DISABLE_SHOWCOSTUMES, sd->status.disable_showcostumes );
+ #endif
++	}
+ 
++	if( sd->state.changemap ) {// restore information that gets lost on map-change
+ 		clif_reputation_list( *sd );
+ 
+ 		if (sd->guild && battle_config.guild_notice_changemap == 1){
+-- 
+2.54.0
+

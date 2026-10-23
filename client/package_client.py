@@ -4,7 +4,7 @@
   package_client.py pre  <server-address> [out-dir]
   package_client.py re   <server-address> [out-dir]
 
-  e.g. package_client.py pre <VM_IP>   → duds_server/deploy/files/duds-pre-renewal.zip
+  e.g. package_client.py pre <VM_IP>   → deploy/files/duds-pre-renewal.zip
 
 The download unzips to:
   RagnaDuds-PreRenewal/

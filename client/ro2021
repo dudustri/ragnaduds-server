@@ -7,7 +7,7 @@ if [ -z "$RO_DETACHED" ]; then
   echo "Ragnarok 2021 starting in the background (log: $LOG)"
   exit 0
 fi
-"$HOME/rathena/duds_server/duds.sh" up local prere-db prere-login prere-char prere-map </dev/null || echo "warning: could not start the pre-renewal server"
+"$HOME/ragnaduds-server/duds.sh" up local prere-db prere-login prere-char prere-map </dev/null || echo "warning: could not start the pre-renewal server"
 export WINEPREFIX="$HOME/games/kro2021/wine" WINEDEBUG="${WINEDEBUG:--all}"
 cd "$WINEPREFIX/drive_c/Gravity/RagnarokKRO"
 exec wine ragexe_2021_patched.exe "$@"
