@@ -18,6 +18,8 @@
 		}],
 		remoteClient: base,
 		skipServerList: true,
-		skipIntro: true                      // straight to the login: no file box, no START NOW
+		skipIntro: true,                     // straight to the login: no file box, no START NOW
+		loadLua: true,                       // item names/pictures from the client's item list, like the exe:
+		customItemInfo: ['System/itemInfo_browser.lua']   // made by client/browser_data.py from the download
 	};
 })();

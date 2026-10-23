@@ -49,8 +49,8 @@ Configs (hosts/<host>/, never baked into images)
 Client downloads
   package <pre|re> [address]   build a client zip into deploy/files/ (address: default VM_IP in hosts/vm/.env)
   files                        upload deploy/files/*.zip to the vm (resumable)
-  browser-data                 upload the game folders for /play and /play-renewal to the vm
-                               (BROWSER_PRE_GAME and BROWSER_RE_GAME in hosts/local/.env)
+  browser-data                 the browser's game folders, made from the downloads (run package first),
+                               into deploy/browser-data/ and up to the vm
 
 GRF work (grf/README.md; needs ./duds.sh up local browser)
   grf find <text>              list game files whose path has <text>, e.g. grf find poring
@@ -264,7 +264,7 @@ EOF
     fi
     finish "Zips and patch files uploaded";;
   grf)
-    game="$(sed -n 's/^BROWSER_PRE_GAME=//p' "$DEPLOY/hosts/local/.env")"
+    game="$DEPLOY/browser-data/pre"   # the pre-renewal game folder the browser reads (./duds.sh browser-data)
     case "${1:-}" in
       find) [[ -n "${2:-}" ]] || die "usage: grf find <text>"; python3 "$ROOT/client/grf.py" "$game/data.grf" list "$2";;
       get)  [[ -n "${2:-}" ]] || die "usage: grf get <path inside the game data>"
@@ -277,17 +277,18 @@ EOF
       *)    die "usage: grf find <text> | get <path> | refresh | pack";;
     esac;;
   browser-data)
-    pre="$(sed -n 's/^BROWSER_PRE_GAME=//p' "$DEPLOY/hosts/local/.env")"; re="$(sed -n 's/^BROWSER_RE_GAME=//p' "$DEPLOY/hosts/local/.env")"
-    [[ -f "$pre/data.grf" && -f "$re/data.grf" ]] || die "set BROWSER_PRE_GAME and BROWSER_RE_GAME in deploy/hosts/local/.env to the game folders (with data.grf)"
-    steps 2
-    # only what roBrowser reads: the GRFs (as listed in deploy/browser/<server>/DATA.INI) and the loose English data,
-    # music, Lua tables and homunculus AI
-    step "Upload the pre-renewal game files (resumable)"
-    ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/browser-data/pre ~/$REMOTE_DIR/browser-data/re"
-    rsync -aP --delete "$pre/data.grf" "$pre/data" "$pre/BGM" "$pre/System" "$pre/AI" "$SSH_HOST:$REMOTE_DIR/browser-data/pre/"
-    step "Upload the renewal game files (resumable)"
-    rsync -aP --delete "$re/2026.grf" "$re/data.grf" "$re/data" "$re/BGM" "$re/System" "$re/AI" "$SSH_HOST:$REMOTE_DIR/browser-data/re/"
-    finish "Browser game files uploaded";;
+    # the same files friends download (our GRFs, music, item list), so the browser shows what the exe shows
+    steps 4
+    for e in pre re; do
+      step "Browser game folder: $e (from deploy/files, client/browser_data.py)"
+      python3 "$ROOT/client/browser_data.py" "$e" "$DEPLOY/browser-data/$e" || die "run ./duds.sh package $e first"
+    done
+    for e in pre re; do
+      step "Upload the $e browser game folder (resumable, only changes travel)"
+      ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/browser-data/$e"
+      rsync -aP --delete "$DEPLOY/browser-data/$e/" "$SSH_HOST:$REMOTE_DIR/browser-data/$e/"
+    done
+    finish "Browser game files ready on the VM (restart: ./duds.sh restart vm browser browser-re)";;
   backup)
     host="${1:-}"; need_host "$host"; out="$ROOT/backups/$host"; mkdir -p "$out"; stamp=$(date +%F-%H%M)
     steps 2

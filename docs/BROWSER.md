@@ -45,11 +45,14 @@ talks to rAthena.
 ## Put it on the VM
 ```bash
 ./duds.sh release browser web     # the client image + the site with /play and /play-renewal
-./duds.sh browser-data            # upload both game folders once (~3.4 GB + ~5 GB, resumable)
+./duds.sh browser-data            # both game folders from the downloads (~3.4 GB + ~5 GB the first time, then only changes)
 ./duds.sh up vm browser browser-re web
 ```
-`BROWSER_PRE_GAME` and `BROWSER_RE_GAME` in `deploy/hosts/local/.env` point at your game folders (the source of the
-upload and of the local services). The VM keeps its copies in `~/duds/browser-data/pre` and `re`.
+The browser's game folders are made **from the friends' downloads** (`client/browser_data.py`, run by
+`./duds.sh browser-data` into `deploy/browser-data/`): the same GRFs in the same order, the music, and the item list
+the exe ends up with (its layered loader run once in Lua 5.1 and written out as `System/itemInfo_browser.lua`). So
+after `build_shop.py` → `./duds.sh package re`, run `./duds.sh browser-data` and both clients match. The VM keeps its
+copies in `~/duds/browser-data/pre` and `re`.
 
 ## On your PC: viewers and GRF work
 `./duds.sh start local pre && ./duds.sh up local browser`, then http://127.0.0.1:3338/ (Renewal: `start local re`,

@@ -176,8 +176,8 @@ services:
         extra_hosts: ["host.docker.internal:host-gateway"]            # the game servers' published ports
         ports: ["127.0.0.1:3338:3338"]
         volumes:
-            - "${BROWSER_PRE_GAME:-./browser-data/pre}:/game:ro,z"     # pre-renewal game folder (Gravity's files: never in git)
-            - "./browser/pre/DATA.INI:/app/resources/DATA.INI:ro,z"
+            - "${BROWSER_PRE_GAME:-./browser-data/pre}:/game:ro,z"     # pre-renewal game folder, from the download (client/browser_data.py)
+            - "${BROWSER_PRE_GAME:-./browser-data/pre}/DATA_browser.INI:/app/resources/DATA.INI:ro,z"
             - "./browser/pre/Config.local.js:/robrowser/Config.local.js:ro,z"
             - "../grf/.browser/data:/app/data:ro,z"                     # your GRF work (grf/README.md, made by grf refresh): wins over the GRF
         networks: [web]
@@ -198,8 +198,8 @@ services:
         extra_hosts: ["host.docker.internal:host-gateway"]            # the game servers' published ports
         ports: ["127.0.0.1:3339:3338"]
         volumes:
-            - "${BROWSER_RE_GAME:-./browser-data/re}:/game:ro,z"       # renewal game folder (Gravity's files: never in git)
-            - "./browser/re/DATA.INI:/app/resources/DATA.INI:ro,z"
+            - "${BROWSER_RE_GAME:-./browser-data/re}:/game:ro,z"       # renewal game folder, from the download (client/browser_data.py)
+            - "${BROWSER_RE_GAME:-./browser-data/re}/DATA_browser.INI:/app/resources/DATA.INI:ro,z"
             - "./browser/re/Config.local.js:/robrowser/Config.local.js:ro,z"
             - "../grf/.browser/data:/app/data:ro,z"                     # your GRF work (grf/README.md, made by grf refresh): wins over the GRF
         networks: [web]

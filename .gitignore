@@ -52,3 +52,6 @@ docs/private/
 grf/data/
 grf/.browser/
 grf/*.grf
+
+# ---- the browser client's game folders (made from the downloads by client/browser_data.py) ----
+deploy/browser-data/
