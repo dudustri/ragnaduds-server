@@ -33,11 +33,11 @@ read `grf/data/` **before** the game's GRF, so you see your version.
 Put `ragnaduds_dev.grf` in the game folder and add it as the first line of its `DATA.INI` (`0=ragnaduds_dev.grf`,
 renumber the others). To ship it to friends, add the files to the download (`client/package_client.py`).
 
-**Example: your face as a hairstyle** (`client/face_head.py`): copy a head's `.act`/`.spr` to a new style number,
+**Example: your face as a hairstyle** (`grf/tools/face_head.py`): copy a head's `.act`/`.spr` to a new style number,
 then redraw its frames from a cut-out photo:
 ```bash
 ./duds.sh grf get 'data\sprite\인간족\머리통\남\42_남.act'   # then rename both to 43_남.* (a new hairstyle 43)
-uv run --no-project --with pillow python3 client/face_head.py <original 42_남.spr> 'grf/data/sprite/인간족/머리통/남/43_남.spr'
+uv run --no-project --with pillow python3 grf/tools/face_head.py <original 42_남.spr> 'grf/data/sprite/인간족/머리통/남/43_남.spr'
 ./duds.sh grf refresh
 ```
 The server must allow the new number (`max_hair_style: 43` in the host's `battle_conf.txt`); a GM sets it with

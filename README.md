@@ -62,7 +62,7 @@ The build stops if one of our patches no longer fits. Check `rathena/sql-files/u
 | [OPERATIONS](docs/OPERATIONS.md) | diagrams and every `duds.sh` command |
 | [CONFIG](docs/CONFIG.md) | rates and settings, and how to change them |
 | [SPECIAL-MAPS](docs/SPECIAL-MAPS.md) | Mapas Especiais, Cheffenia, casino, 4th job quests |
-| [BROWSER](docs/BROWSER.md) | playing in the browser (/play), and the local GRF viewers |
+| [BROWSER](docs/BROWSER.md) | playing in the browser (/play, /play-renewal), and the local GRF viewers |
 | [grf](grf/README.md) | making your own maps, sprites and effects |
 | [CASHSHOP](docs/CASHSHOP.md) | the Cash Shop and cash points |
 | [GM-COMMANDS](docs/GM-COMMANDS.md) | GM commands, MVPs, jobs, cards |

@@ -49,7 +49,8 @@ Configs (hosts/<host>/, never baked into images)
 Client downloads
   package <pre|re> [address]   build a client zip into deploy/files/ (address: default VM_IP in hosts/vm/.env)
   files                        upload deploy/files/*.zip to the vm (resumable)
-  browser-data                 upload the pre-renewal game folder for /play to the vm (BROWSER_PRE_GAME in hosts/local/.env)
+  browser-data                 upload the game folders for /play and /play-renewal to the vm
+                               (BROWSER_PRE_GAME and BROWSER_RE_GAME in hosts/local/.env)
 
 GRF work (grf/README.md; needs ./duds.sh up local browser)
   grf find <text>              list game files whose path has <text>, e.g. grf find poring
@@ -271,17 +272,21 @@ EOF
             # through the local browser server: it reads every GRF entry, the scrambled ones too
             curl -sf --create-dirs -o "$ROOT/grf/$p" "http://127.0.0.1:3338/$p" || die "not found (is ./duds.sh up local browser running? is the path right?)"
             grf_readable; echo "grf/$p";;
-      refresh) grf_readable; dc local restart browser; echo "reload http://127.0.0.1:3338/";;
+      refresh) grf_readable; dc local restart browser browser-re; echo "reload http://127.0.0.1:3338/ (pre) or :3339 (renewal)";;
       pack) python3 "$ROOT/client/grf.py" "$ROOT/grf/ragnaduds_dev.grf" pack "$ROOT/grf";;
       *)    die "usage: grf find <text> | get <path> | refresh | pack";;
     esac;;
   browser-data)
-    src="$(sed -n 's/^BROWSER_PRE_GAME=//p' "$DEPLOY/hosts/local/.env")"
-    [[ -f "$src/data.grf" ]] || die "set BROWSER_PRE_GAME in deploy/hosts/local/.env to the pre-renewal game folder (with data.grf)"
-    steps 1; step "Upload the browser's game files to the VM (resumable)"
-    ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/browser-data/pre"
-    # only what roBrowser reads: the GRF and the loose English data, music, Lua tables and homunculus AI
-    rsync -aP --delete "$src/data.grf" "$src/data" "$src/BGM" "$src/System" "$src/AI" "$SSH_HOST:$REMOTE_DIR/browser-data/pre/"
+    pre="$(sed -n 's/^BROWSER_PRE_GAME=//p' "$DEPLOY/hosts/local/.env")"; re="$(sed -n 's/^BROWSER_RE_GAME=//p' "$DEPLOY/hosts/local/.env")"
+    [[ -f "$pre/data.grf" && -f "$re/data.grf" ]] || die "set BROWSER_PRE_GAME and BROWSER_RE_GAME in deploy/hosts/local/.env to the game folders (with data.grf)"
+    steps 2
+    # only what roBrowser reads: the GRFs (as listed in deploy/browser/<server>/DATA.INI) and the loose English data,
+    # music, Lua tables and homunculus AI
+    step "Upload the pre-renewal game files (resumable)"
+    ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/browser-data/pre ~/$REMOTE_DIR/browser-data/re"
+    rsync -aP --delete "$pre/data.grf" "$pre/data" "$pre/BGM" "$pre/System" "$pre/AI" "$SSH_HOST:$REMOTE_DIR/browser-data/pre/"
+    step "Upload the renewal game files (resumable)"
+    rsync -aP --delete "$re/2026.grf" "$re/data.grf" "$re/data" "$re/BGM" "$re/System" "$re/AI" "$SSH_HOST:$REMOTE_DIR/browser-data/re/"
     finish "Browser game files uploaded";;
   backup)
     host="${1:-}"; need_host "$host"; out="$ROOT/backups/$host"; mkdir -p "$out"; stamp=$(date +%F-%H%M)

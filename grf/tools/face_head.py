@@ -26,7 +26,7 @@ def read_frames(path):
 
 
 def default_head():
-    sys.path.insert(0, os.path.join(HERE, "..", "build", "web", "assets"))
+    sys.path.insert(0, os.path.join(HERE, "..", "..", "build", "web", "assets"))
     import make_web_assets   # its head_cutout(): your photo without the ceiling light and the t-shirt
     return make_web_assets.head_cutout()
 

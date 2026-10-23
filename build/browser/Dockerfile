@@ -8,7 +8,13 @@ WORKDIR /rb
 COPY robrowser/package*.json ./
 RUN npm install --no-audit --no-fund   # shortcut: upstream lockfile is out of sync (npm ci fails); build-time only, output is static JS
 COPY robrowser/ .
-RUN npm run build:all
+COPY patches/robrowser/ /patches/
+# our fixes on top of the pinned roBrowser (like patches/ for rAthena); a patch that no longer fits stops the build
+RUN apt-get update -qq && apt-get install -y -qq patch >/dev/null \
+ && for p in /patches/*.patch; do patch -p1 --forward < "$p" || exit 1; done
+RUN npm run build:all \
+ && sed -i -e 's|<title>[^<]*</title>|<title>RagnaDuds</title>|' \
+           -e 's|<link rel="icon"[^>]*>|<link rel="icon" href="/img/favicon.ico">|' dist/Web/*.html   # our tab: name + the site's icon
 
 FROM node:24-slim
 RUN apt-get update -qq && apt-get install -y -qq git && rm -rf /var/lib/apt/lists/* \
@@ -17,7 +23,13 @@ WORKDIR /app
 ARG REMOTE_CLIENT_COMMIT=0dd3a3fa71733c0c88ac1beb117039174eb2a7b0
 RUN git clone -q https://github.com/FranciscoWallison/roBrowserLegacy-RemoteClient-JS.git . \
  && git checkout -q "$REMOTE_CLIENT_COMMIT" && npm ci --ignore-scripts --omit=dev --no-audit --no-fund && rm -rf .git \
- && mkdir -p resources data logs
+ && mkdir -p resources data logs \
+ # shortcut: kRO 2026 GRFs start with "Event Horizon" instead of "Master of Magic" (same 0x300 format otherwise);
+ # accept both until @chicowall/grf-loader / RemoteClient-JS support it upstream
+ && sed -i 's/if(t!==\([A-Za-z]*\))throw new \([A-Za-z]*\)("INVALID_MAGIC"/if(t!==\1\&\&!t.startsWith("Event Horizon"))throw new \2("INVALID_MAGIC"/' node_modules/@chicowall/grf-loader/dist/index.js node_modules/@chicowall/grf-loader/dist/index.cjs \
+ && sed -i 's/if (signature !== "Master of Magic")/if (signature !== "Master of Magic" \&\& !signature.startsWith("Event Horizon"))/' src/validators/startupValidator.js \
+ && grep -q 'Event Horizon' node_modules/@chicowall/grf-loader/dist/index.js && grep -q 'Event Horizon' node_modules/@chicowall/grf-loader/dist/index.cjs \
+ && grep -q 'Event Horizon' src/validators/startupValidator.js
 COPY --from=build /rb/dist/Web /robrowser
 RUN chown -R robrowser:robrowser /app /robrowser
 ENV PORT=3338 NODE_ENV=production ENABLE_WSPROXY=true ENABLE_STATIC_SERVE=true ROBROWSER_PATH=/robrowser \
