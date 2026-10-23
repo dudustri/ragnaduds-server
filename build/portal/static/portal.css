@@ -15,6 +15,10 @@ body {
 .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
 .brand { font: 16px "Press Start 2P", monospace; color: var(--gold); text-decoration: none; text-shadow: 2px 2px 0 #7a3e12, 4px 4px 0 #000; }
 .nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+/* language switch: same look as the site's, next to the brand */
+.lang { display: flex; border: 3px solid #000; box-shadow: 3px 3px 0 #000; margin-right: auto; }
+.lang button { padding: 8px 10px; border: 0; box-shadow: none; background: var(--panel-2); color: var(--ink); }
+.lang button[aria-pressed="true"] { background: var(--gold); color: #1b1203; }
 .nav a, .nav button, .btn, button {
   font: 10px "Press Start 2P", monospace; color: var(--ink); text-decoration: none; background: var(--panel-2);
   padding: 9px 11px; border: 3px solid #000; box-shadow: 3px 3px 0 #000; cursor: pointer; display: inline-block;

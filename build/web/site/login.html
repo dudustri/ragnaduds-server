@@ -86,6 +86,7 @@ function applyLang(l) {
   document.querySelectorAll("[data-t]").forEach(e => e.textContent = T[lang][e.dataset.t]);
   document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
   try { localStorage.setItem("lang", lang) } catch {}
+  document.cookie = "lang=" + lang + "; path=/; max-age=31536000; SameSite=Lax";   // the account pages (server side) read the same choice
 }
 document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.lang)));
 applyLang(lang);

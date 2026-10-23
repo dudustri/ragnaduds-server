@@ -193,6 +193,7 @@ func isMD5(s string) bool {
 func (a *App) loadTemplates() {
 	funcs := template.FuncMap{
 		"date": func(t time.Time) string { return t.UTC().Format("2006-01-02 15:04 UTC") },
+		"tf":   tf,
 		"dict": func(kv ...any) map[string]any { // {{template "button" (dict "Link" .Link "Label" "...")}}
 			m := map[string]any{}
 			for i := 0; i+1 < len(kv); i += 2 {

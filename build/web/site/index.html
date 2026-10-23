@@ -440,6 +440,7 @@ function applyLang(l) {
   document.querySelectorAll("[data-i18n-title]").forEach(e => e.title = T[l][e.dataset.i18nTitle]);
   document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === l));
   try { localStorage.setItem("lang", l) } catch {}
+  document.cookie = "lang=" + l + "; path=/; max-age=31536000; SameSite=Lax";   // the account pages (server side) read the same choice
   li = 0; say(T[l].lines[0]); refreshSizes(); refreshLive();
 }
 document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.lang)));

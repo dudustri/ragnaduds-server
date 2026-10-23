@@ -26,7 +26,7 @@ const NPCS = [   // [name, where, servers, { en, pt, da } what]
 
 const T = {
   en: {
-    back: "◀ BACK", title: "SERVER FEATURES", tagline: "Everything RagnaDuds has, on one page.",
+    back: "◀ BACK", title: "SERVER FEATURES",
     note: { re: "Renewal · 2026 client · 3rd & 4th jobs · level 275", pre: "Pre-Renewal · 2021 client · classic 99/70" },
     tag: { re: "RENEWAL", pre: "PRE-RENEWAL", both: "BOTH SERVERS" },
     npchead: ["NPC", "WHERE", "WHAT"], npctip: "Tip: type <code>/navi prontera 187/177</code> in game to get a route to any spot.",
@@ -100,7 +100,7 @@ const T = {
     ],
   },
   pt: {
-    back: "◀ VOLTAR", title: "O QUE TEM NO SERVER", tagline: "Tudo do RagnaDuds numa página só.",
+    back: "◀ VOLTAR", title: "O QUE TEM NO SERVER",
     note: { re: "Renewal · cliente 2026 · classes 3 e 4 · nível 275", pre: "Pre-Renewal · cliente 2021 · clássico 99/70" },
     tag: { re: "RENEWAL", pre: "PRE-RENEWAL", both: "OS DOIS SERVERS" },
     npchead: ["NPC", "ONDE", "O QUE FAZ"], npctip: "Dica: digite <code>/navi prontera 187/177</code> no jogo pra ver o caminho até qualquer lugar.",
@@ -174,7 +174,7 @@ const T = {
     ],
   },
   da: {
-    back: "◀ TILBAGE", title: "SERVERENS FEATURES", tagline: "Alt hvad RagnaDuds har, på én side.",
+    back: "◀ TILBAGE", title: "SERVERENS FEATURES",
     note: { re: "Renewal · 2026-klient · 3. og 4. job · level 275", pre: "Pre-Renewal · 2021-klient · klassisk 99/70" },
     tag: { re: "RENEWAL", pre: "PRE-RENEWAL", both: "BEGGE SERVERE" },
     npchead: ["NPC", "HVOR", "HVAD"], npctip: "Tip: skriv <code>/navi prontera 187/177</code> i spillet for at få vejen til ethvert sted.",
@@ -279,6 +279,7 @@ function render() {
     return `<section class="frame" id="${id}"><h2>${title}<span class="tag ${tag}">${t.tag[tag]}</span></h2>${html}</section>`;
   }).join("");
   store("lang", LANG); store("server", SRV);
+  document.cookie = "lang=" + LANG + "; path=/; max-age=31536000; SameSite=Lax";   // the account pages (server side) read the same choice
 }
 document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => { LANG = b.dataset.lang; render(); }));
 document.querySelectorAll("[data-srv]").forEach(b => b.addEventListener("click", () => { SRV = b.dataset.srv; render(); }));

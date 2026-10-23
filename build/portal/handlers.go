@@ -138,6 +138,19 @@ func (a *App) render(w http.ResponseWriter, r *http.Request, name string, data m
 	if _, ok := data["Msg"]; !ok {
 		data["Msg"] = r.URL.Query().Get("msg")
 	}
+	lang := langOf(r)
+	t := texts[lang]
+	data["L"], data["Lang"], data["LangKey"] = t, htmlLang[lang], lang
+	for _, k := range []string{"Msg", "Error", "Title", "Text"} { // handlers pass text keys (e_login, m_pw_saved...)
+		if s, ok := data[k].(string); ok {
+			data[k] = tr(t, s)
+		}
+	}
+	if errs, ok := data["Errors"].([]string); ok {
+		for i, e := range errs {
+			errs[i] = tr(t, e)
+		}
+	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := a.pages[name].ExecuteTemplate(w, "layout.html", data); err != nil {
 		logf("render %s: %v", name, err)
@@ -165,9 +178,9 @@ func (a *App) loginPost(w http.ResponseWriter, r *http.Request) {
 	next := safeNext(r.FormValue("next"))
 	u, err := a.store.UserByName(strings.TrimSpace(r.FormValue("username")))
 	if err != nil || u.Disabled || u.PwHash == "" || !checkPassword(u.PwHash, r.FormValue("password")) {
-		msg := "Wrong username or password."
+		msg := "e_login"
 		if err == nil && u.PwHash == "" && !u.Disabled {
-			msg = "This account has no website password yet: use \"Forgot password\" (or the link in your welcome e-mail)."
+			msg = "e_nopw"
 		}
 		a.render(w, r, "login", map[string]any{"Next": next, "Error": msg, "Username": r.FormValue("username")})
 		return
@@ -187,7 +200,7 @@ func (a *App) logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{Name: sessionCookie, Value: "", Path: "/", MaxAge: -1, HttpOnly: true, Secure: a.cfg.CookieSecure})
 	// and the browser drops every page it kept of this site, so nothing private shows again after logging out
 	w.Header().Set("Clear-Site-Data", `"cache"`)
-	http.Redirect(w, r, "/login?msg=You+are+logged+out.", http.StatusSeeOther)
+	http.Redirect(w, r, "/login?msg=m_logged_out", http.StatusSeeOther)
 }
 
 // ---------- join (account request) ----------
@@ -214,21 +227,21 @@ func (a *App) joinPost(w http.ResponseWriter, r *http.Request) {
 	}
 	var errs []string
 	if r.FormValue("agree_terms") != "yes" || r.FormValue("agree_gravity") != "yes" {
-		errs = append(errs, "You must accept both statements.")
+		errs = append(errs, "e_terms")
 	}
 	if !reUsername.MatchString(req.Username) {
-		errs = append(errs, "Username: 4 to 23 letters, numbers or _ .")
+		errs = append(errs, "e_user")
 	} else if a.usernameTaken(req.Username) {
-		errs = append(errs, "That username is already taken or requested. Pick another one.")
+		errs = append(errs, "e_taken")
 	}
 	if !reName.MatchString(req.FirstName) || !reName.MatchString(req.LastName) {
-		errs = append(errs, "Please write your name and surname.")
+		errs = append(errs, "e_name")
 	}
 	if addr, err := mail.ParseAddress(req.Email); err != nil || addr.Address != req.Email || len(req.Email) > 120 {
-		errs = append(errs, "Please write a valid e-mail address.")
+		errs = append(errs, "e_email")
 	}
 	if len([]rune(req.Message)) > 1000 {
-		errs = append(errs, "The message can have at most 1000 characters.")
+		errs = append(errs, "e_msglen")
 	}
 	if len(errs) > 0 {
 		a.render(w, r, "join", map[string]any{"Terms": a.cfg.TermsVersion, "Errors": errs, "Req": req, "Agreed": true})
@@ -278,16 +291,14 @@ func (a *App) forgotPost(w http.ResponseWriter, r *http.Request) {
 			map[string]any{"Username": u.Username, "Link": a.cfg.SiteURL + "/set-password?t=" + tok})
 		a.store.Audit(u.Username, "reset-link", clientIP(r))
 	}
-	a.render(w, r, "message", map[string]any{"Title": "CHECK YOUR E-MAIL",
-		"Text": "If that e-mail belongs to an account, we sent your username and a link to choose a new password. The link works for 2 hours."})
+	a.render(w, r, "message", map[string]any{"Title": "t_check", "Text": "x_check"})
 }
 
 func (a *App) setPage(w http.ResponseWriter, r *http.Request) {
 	t := r.URL.Query().Get("t")
 	u, purpose, err := a.store.TokenUser(t)
 	if err != nil {
-		a.render(w, r, "message", map[string]any{"Title": "LINK EXPIRED",
-			"Text": "This link was already used or has expired. Ask for a new one on the \"Forgot password\" page."})
+		a.render(w, r, "message", map[string]any{"Title": "t_expired", "Text": "x_expired"})
 		return
 	}
 	a.render(w, r, "setpw", map[string]any{"Token": t, "Username": u.Username, "Welcome": purpose == "set"})
@@ -295,10 +306,10 @@ func (a *App) setPage(w http.ResponseWriter, r *http.Request) {
 
 func validPassword(pw, pw2 string) string {
 	if pw != pw2 {
-		return "The two passwords are different."
+		return "e_pwdiff"
 	}
 	if n := len(pw); n < 6 || n > 23 {
-		return "The password must have 6 to 23 characters (the game's limit)."
+		return "e_pwlen"
 	}
 	return ""
 }
@@ -310,7 +321,7 @@ func (a *App) setPost(w http.ResponseWriter, r *http.Request) {
 	t := r.FormValue("t")
 	u, purpose, err := a.store.TokenUser(t)
 	if err != nil {
-		a.render(w, r, "message", map[string]any{"Title": "LINK EXPIRED", "Text": "This link was already used or has expired."})
+		a.render(w, r, "message", map[string]any{"Title": "t_expired", "Text": "x_expired"})
 		return
 	}
 	pw := r.FormValue("password")
@@ -321,13 +332,13 @@ func (a *App) setPost(w http.ResponseWriter, r *http.Request) {
 	if err := a.changePassword(u, pw); err != nil {
 		logf("set password %s: %v", u.Username, err)
 		a.render(w, r, "setpw", map[string]any{"Token": t, "Username": u.Username, "Welcome": purpose == "set",
-			"Error": "Could not save the password right now, try again in a minute."})
+			"Error": "e_save"})
 		return
 	}
 	a.store.UseToken(t)
 	a.store.DeleteUserSessions(u.ID)
 	a.setSession(w, u)
-	http.Redirect(w, r, "/account?msg=Password+saved.+Use+it+in+the+game+and+on+this+website.", http.StatusSeeOther)
+	http.Redirect(w, r, "/account?msg=m_pw_saved", http.StatusSeeOther)
 }
 
 // changePassword: game accounts (both servers) first, then the website, so they never get out of step.
@@ -353,7 +364,7 @@ func (a *App) accountPassword(w http.ResponseWriter, r *http.Request, u *User, _
 		return
 	}
 	if !checkPassword(u.PwHash, r.FormValue("current")) {
-		a.render(w, r, "account", map[string]any{"Error": "Your current password is wrong."})
+		a.render(w, r, "account", map[string]any{"Error": "e_current"})
 		return
 	}
 	pw := r.FormValue("password")
@@ -363,10 +374,10 @@ func (a *App) accountPassword(w http.ResponseWriter, r *http.Request, u *User, _
 	}
 	if err := a.changePassword(u, pw); err != nil {
 		logf("change password %s: %v", u.Username, err)
-		a.render(w, r, "account", map[string]any{"Error": "Could not save the password right now, try again in a minute."})
+		a.render(w, r, "account", map[string]any{"Error": "e_save"})
 		return
 	}
-	http.Redirect(w, r, "/account?msg=Password+changed+(game+and+website).", http.StatusSeeOther)
+	http.Redirect(w, r, "/account?msg=m_pw_changed", http.StatusSeeOther)
 }
 
 // ---------- admin ----------
