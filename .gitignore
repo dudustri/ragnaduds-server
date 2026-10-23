@@ -44,3 +44,6 @@ client/casino_media/
 client/itemInfo_RD.lua
 .duds-release-copy.sh
 .duds-release-copy2.sh
+
+# ---- private notes (game client details: kept on this PC only) ----
+docs/private/

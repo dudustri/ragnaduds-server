@@ -45,5 +45,5 @@ assets/                     sources (not published)
 ## Change something
 - **Picture**: replace it in `assets/`, then run `python3 assets/make_web_assets.py` or `make_collage.py`.
 - **Text**: edit `T` in `site/index.html`, in all three languages.
-- **Preview**: `./duds.sh up local web status`, then open http://localhost:8088.
+- **Preview**: `./duds.sh up local web status`, then open the local address from `deploy/compose.yml`.
 - **Put it live**: `./duds.sh release web`, then `./duds.sh up vm web`. The site restarts for about 2 s; the game servers keep running.
