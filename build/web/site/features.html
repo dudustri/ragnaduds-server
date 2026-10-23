@@ -40,7 +40,6 @@
   .back { display: inline-block; font: 10px "Press Start 2P", monospace; color: var(--ink); text-decoration: none;
           background: var(--panel-2); padding: 9px 11px; border: 3px solid #000; box-shadow: 3px 3px 0 #000; }
   .back:hover { background: var(--gold); color: #1b1203; }
-  .back-row { margin: 0; }
   .frame { background: var(--panel); border: var(--px) solid var(--edge); margin: 18px 0; padding: 16px 20px 18px;
            box-shadow: inset 0 0 0 var(--px) #000, inset 0 0 0 calc(var(--px)*2) var(--edge-hi), 6px 6px 0 #000; }
   .frame h2 { font-size: 13px; color: var(--pink); margin: 4px 0 12px; line-height: 1.6; }
@@ -95,6 +94,14 @@
   /* top bar: in the page flow (never over the title); language = a setting on the left, account actions on the right */
   .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: var(--s5); }
   .topbar .lang { position: static; margin: 0; width: auto; }
+  /* left = navigation (back), right = settings: account, then language last, the same on every page */
+  .topbar .right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: flex-end; margin-left: auto; }
+  /* phones: row 1 = back + language, row 2 = account actions */
+  @media (max-width: 560px) {
+    .topbar .right { display: contents; }
+    .topbar .lang { order: 1; margin-left: auto; }
+    .topbar .user { order: 2; flex-basis: 100%; justify-content: flex-end; }
+  }
   .user { display: flex; gap: 8px; }
   .user a { font: 10px "Press Start 2P", monospace; padding: 8px 10px; text-decoration: none; border: 3px solid #000; box-shadow: 3px 3px 0 #000;
             background: var(--panel-2); color: var(--ink); }
@@ -107,12 +114,14 @@
 <body>
 <div class="wrap">
   <div class="topbar">
-    <div class="lang" role="group" aria-label="Language">
-      <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
+    <a class="back" href="/" data-i18n="back"></a>
+    <div class="right">
+      <nav class="user" aria-label="Account"><a href="/account"><span class="my">MY </span>ACCOUNT</a><a class="quiet" href="/logout">LOG OUT</a></nav>
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
+      </div>
     </div>
-    <nav class="user" aria-label="Account"><a href="/account"><span class="my">MY </span>ACCOUNT</a><a class="quiet" href="/logout">LOG OUT</a></nav>
   </div>
-  <p class="back-row"><a class="back" href="/" data-i18n="back"></a></p>
   <h1 data-i18n="title"></h1>
   <div class="srv-switch"><div role="group" aria-label="Server">
     <button class="re" data-srv="re" aria-pressed="true">RENEWAL</button><button class="pre" data-srv="pre" aria-pressed="false">PRE-RENEWAL</button>

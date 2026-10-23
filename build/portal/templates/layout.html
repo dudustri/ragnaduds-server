@@ -13,22 +13,24 @@
 <div class="wrap">
   <div class="top">
     <a class="brand" href="/">RAGNADUDS</a>
-    {{/* same language choice as the site: a cookie the server reads, plus the site's localStorage */}}
-    <div class="lang" role="group" aria-label="Language">
-      <button type="button" data-lang="en" aria-pressed="{{eq .LangKey "en"}}">EN</button><button type="button" data-lang="pt" aria-pressed="{{eq .LangKey "pt"}}">PT</button><button type="button" data-lang="da" aria-pressed="{{eq .LangKey "da"}}">DA</button>
-    </div>
-    <div class="nav">
-      {{if .Me}}
-        {{/* a menu that stays the same on every page, with the current page highlighted */}}
-        <a href="/">{{.L.nav_site}}</a>
-        <a href="/account"{{if eq .Page "account"}} aria-current="page"{{end}}>{{.L.nav_account}}</a>
-        {{if .Me.IsAdmin}}<a href="/admin"{{if or (eq .Page "admin") (eq .Page "outbox")}} aria-current="page"{{end}}>ADMIN</a>{{end}}
-        <form method="post" action="/logout" style="margin:0"><button>{{.L.nav_logout}}</button></form>
-      {{else}}
-        {{/* logged out: only the other way in (no link to the page you are already on) */}}
-        {{if ne .Page "login"}}<a href="/login">{{.L.nav_login}}</a>{{end}}
-        {{if not (or (eq .Page "join") (eq .Page "join_done"))}}<a href="/join">{{.L.nav_join}}</a>{{end}}
-      {{end}}
+    <div class="right">
+      <div class="nav">
+        {{if .Me}}
+          {{/* a menu that stays the same on every page, with the current page highlighted */}}
+          <a href="/">{{.L.nav_site}}</a>
+          <a href="/account"{{if eq .Page "account"}} aria-current="page"{{end}}>{{.L.nav_account}}</a>
+          {{if .Me.IsAdmin}}<a href="/admin"{{if or (eq .Page "admin") (eq .Page "outbox")}} aria-current="page"{{end}}>ADMIN</a>{{end}}
+          <form method="post" action="/logout" style="margin:0"><button>{{.L.nav_logout}}</button></form>
+        {{else}}
+          {{/* logged out: only the other way in (no link to the page you are already on) */}}
+          {{if ne .Page "login"}}<a href="/login">{{.L.nav_login}}</a>{{end}}
+          {{if not (or (eq .Page "join") (eq .Page "join_done"))}}<a href="/join">{{.L.nav_join}}</a>{{end}}
+        {{end}}
+      </div>
+      {{/* same language choice as the site: a cookie the server reads, plus the site's localStorage */}}
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="{{eq .LangKey "en"}}">EN</button><button type="button" data-lang="pt" aria-pressed="{{eq .LangKey "pt"}}">PT</button><button type="button" data-lang="da" aria-pressed="{{eq .LangKey "da"}}">DA</button>
+      </div>
     </div>
   </div>
   {{if .Msg}}<div class="ok">{{.Msg}}</div>{{end}}

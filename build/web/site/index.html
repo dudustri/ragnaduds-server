@@ -193,6 +193,14 @@
   /* top bar: in the page flow (never over the title); language = a setting on the left, account actions on the right */
   .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: var(--s5); }
   .topbar .lang { position: static; margin: 0; width: auto; }
+  /* left = navigation (back), right = settings: account, then language last, the same on every page */
+  .topbar .right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: flex-end; margin-left: auto; }
+  /* phones: row 1 = back + language, row 2 = account actions */
+  @media (max-width: 560px) {
+    .topbar .right { display: contents; }
+    .topbar .lang { order: 1; margin-left: auto; }
+    .topbar .user { order: 2; flex-basis: 100%; justify-content: flex-end; }
+  }
   .user { display: flex; gap: 8px; }
   .user a { font: 10px "Press Start 2P", monospace; padding: 8px 10px; text-decoration: none; border: 3px solid #000; box-shadow: 3px 3px 0 #000;
             background: var(--panel-2); color: var(--ink); }
@@ -207,10 +215,12 @@
 
 <div class="wrap">
   <div class="topbar">
-    <div class="lang" role="group" aria-label="Language">
-      <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
+    <div class="right">
+      <nav class="user" aria-label="Account"><a href="/account"><span class="my">MY </span>ACCOUNT</a><a class="quiet" href="/logout">LOG OUT</a></nav>
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
+      </div>
     </div>
-    <nav class="user" aria-label="Account"><a href="/account"><span class="my">MY </span>ACCOUNT</a><a class="quiet" href="/logout">LOG OUT</a></nav>
   </div>
 
   <h1>RAGNADUDS</h1>
