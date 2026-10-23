@@ -22,9 +22,9 @@ A brand new file: create it in `grf/data/` with the path the game expects (same 
 | Icons, pictures | `.bmp` (magenta 255,0,255 = transparent) | any image editor |
 
 ## 3. See it
-Reload http://127.0.0.1:3338/ : the **Map, Model, STR, Effect and GRF viewers** and the game itself read `grf/data/`
-**before** the game's GRF, so you see your version right away. (The server caches files: if a change doesn't show,
-`./duds.sh restart local browser`.)
+Run `./duds.sh grf refresh` after saving (it makes your files readable for the browser server and clears its
+cache), then reload http://127.0.0.1:3338/ : the **Map, Model, STR, Effect and GRF viewers** and the game itself
+read `grf/data/` **before** the game's GRF, so you see your version.
 
 ## 4. Use it in the real game client
 ```bash
@@ -32,6 +32,16 @@ Reload http://127.0.0.1:3338/ : the **Map, Model, STR, Effect and GRF viewers** 
 ```
 Put `ragnaduds_dev.grf` in the game folder and add it as the first line of its `DATA.INI` (`0=ragnaduds_dev.grf`,
 renumber the others). To ship it to friends, add the files to the download (`client/package_client.py`).
+
+**Example: your face as a hairstyle** (`client/face_head.py`): copy a head's `.act`/`.spr` to a new style number,
+then redraw its frames from a cut-out photo:
+```bash
+./duds.sh grf get 'data\sprite\인간족\머리통\남\42_남.act'   # then rename both to 43_남.* (a new hairstyle 43)
+uv run --no-project --with pillow python3 client/face_head.py <original 42_남.spr> 'grf/data/sprite/인간족/머리통/남/43_남.spr'
+./duds.sh grf refresh
+```
+The server must allow the new number (`max_hair_style: 43` in the host's `battle_conf.txt`); a GM sets it with
+`@hairstyle 43` (hair colour 0: dyes recolour the face).
 
 **A new map** also needs the server side: its `.gat` in the map cache (rAthena `mapcache` tool), its name in
 `map_index.txt` and a `map:` line in the host's `map_conf.txt`, then restart the map server.

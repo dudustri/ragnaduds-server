@@ -2,7 +2,8 @@
 """Minimal GRF reader (versions 0x200 and 0x300), enough to list and extract files.
 Usage: grf.py <file.grf> list [substring]
        grf.py <file.grf> get <exact path inside grf> <output file>
-       grf.py <file.grf> pack <folder>     every file under <folder>/data/... → data\\... in a new GRF"""
+       grf.py <file.grf> pack <folder>     every file under <folder>/data/... → data\\... in a new GRF
+       grf.py - mirror <folder> <dest>      <folder>/data as roBrowser spells paths (cp949 bytes read as Latin-1)"""
 import os, re, struct, sys, zlib
 
 def entries(path):
@@ -57,12 +58,26 @@ def pack(path, folder):
     write(path, files)
     return len(files)
 
+def mirror(folder, dest):
+    """Hard links under dest/data with the names roBrowser asks for: it sends cp949 paths as Latin-1 text, and its
+    file server only translates names inside GRFs, not in a loose folder."""
+    n = 0
+    for root, _, names in os.walk(os.path.join(folder, "data")):
+        for name in names:
+            src = os.path.join(root, name)
+            rel = os.path.relpath(src, folder).encode("cp949").decode("latin1")
+            dst = os.path.join(dest, rel); os.makedirs(os.path.dirname(dst), exist_ok=True)
+            os.link(src, dst); n += 1
+    return n
+
 if __name__ == "__main__":
+    if sys.argv[2] == "mirror":
+        print(mirror(sys.argv[3], sys.argv[4]), "files mirrored for the browser"); sys.exit()
     if sys.argv[2] == "pack":
         print(pack(sys.argv[1], sys.argv[3]), "files packed into", sys.argv[1]); sys.exit()
     f, ents = entries(sys.argv[1])
     if sys.argv[2] == "list":
-        sub = (sys.argv[3] if len(sys.argv) > 3 else "").lower().encode()
+        sub = (sys.argv[3] if len(sys.argv) > 3 else "").lower().encode("cp949")   # names are stored as cp949
         for n in ents:
             if sub in n.lower():
                 print(n.decode("cp949", "replace"))

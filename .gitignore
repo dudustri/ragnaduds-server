@@ -50,4 +50,5 @@ docs/private/
 
 # ---- GRF work (grf/README.md): edited game files stay on this PC ----
 grf/data/
+grf/.browser/
 grf/*.grf

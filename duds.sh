@@ -54,6 +54,7 @@ Client downloads
 GRF work (grf/README.md; needs ./duds.sh up local browser)
   grf find <text>              list game files whose path has <text>, e.g. grf find poring
   grf get <path>               copy a game file into grf/ to edit it, e.g. grf get 'data\sprite\...\poring.spr'
+  grf refresh                  after editing: the browser sees new files (permissions, SELinux) and drops its cache
   grf pack                     pack grf/data/ into grf/ragnaduds_dev.grf for the real game client
 
 Other
@@ -67,6 +68,14 @@ compose_local() { (cd "$DEPLOY" && docker compose --env-file hosts/local/.env "$
 compose_vm()    { ssh -t "$SSH_HOST" "cd ~/$REMOTE_DIR && docker compose --env-file hosts/vm/.env $(printf '%q ' "$@")"; }   # %q: args survive the remote shell
 dc() { local host="$1"; shift; case "$host" in local) compose_local "$@" ;; vm) compose_vm "$@" ;; *) die "host must be local or vm";; esac; }
 die() { echo "error: $*" >&2; exit 1; }
+# the browser container reads grf/data as another user, and on SELinux hosts only files labelled for containers
+# (grf/.browser/data: the same files under the cp949-as-Latin-1 names roBrowser asks for, see client/grf.py mirror)
+grf_readable() {
+  rm -rf "$ROOT/grf/.browser"; mkdir -p "$ROOT/grf/data" "$ROOT/grf/.browser/data"
+  python3 "$ROOT/client/grf.py" - mirror "$ROOT/grf" "$ROOT/grf/.browser"
+  chmod -R a+rX "$ROOT/grf/data" "$ROOT/grf/.browser"
+  command -v chcon >/dev/null && chcon -R -t container_file_t "$ROOT/grf/data" "$ROOT/grf/.browser" 2>/dev/null || true
+}
 need_host() { [[ "${1:-}" == local || "${1:-}" == vm ]] || die "host must be local or vm"; }
 
 # players online, as "pre-renewal: N, renewal: N" (0 if a server isn't running)
@@ -261,9 +270,10 @@ EOF
             p="${2//\\//}"   # client paths use backslashes
             # through the local browser server: it reads every GRF entry, the scrambled ones too
             curl -sf --create-dirs -o "$ROOT/grf/$p" "http://127.0.0.1:3338/$p" || die "not found (is ./duds.sh up local browser running? is the path right?)"
-            echo "grf/$p";;
+            grf_readable; echo "grf/$p";;
+      refresh) grf_readable; dc local restart browser; echo "reload http://127.0.0.1:3338/";;
       pack) python3 "$ROOT/client/grf.py" "$ROOT/grf/ragnaduds_dev.grf" pack "$ROOT/grf";;
-      *)    die "usage: grf find <text> | get <path> | pack";;
+      *)    die "usage: grf find <text> | get <path> | refresh | pack";;
     esac;;
   browser-data)
     src="$(sed -n 's/^BROWSER_PRE_GAME=//p' "$DEPLOY/hosts/local/.env")"

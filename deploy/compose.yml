@@ -179,7 +179,7 @@ services:
             - "${BROWSER_PRE_GAME:-./browser-data/pre}:/game:ro,z"     # pre-renewal game folder (Gravity's files: never in git)
             - "./browser/DATA.INI:/app/resources/DATA.INI:ro,z"
             - "./browser/Config.local.js:/robrowser/Config.local.js:ro,z"
-            - "../grf/data:/app/data:ro,z"                              # your GRF work (grf/README.md): wins over the GRF
+            - "../grf/.browser/data:/app/data:ro,z"                     # your GRF work (grf/README.md, made by grf refresh): wins over the GRF
         networks: [web]
 
     # ---------------- server status + Hall of Fame for the website (deploy/status.sh) ----------------
