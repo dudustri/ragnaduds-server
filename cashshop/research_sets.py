@@ -1,4 +1,4 @@
-"""Read the gear sets out of the research files (builds-*.md), for building shop.yml.
+"""Read the gear sets out of the research files (docs/builds/builds-*.md), for building shop.yml.
 
   third_class_sets()  {class: {build: {"mid": [ids], "end": [ids]}}}   from builds-renewal-3rd-part1/2.md
   first_second_sets() [{"class": ..., "items": [ids]}]                  from builds-renewal-1st-2nd.md
@@ -15,7 +15,7 @@ def third_class_sets():
     out = {}
     for f in ("builds-renewal-3rd-part1.md", "builds-renewal-3rd-part2.md"):
         cls = build = tier = None
-        for line in open(os.path.join(HERE, f), encoding="utf-8"):
+        for line in open(os.path.join(HERE, "..", "docs", "builds", f), encoding="utf-8"):
             m = re.match(r"^(#{2,5})\s+(.*)", line)
             if m:
                 h, level = m.group(2).strip(), len(m.group(1))
@@ -36,7 +36,7 @@ def third_class_sets():
 
 
 def first_second_sets():
-    text = open(os.path.join(HERE, "builds-renewal-1st-2nd.md"), encoding="utf-8").read()
+    text = open(os.path.join(HERE, "..", "docs", "builds", "builds-renewal-1st-2nd.md"), encoding="utf-8").read()
     return yaml.safe_load(re.findall(r"```yaml\n(.*?)```", text, re.S)[-1])["sets"]
 
 

@@ -1,41 +1,84 @@
-# RagnaDuds
+<h1 align="center"><img src="docs/img/ragnaduds-banner.png" alt="RagnaDuds" width="536"></h1>
 
-Private Ragnarok Online servers for friends (Denmark + Brazil), built on [rAthena](https://github.com/rathena/rathena).
+A private Ragnarok Online server for a group of friends in Denmark and Brazil.
+It runs on [rAthena](https://github.com/rathena/rathena), the open-source server, with two worlds:
+**Renewal** and **Pre-Renewal** (the classic game). Not affiliated with Gravity.
 
-- `rathena/`: official rAthena as a git submodule, pinned to one commit (`git clone --recurse-submodules`)
-- `patches/`: our few engine changes, applied on top when the server images are built
-- everything else is ours
+## How it works
 
-Update rAthena: `git -C rathena fetch && git -C rathena checkout <commit>`, then build the images (`./duds.sh release`);
-the build stops if a patch no longer applies. Check `rathena/sql-files/upgrades/` for database changes before deploying.
+```mermaid
+flowchart TB
+    FRIENDS(["Friends in Denmark and Brazil"])
 
-| | Pre-renewal | Renewal |
-|---|---|---|
-| Client | kRO 2021-11-03, English | kRO 2026-01-07, English |
-| Port | 6900 | 6901 |
-| Extras | GM commands, buffer, welcome lines, PvP/MVP counters | same + bRO special maps |
+    subgraph VM["Cloud VM · Docker"]
+        direction TB
+        WEB["Website + account portal<br/>login · downloads · status"]
+        subgraph WORLDS[" "]
+            direction LR
+            RE["Renewal world<br/>login → characters → maps"]
+            PRE["Pre-Renewal world<br/>login → characters → maps"]
+        end
+        DB[("Databases<br/>one per world, never public")]
+        OPS["Status checker<br/>backups every 6 hours"]
+        WEB --> DB
+        RE --> DB
+        PRE --> DB
+        OPS -.-> DB
+    end
 
-- Website + downloads: https://ragnaduds.duckdns.org (EN / PT / DA)
-- Everything is run with `./duds.sh` (see `./duds.sh help`)
+    subgraph PC["Your PC"]
+        direction LR
+        CODE["This repo<br/>official rAthena + our patches<br/>+ our NPCs, maps, settings"] --> CMD["duds.sh"]
+    end
+    REG[("GitHub registry<br/>server images")]
+
+    FRIENDS -- "play" --> RE & PRE
+    FRIENDS -- "browse" --> WEB
+    CMD -- "release" --> REG
+    REG -- "up: pull" --> VM
+    CMD -- "up: settings + scripts" --> VM
+```
+
+- **Images** are the programs; **settings and scripts** stay outside them, so most changes need no rebuild.
+- **Databases** are never open to the internet: only the servers, the portal and the status checker reach them.
+- **Passwords and accounts** live in `deploy/hosts/` and never go into git.
+
+## Quick start
+```bash
+git clone --recurse-submodules https://github.com/dudustri/ragnaduds-server.git
+./duds.sh help                 # every command
+./duds.sh start local re       # a server on your PC
+./duds.sh release              # build the images
+./duds.sh up vm                # put everything on the VM
+```
+
+Update rAthena: `git -C rathena fetch && git -C rathena checkout <commit>`, then `./duds.sh release`.
+The build stops if one of our patches no longer fits. Check `rathena/sql-files/upgrades/` for database changes first.
 
 ## Docs
-| Doc | Read it for |
+| Doc | For |
 |---|---|
-| [DEPLOY.md](DEPLOY.md) | putting it on the VM, and day-to-day tasks |
-| [OPERATIONS.md](OPERATIONS.md) | diagrams, every command, what friends download |
-| [CONFIG.md](CONFIG.md) | what's set and how to change settings |
-| [SPECIAL-MAPS.md](SPECIAL-MAPS.md) | Mapas Especiais, Cheffenia, Turn In |
-| [GM-COMMANDS.md](GM-COMMANDS.md) | GM commands, MVPs, builds, cards |
-| [CASHSHOP-AND-CLIENT.md](CASHSHOP-AND-CLIENT.md) | Cash Shop, item fixes, GRF/Lua client files, how to add items |
-| [SETUP.md](SETUP.md) | local servers and how the game clients were built |
-| [build/web/README.md](build/web/README.md) | the website |
+| [DEPLOY](docs/DEPLOY.md) | putting it on the VM, day-to-day tasks |
+| [OPERATIONS](docs/OPERATIONS.md) | diagrams and every `duds.sh` command |
+| [CONFIG](docs/CONFIG.md) | rates and settings, and how to change them |
+| [SPECIAL-MAPS](docs/SPECIAL-MAPS.md) | Mapas Especiais, Cheffenia, casino, 4th job quests |
+| [CASHSHOP](docs/CASHSHOP.md) | the Cash Shop and cash points |
+| [GM-COMMANDS](docs/GM-COMMANDS.md) | GM commands, MVPs, jobs, cards |
+| [PORTAL](docs/PORTAL.md) | account requests, website login, password reset |
+| [WEBSITE](docs/WEBSITE.md) | the website |
+| [SETUP](docs/SETUP.md) | running the servers on your PC |
+| [builds](docs/builds/README.md) | class builds used for the shop |
 
 ## Folders
 ```
-duds.sh           command center
-build/            images: pre_renewal, renewal, db, web (+ installer art)
-deploy/           compose.yml, our scripts (*.txt), status.sh, backup.sh
-deploy/hosts/     local/ and vm/: passwords, accounts, game configs   (private, not in git)
-client/           client tools, installers, homunculus AI, package_client.py
-vm_provisioning/  cloud-init for a new VM
+duds.sh       the command center
+rathena/      official rAthena (git submodule)
+patches/      our engine changes, applied when the images are built
+build/        server images, website, account portal
+deploy/       what runs on the VM: compose file, our scripts, settings (hosts/ is private)
+cashshop/     Cash Shop builder
+casino/       casino art and sounds
+client/       tools for the friends' download
+docs/         documentation
+vm_provisioning/  setup for a new VM
 ```

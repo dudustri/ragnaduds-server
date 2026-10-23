@@ -1,6 +1,6 @@
 # RagnaDuds Cash Shop: 1st and 2nd / transcendent class gear (RENEWAL, base level 99 or lower)
 
-Server: rAthena renewal, kRO 2026 client. 3rd classes are covered in `builds-renewal-3rd-part1/2.md`; this file does not repeat them.
+Server: rAthena renewal. 3rd classes are covered in `builds-renewal-3rd-part1/2.md`; this file does not repeat them.
 
 ## How the picks were made
 - Route: bROWiki's renewal equipment route puts **Eden/Paradise gear** at levels 1-100 (class Paradise weapons unlock skill bonuses at base 60/75/90).

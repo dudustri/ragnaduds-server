@@ -62,7 +62,6 @@ You can repeat it once every 24 h, with one hunt at a time, and cancel it anytim
 | `deploy/re_db_import/instance_db.yml` | the 15 rooms (instance Ids 900–914) |
 | `deploy/re_db_import/item_db.yml`, `item_cash.yml` | the two tickets (990001, 990002) and the cash shop |
 | `deploy/hosts/<host>/renewal/import/map_conf.txt` | loads the script + the Sograt fields the rooms copy |
-| client `System/itemInfo_C.lua` | ticket names/descriptions in the renewal client |
 
 All mounted into `re-map` by `deploy/compose.yml`. Changing the script or monster amounts only needs `./duds.sh up <host> re-map`, with no image rebuild. After a start, the map server log shows one `RagnaDuds: ... ready, N monsters` line per room.
 
@@ -91,14 +90,7 @@ Script: `deploy/homunculus_room.txt` (sets are in its OnInit). Homunculi everywh
 
 ## Comodo Casino (renewal)
 NPC **Casino Hostess**, Prontera (168,190), warps into the official Comodo casino hall (`cmd_in02`); the
-**Doorman** next to the arrival takes players back. The hall's two stairs (168,113 and 187,78) lead to the 2nd floor. Script: `deploy/casino.txt`. Animations: cutins drawn by
-`casino/build_casino_art.py` (790 PNG frames, ~10 MB) into `client/grf_casino/`, shipped as `ragnaduds_casino.grf`
-by `package_client.py` (renewal only; players get it from the launcher update), with the sounds synthesized by
-`casino/build_casino_sounds.py`. Your own media goes in `client/casino_media/` (git-ignored): `wav/<sound name>.*`
-replaces a sound (`duds_cheer`, played to the whole casino on 1M+ wins, is cut to 3 s), `BGM/duds_casino<N>.mp3`
-is casino music (set `.tracks` in the `Casino Music#duds` NPC to N). Then rebuild: sounds, `./duds.sh package re`,
-`./duds.sh files vm`. Bets are zeny, settled before the
-animation plays (walking away mid-animation never loses a win).
+**Doorman** next to the arrival takes players back. The hall's two stairs (168,113 and 187,78) lead to the 2nd floor. Script: `deploy/casino.txt`. Animations and sounds: `casino/` (built locally and shipped in the renewal download).
 
 | Game | Where | Rules | Return to player |
 |---|---|---|---|
