@@ -12,7 +12,7 @@ body {
               repeating-linear-gradient(0deg, #16132a 0 32px, #181530 32px 64px);
 }
 .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
-.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }   /* header → page title, same as the site */
 .brand { font: 16px "Press Start 2P", monospace; color: var(--gold); text-decoration: none; text-shadow: 2px 2px 0 #7a3e12, 4px 4px 0 #000; }
 .nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 /* language switch: same look as the site's, next to the brand */
@@ -28,7 +28,7 @@ body {
 .btn.go, button.go { background: var(--green); color: #10131f; }
 .btn.no, button.no { background: var(--red); color: #1f1018; }
 h1 { font: clamp(16px, 4vw, 26px) "Press Start 2P", monospace; color: var(--gold); text-align: center;
-     text-shadow: 3px 3px 0 #7a3e12, 6px 6px 0 #000; margin: 18px 0 8px; line-height: 1.5; }
+     text-shadow: 3px 3px 0 #7a3e12, 6px 6px 0 #000; margin: 24px 0 8px; line-height: 1.5; }
 h2 { font: 12px "Press Start 2P", monospace; color: var(--pink); margin: 4px 0 12px; line-height: 1.6; }
 .frame { background: var(--panel); border: var(--px) solid var(--edge); margin: 18px 0; padding: 16px 20px 18px;
          box-shadow: inset 0 0 0 var(--px) #000, inset 0 0 0 calc(var(--px)*2) var(--edge-hi), 6px 6px 0 #000; }

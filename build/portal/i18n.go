@@ -21,7 +21,7 @@ var texts = map[string]map[string]template.HTML{
 		"login_go": "LOG IN ▶", "login_forgot": "Forgot your username or password?", "login_none": "No account yet?", "login_ask": "Request one",
 
 		"join_title": "Request an account", "join_h": "JOIN RAGNADUDS",
-		"join_sub":   "A private, friends-only fan server. Ask for an account below; Duds reads every request.",
+		"join_sub":   "A private, friends-only fan server. Ask for an account below.",
 		"join_s1":    "1 · THE TERMS",
 		"join_t1":    "RagnaDuds is a <b>private, non-commercial fan project</b> run for friends. Nothing is sold; cash points are earned by playing.",
 		"join_t2":    "RagnaDuds is <b>not affiliated with, endorsed, sponsored or approved by Gravity Co., Ltd.</b> or any official Ragnarok Online publisher. Ragnarok Online, its names, art and data belong to their owners.",
@@ -90,7 +90,7 @@ var texts = map[string]map[string]template.HTML{
 		"login_go": "ENTRAR ▶", "login_forgot": "Esqueceu o usuário ou a senha?", "login_none": "Ainda não tem conta?", "login_ask": "Peça uma",
 
 		"join_title": "Pedir uma conta", "join_h": "ENTRE NO RAGNADUDS",
-		"join_sub":   "Um server de fãs privado, só para amigos. Peça sua conta aqui embaixo; o Duds lê todos os pedidos.",
+		"join_sub":   "Um server de fãs privado, só para amigos. Peça sua conta aqui embaixo.",
 		"join_s1":    "1 · OS TERMOS",
 		"join_t1":    "O RagnaDuds é um <b>projeto de fãs privado e sem fins comerciais</b>, feito para amigos. Nada é vendido; os cash points são ganhos jogando.",
 		"join_t2":    "O RagnaDuds <b>não tem ligação com a Gravity Co., Ltd.</b>, nem é apoiado, patrocinado ou aprovado por ela ou por qualquer publicadora oficial de Ragnarok Online. Ragnarok Online, seus nomes, artes e dados pertencem aos seus donos.",
@@ -159,7 +159,7 @@ var texts = map[string]map[string]template.HTML{
 		"login_go": "LOG IND ▶", "login_forgot": "Glemt dit brugernavn eller din adgangskode?", "login_none": "Ingen konto endnu?", "login_ask": "Bed om en",
 
 		"join_title": "Bed om en konto", "join_h": "BLIV EN DEL AF RAGNADUDS",
-		"join_sub":   "En privat fanserver kun for venner. Bed om en konto herunder; Duds læser hver eneste anmodning.",
+		"join_sub":   "En privat fanserver kun for venner. Bed om en konto herunder.",
 		"join_s1":    "1 · BETINGELSERNE",
 		"join_t1":    "RagnaDuds er et <b>privat, ikke-kommercielt fanprojekt</b> for venner. Intet bliver solgt; cash points optjenes ved at spille.",
 		"join_t2":    "RagnaDuds er <b>ikke tilknyttet, godkendt, sponsoreret eller anerkendt af Gravity Co., Ltd.</b> eller nogen officiel udgiver af Ragnarok Online. Ragnarok Online, dets navne, grafik og data tilhører deres ejere.",

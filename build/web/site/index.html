@@ -15,6 +15,7 @@
     --ink: #f6ecd2; --ink-dim: #b9ab8a; --bg: #14121f; --panel: #221d33; --panel-2: #2c2542;
     --edge: #6b4f2a; --edge-hi: #c9a25b; --pink: #ff8fb1; --green: #7ee081; --blue: #7cc4ff;
     --gold: #ffd166; --red: #ff6b6b; --px: 4px;
+    --s3: 24px; --s5: 40px;   /* spacing scale (8px steps), same as the features page */
   }
   * { box-sizing: border-box; }
   html { background: var(--bg); }
@@ -30,11 +31,8 @@
   }
   .wrap { max-width: 980px; margin: 0 auto; padding: 28px 16px 64px; position: relative; z-index: 1; }
   h1, h2, .pixel { font-family: "Press Start 2P", monospace; letter-spacing: .5px; }
-  h1 { font-size: clamp(22px, 5vw, 40px); margin: 8px 0 6px; text-align: center; color: var(--gold);
+  h1 { font-size: clamp(22px, 5vw, 40px); margin: 0 0 var(--s3); text-align: center; color: var(--gold);
        text-shadow: 3px 3px 0 #7a3e12, 6px 6px 0 #000; }
-  .tagline { text-align: center; color: var(--ink-dim); margin: 0 0 18px; }
-  .flag { display: inline-block; width: 22px; height: 15px; vertical-align: -2px; border: 2px solid #000; background: #000; }
-  .flag svg { display: block; width: 100%; height: 100%; }
 
   /* language switch */
   .lang { position: absolute; top: 14px; right: 16px; display: flex; border: 3px solid #000; box-shadow: 3px 3px 0 #000; }
@@ -193,7 +191,7 @@
   .sublink { display: block; margin-top: 10px; font-size: 18px; color: var(--ink-dim); text-decoration: underline; }
   .sublink:hover { color: var(--gold); }
   /* top bar: in the page flow (never over the title); language = a setting on the left, account actions on the right */
-  .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: var(--s5); }
   .topbar .lang { position: static; margin: 0; width: auto; }
   .user { display: flex; gap: 8px; }
   .user a { font: 10px "Press Start 2P", monospace; padding: 8px 10px; text-decoration: none; border: 3px solid #000; box-shadow: 3px 3px 0 #000;
@@ -216,7 +214,6 @@
   </div>
 
   <h1>RAGNADUDS</h1>
-  <p class="tagline"><span data-i18n="tag1"></span> · <span class="flag"><svg viewBox="0 0 37 28"><rect width="37" height="28" fill="#c8102e"/><rect x="12" width="4" height="28" fill="#fff"/><rect y="12" width="37" height="4" fill="#fff"/></svg></span> × <span class="flag"><svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#009c3b"/><polygon points="10,1.6 18.4,7 10,12.4 1.6,7" fill="#ffdf00"/><circle cx="10" cy="7" r="3.4" fill="#002776"/><path d="M6.7 6.3 Q10 5.4 13.3 7.6" stroke="#fff" stroke-width=".7" fill="none"/></svg></span> · <span data-i18n="tag2"></span></p>
 
   <p class="cta"><a class="btn" href="#downloads" data-i18n="cta"></a> <a class="btn" href="/features" data-i18n="featurescta"></a></p>
 
@@ -319,7 +316,6 @@ const matterReady = loadMatter();      // matter.js: stage ragdolls, collage sti
 const LOCALE = { en: "en", pt: "pt-BR", da: "da-DK" };   // number/date formats per language
 const T = {
   en: {
-    tag1: "the Duds Server · est. 2026", tag2: "no rules, just chill",
     npcname: "[RagnaDuds, Kafra intern]", click: "▼ click", clickme: "click to continue",
     pretext: "The classic. 2004 vibes, 99/70 cap, zero bullshit. For veterans and people who cry at the Prontera theme.",
     retext: "Modern RO. 3rd &amp; 4th jobs, level 275, forty skills per button. For masochists who read patch notes for fun.",
@@ -352,7 +348,6 @@ const T = {
     ],
   },
   pt: {
-    tag1: "o Servidor do Duds · desde 2026", tag2: "sem regras, só na paz",
     npcname: "[RagnaDuds, estagiário da Kafra]", click: "▼ clica", clickme: "clica pra continuar",
     pretext: "O clássico. Vibe de 2004, cap 99/70, zero frescura. Pra veterano e pra quem chora ouvindo a música de Prontera.",
     retext: "RO moderno. Classes 3 e 4, nível 275, quarenta skills por botão. Pra masoquista que lê patch note por diversão.",
@@ -385,8 +380,6 @@ const T = {
     ],
   },
   da: {
-    tag1: "Duds-serveren · siden 2026",
-    tag2: "ingen regler, bare chill",
     npcname: "[RagnaDuds, Kafra-praktikant]",
     click: "▼ klik",
     clickme: "klik for at fortsætte",

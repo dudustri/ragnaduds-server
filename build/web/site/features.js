@@ -258,6 +258,20 @@ if (SRV !== "re" && SRV !== "pre") SRV = "re";
 
 const on = (where) => where === "both" || where === SRV;
 
+// The server facts as a looping ticker: the facts repeated until one half is wider than the strip, then that half
+// twice, moved left by exactly one half (seamless loop) at a steady speed. Screen readers get the plain line once.
+function ticker(el, note) {
+  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  const one = note.split(" · ").map((f) => `<span>${esc(f)}</span><span class="sep">✦</span>`).join("");
+  el.dataset.srv = SRV;
+  el.setAttribute("aria-label", note);
+  el.innerHTML = `<div class="track" aria-hidden="true"><div class="half">${one}</div></div>`;
+  const half = el.querySelector(".half");
+  for (let i = 0; i < 8 && half.scrollWidth < el.clientWidth; i++) half.insertAdjacentHTML("beforeend", one);
+  half.parentNode.append(half.cloneNode(true));
+  el.querySelector(".track").style.setProperty("--dur", `${Math.max(8, half.scrollWidth / 45)}s`);   // ~45 px/s
+}
+
 function npcTable(t) {
   const rows = NPCS.filter(n => on(n[2])).map(([name, where, , what]) =>
     `<tr><td><b>${name}</b></td><td class="c">${where}</td><td>${what[LANG]}</td></tr>`).join("");
@@ -270,7 +284,7 @@ function render() {
   document.querySelectorAll("[data-i18n]").forEach(e => e.innerHTML = t[e.dataset.i18n]);
   document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === LANG));
   document.querySelectorAll("[data-srv]").forEach(b => b.setAttribute("aria-pressed", b.dataset.srv === SRV));
-  document.getElementById("srvnote").textContent = t.note[SRV];
+  ticker(document.getElementById("srvnote"), t.note[SRV]);
   const shown = t.sections.filter(([, where]) => on(where));
   document.getElementById("toc").innerHTML = shown.map(([id, , title]) => `<a href="#${id}">${title}</a>`).join("");
   document.getElementById("sections").innerHTML = shown.map(([id, where, title, body]) => {
