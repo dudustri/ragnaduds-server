@@ -62,6 +62,8 @@ The build stops if one of our patches no longer fits. Check `rathena/sql-files/u
 | [OPERATIONS](docs/OPERATIONS.md) | diagrams and every `duds.sh` command |
 | [CONFIG](docs/CONFIG.md) | rates and settings, and how to change them |
 | [SPECIAL-MAPS](docs/SPECIAL-MAPS.md) | Mapas Especiais, Cheffenia, casino, 4th job quests |
+| [BROWSER](docs/BROWSER.md) | playing in the browser (/play), and the local GRF viewers |
+| [grf](grf/README.md) | making your own maps, sprites and effects |
 | [CASHSHOP](docs/CASHSHOP.md) | the Cash Shop and cash points |
 | [GM-COMMANDS](docs/GM-COMMANDS.md) | GM commands, MVPs, jobs, cards |
 | [PORTAL](docs/PORTAL.md) | account requests, website login, password reset |
@@ -73,6 +75,7 @@ The build stops if one of our patches no longer fits. Check `rathena/sql-files/u
 ```
 duds.sh       the command center
 rathena/      official rAthena (git submodule)
+robrowser/    roBrowserLegacy, the browser client (git submodule)
 patches/      our engine changes, applied when the images are built
 build/        server images, website, account portal
 deploy/       what runs on the VM: compose file, our scripts, settings (hosts/ is private)
@@ -80,5 +83,6 @@ cashshop/     Cash Shop builder
 casino/       casino art and sounds
 client/       tools for the friends' download
 docs/         documentation
+grf/          your GRF work (maps, sprites, effects), see grf/README.md
 vm_provisioning/  setup for a new VM
 ```

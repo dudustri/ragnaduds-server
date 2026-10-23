@@ -27,6 +27,13 @@ services:
             dockerfile: build/db/Dockerfile
             platforms: *platforms
             tags: ["ghcr.io/dudustri/duds-server-db:latest"]
+    browser:        # roBrowserLegacy + its game file server and WebSocket proxy (build/browser), no game files inside
+        image: "ghcr.io/dudustri/duds-server-browser:${TAG:-latest}"
+        build:
+            context: ..
+            dockerfile: build/browser/Dockerfile
+            platforms: *platforms
+            tags: ["ghcr.io/dudustri/duds-server-browser:latest"]
     portal:
         image: "ghcr.io/dudustri/duds-server-portal:${TAG:-latest}"
         build:

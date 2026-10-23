@@ -157,6 +157,31 @@ services:
         volumes: ["portal_data:/data"]
         networks: [web, prere, re]
 
+    # ---------------- play in the browser: roBrowser + its game files + the WebSocket proxy (robrowser/) ----------------
+    # The site serves it at /play (behind the login). On your PC: http://127.0.0.1:3338/ with the launcher and viewers.
+    browser:
+        image: "ghcr.io/dudustri/duds-server-browser:${TAG:-latest}"
+        restart: unless-stopped
+        environment:
+            TZ: "CET-1CEST,M3.5.0,M10.5.0/3"
+            # the game proxy only accepts pages from these sites (the VM sets its own: https://ragnaduds.duckdns.org)
+            CLIENT_PUBLIC_URL: "${BROWSER_URL:-http://127.0.0.1:3338}"
+            CORS_ORIGINS: "${BROWSER_ORIGINS:-http://127.0.0.1:3338,http://localhost:3338,http://127.0.0.1:8088,http://localhost:8088}"
+            WS_ALLOWED_TARGETS: "host.docker.internal:6900,host.docker.internal:6121,host.docker.internal:5121"
+            CACHE_MAX_MEMORY_MB: "512"
+            DATA_OVERRIDE_PATH: /game/data                              # English texts and Lua next to the GRF
+            BGM_PATH: /game/BGM
+            SYSTEM_PATH: /game/System
+            AI_PATH: /game/AI
+        extra_hosts: ["host.docker.internal:host-gateway"]            # the game servers' published ports
+        ports: ["127.0.0.1:3338:3338"]
+        volumes:
+            - "${BROWSER_PRE_GAME:-./browser-data/pre}:/game:ro,z"     # pre-renewal game folder (Gravity's files: never in git)
+            - "./browser/DATA.INI:/app/resources/DATA.INI:ro,z"
+            - "./browser/Config.local.js:/robrowser/Config.local.js:ro,z"
+            - "../grf/data:/app/data:ro,z"                              # your GRF work (grf/README.md): wins over the GRF
+        networks: [web]
+
     # ---------------- server status + Hall of Fame for the website (deploy/status.sh) ----------------
     status:
         image: "ghcr.io/dudustri/duds-server-db:${TAG:-latest}"   # only for its mariadb client + bash

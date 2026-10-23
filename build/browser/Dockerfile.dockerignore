@@ -1,0 +1,6 @@
+# build context = repo root; this image only needs the roBrowserLegacy source
+*
+!robrowser
+robrowser/.git
+robrowser/node_modules
+robrowser/dist

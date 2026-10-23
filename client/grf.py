@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Minimal GRF reader (versions 0x200 and 0x300), enough to list and extract files.
 Usage: grf.py <file.grf> list [substring]
-       grf.py <file.grf> get <exact path inside grf> <output file>"""
-import re, struct, sys, zlib
+       grf.py <file.grf> get <exact path inside grf> <output file>
+       grf.py <file.grf> pack <folder>     every file under <folder>/data/... → data\\... in a new GRF"""
+import os, re, struct, sys, zlib
 
 def entries(path):
     f = open(path, "rb")
@@ -47,7 +48,18 @@ def write(path, files):
     with open(path, "wb") as out:
         out.write(header + bytes(body) + struct.pack("<II", len(ctable), len(table)) + ctable)
 
+def pack(path, folder):
+    files = {}
+    for root, _, names in os.walk(os.path.join(folder, "data")):
+        for n in names:
+            full = os.path.join(root, n)
+            files[os.path.relpath(full, folder).replace(os.sep, "\\")] = open(full, "rb").read()
+    write(path, files)
+    return len(files)
+
 if __name__ == "__main__":
+    if sys.argv[2] == "pack":
+        print(pack(sys.argv[1], sys.argv[3]), "files packed into", sys.argv[1]); sys.exit()
     f, ents = entries(sys.argv[1])
     if sys.argv[2] == "list":
         sub = (sys.argv[3] if len(sys.argv) > 3 else "").lower().encode()

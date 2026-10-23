@@ -24,7 +24,7 @@ warn()   { printf '%s%s%s\n' "$Y" "$*" "$N"; }
 
 usage() { cat <<'EOF'
 Build & release (PC → GitHub registry)
-  release [image...]           build x86+ARM images and push (pre_renewal renewal db web; default: all)
+  release [image...]           build x86+ARM images and push (pre_renewal renewal db web portal browser; default: all)
                                tagged :latest and :<git commit>
 
 Run (host = local | vm)
@@ -49,6 +49,12 @@ Configs (hosts/<host>/, never baked into images)
 Client downloads
   package <pre|re> [address]   build a client zip into deploy/files/ (address: default VM_IP in hosts/vm/.env)
   files                        upload deploy/files/*.zip to the vm (resumable)
+  browser-data                 upload the pre-renewal game folder for /play to the vm (BROWSER_PRE_GAME in hosts/local/.env)
+
+GRF work (grf/README.md; needs ./duds.sh up local browser)
+  grf find <text>              list game files whose path has <text>, e.g. grf find poring
+  grf get <path>               copy a game file into grf/ to edit it, e.g. grf get 'data\sprite\...\poring.spr'
+  grf pack                     pack grf/data/ into grf/ragnaduds_dev.grf for the real game client
 
 Other
   backup <host>                dump both databases to ./backups/<host>/
@@ -91,14 +97,14 @@ sync_vm() {
     ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/files"
     rsync -av --inplace --delete --exclude 'hosts/local/' --exclude 'files/' --exclude 'accounts.txt' \
         "$DEPLOY/compose.yml" "$DEPLOY/gm_commands.txt" "$DEPLOY/special_maps.txt" "$DEPLOY/re_db_import" \
-        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" "$DEPLOY/homunculus_room.txt" "$DEPLOY/ticket_refiner.txt" "$DEPLOY/jobmaster.txt" "$DEPLOY/stylist.txt" "$DEPLOY/fourth_quests.txt" "$DEPLOY/fourth_quests_a.txt" "$DEPLOY/fourth_quests_b.txt" "$DEPLOY/fourth_quests_c.txt" "$DEPLOY/fourth_quests_d.txt" "$DEPLOY/casino.txt" "$DEPLOY/mvp_room.txt" \
+        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" "$DEPLOY/homunculus_room.txt" "$DEPLOY/ticket_refiner.txt" "$DEPLOY/jobmaster.txt" "$DEPLOY/stylist.txt" "$DEPLOY/fourth_quests.txt" "$DEPLOY/fourth_quests_a.txt" "$DEPLOY/fourth_quests_b.txt" "$DEPLOY/fourth_quests_c.txt" "$DEPLOY/fourth_quests_d.txt" "$DEPLOY/casino.txt" "$DEPLOY/mvp_room.txt" "$DEPLOY/browser" \
         "$DEPLOY/hosts" "$SSH_HOST:$REMOTE_DIR/"
 }
 
 cmd="${1:-help}"; shift || true
 case "$cmd" in
   release)
-    imgs=("$@"); [[ ${#imgs[@]} -eq 0 ]] && imgs=(pre_renewal renewal db web portal)
+    imgs=("$@"); [[ ${#imgs[@]} -eq 0 ]] && imgs=(pre_renewal renewal db web portal browser)
     export TAG="$(git -C "$ROOT" rev-parse --short HEAD)" BUILDX_BUILDER="${BUILDX_BUILDER:-multiarch}"
     steps ${#imgs[@]}
     echo "Releasing ${imgs[*]} as :latest and :$TAG (x86 + ARM)"
@@ -247,6 +253,26 @@ EOF
       rsync -a --delete --info=stats1 "$DEPLOY/files/patch/" "$SSH_HOST:$REMOTE_DIR/files/patch/"
     fi
     finish "Zips and patch files uploaded";;
+  grf)
+    game="$(sed -n 's/^BROWSER_PRE_GAME=//p' "$DEPLOY/hosts/local/.env")"
+    case "${1:-}" in
+      find) [[ -n "${2:-}" ]] || die "usage: grf find <text>"; python3 "$ROOT/client/grf.py" "$game/data.grf" list "$2";;
+      get)  [[ -n "${2:-}" ]] || die "usage: grf get <path inside the game data>"
+            p="${2//\\//}"   # client paths use backslashes
+            # through the local browser server: it reads every GRF entry, the scrambled ones too
+            curl -sf --create-dirs -o "$ROOT/grf/$p" "http://127.0.0.1:3338/$p" || die "not found (is ./duds.sh up local browser running? is the path right?)"
+            echo "grf/$p";;
+      pack) python3 "$ROOT/client/grf.py" "$ROOT/grf/ragnaduds_dev.grf" pack "$ROOT/grf";;
+      *)    die "usage: grf find <text> | get <path> | pack";;
+    esac;;
+  browser-data)
+    src="$(sed -n 's/^BROWSER_PRE_GAME=//p' "$DEPLOY/hosts/local/.env")"
+    [[ -f "$src/data.grf" ]] || die "set BROWSER_PRE_GAME in deploy/hosts/local/.env to the pre-renewal game folder (with data.grf)"
+    steps 1; step "Upload the browser's game files to the VM (resumable)"
+    ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/browser-data/pre"
+    # only what roBrowser reads: the GRF and the loose English data, music, Lua tables and homunculus AI
+    rsync -aP --delete "$src/data.grf" "$src/data" "$src/BGM" "$src/System" "$src/AI" "$SSH_HOST:$REMOTE_DIR/browser-data/pre/"
+    finish "Browser game files uploaded";;
   backup)
     host="${1:-}"; need_host "$host"; out="$ROOT/backups/$host"; mkdir -p "$out"; stamp=$(date +%F-%H%M)
     steps 2

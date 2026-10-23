@@ -1,3 +1,6 @@
 [submodule "rathena"]
 	path = rathena
 	url = https://github.com/rathena/rathena.git
+[submodule "robrowser"]
+	path = robrowser
+	url = https://github.com/MrAntares/roBrowserLegacy.git

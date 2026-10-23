@@ -47,3 +47,7 @@ client/itemInfo_RD.lua
 
 # ---- private notes (game client details: kept on this PC only) ----
 docs/private/
+
+# ---- GRF work (grf/README.md): edited game files stay on this PC ----
+grf/data/
+grf/*.grf
