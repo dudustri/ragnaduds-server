@@ -106,9 +106,6 @@
   .user a { font: 10px "Press Start 2P", monospace; padding: 8px 10px; text-decoration: none; border: 3px solid #000; box-shadow: 3px 3px 0 #000;
             background: var(--panel-2); color: var(--ink); }
   .user a:hover, .user a:focus-visible { background: var(--gold); color: #1b1203; }
-  .user a.quiet { background: transparent; color: var(--ink-dim); box-shadow: none; border-color: transparent; text-decoration: underline; }
-  .user a.quiet:hover, .user a.quiet:focus-visible { color: var(--ink); background: transparent; }
-  @media (max-width: 480px) { .user { gap: 4px; } .user .my { display: none; } .user a.quiet { padding: 8px 4px; } }
 </style>
 </head>
 <body>
@@ -116,7 +113,7 @@
   <div class="topbar">
     <a class="back" href="/" data-i18n="back"></a>
     <div class="right">
-      <nav class="user" aria-label="Account"><a href="/account"><span class="my">MY </span>ACCOUNT</a><a class="quiet" href="/logout">LOG OUT</a></nav>
+      <nav class="user" aria-label="Account"><a href="/account" data-i18n="myacc">MY ACCOUNT</a><a href="/logout" data-i18n="logout">LOG OUT</a></nav>
       <div class="lang" role="group" aria-label="Language">
         <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
       </div>

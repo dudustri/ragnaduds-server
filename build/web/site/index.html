@@ -205,9 +205,6 @@
   .user a { font: 10px "Press Start 2P", monospace; padding: 8px 10px; text-decoration: none; border: 3px solid #000; box-shadow: 3px 3px 0 #000;
             background: var(--panel-2); color: var(--ink); }
   .user a:hover, .user a:focus-visible { background: var(--gold); color: #1b1203; }
-  .user a.quiet { background: transparent; color: var(--ink-dim); box-shadow: none; border-color: transparent; text-decoration: underline; }
-  .user a.quiet:hover, .user a.quiet:focus-visible { color: var(--ink); background: transparent; }
-  @media (max-width: 480px) { .user { gap: 4px; } .user .my { display: none; } .user a.quiet { padding: 8px 4px; } }
 </style>
 </head>
 <body>
@@ -216,7 +213,7 @@
 <div class="wrap">
   <div class="topbar">
     <div class="right">
-      <nav class="user" aria-label="Account"><a href="/account"><span class="my">MY </span>ACCOUNT</a><a class="quiet" href="/logout">LOG OUT</a></nav>
+      <nav class="user" aria-label="Account"><a href="/account" data-i18n="myacc">MY ACCOUNT</a><a href="/logout" data-i18n="logout">LOG OUT</a></nav>
       <div class="lang" role="group" aria-label="Language">
         <button data-lang="en" aria-pressed="true">EN</button><button data-lang="pt" aria-pressed="false">PT</button><button data-lang="da" aria-pressed="false">DA</button>
       </div>
@@ -326,6 +323,7 @@ const matterReady = loadMatter();      // matter.js: stage ragdolls, collage sti
 const LOCALE = { en: "en", pt: "pt-BR", da: "da-DK" };   // number/date formats per language
 const T = {
   en: {
+    myacc: "MY ACCOUNT", logout: "LOG OUT",
     npcname: "[RagnaDuds, Kafra intern]", click: "▼ click", clickme: "click to continue",
     pretext: "The classic. 2004 vibes, 99/70 cap, zero bullshit. For veterans and people who cry at the Prontera theme.",
     retext: "Modern RO. 3rd &amp; 4th jobs, level 275, forty skills per button. For masochists who read patch notes for fun.",
@@ -358,6 +356,7 @@ const T = {
     ],
   },
   pt: {
+    myacc: "MINHA CONTA", logout: "SAIR",
     npcname: "[RagnaDuds, estagiário da Kafra]", click: "▼ clica", clickme: "clica pra continuar",
     pretext: "O clássico. Vibe de 2004, cap 99/70, zero frescura. Pra veterano e pra quem chora ouvindo a música de Prontera.",
     retext: "RO moderno. Classes 3 e 4, nível 275, quarenta skills por botão. Pra masoquista que lê patch note por diversão.",
@@ -390,6 +389,7 @@ const T = {
     ],
   },
   da: {
+    myacc: "MIN KONTO", logout: "LOG UD",
     npcname: "[RagnaDuds, Kafra-praktikant]",
     click: "▼ klik",
     clickme: "klik for at fortsætte",

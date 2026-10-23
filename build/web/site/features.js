@@ -26,6 +26,7 @@ const NPCS = [   // [name, where, servers, { en, pt, da } what]
 
 const T = {
   en: {
+    myacc: "MY ACCOUNT", logout: "LOG OUT",
     back: "◀ BACK", title: "SERVER FEATURES",
     note: { re: "Renewal · 2026 client · 3rd & 4th jobs · level 275", pre: "Pre-Renewal · 2021 client · classic 99/70" },
     tag: { re: "RENEWAL", pre: "PRE-RENEWAL", both: "BOTH SERVERS" },
@@ -100,6 +101,7 @@ const T = {
     ],
   },
   pt: {
+    myacc: "MINHA CONTA", logout: "SAIR",
     back: "◀ VOLTAR", title: "O QUE TEM NO SERVER",
     note: { re: "Renewal · cliente 2026 · classes 3 e 4 · nível 275", pre: "Pre-Renewal · cliente 2021 · clássico 99/70" },
     tag: { re: "RENEWAL", pre: "PRE-RENEWAL", both: "OS DOIS SERVERS" },
@@ -174,6 +176,7 @@ const T = {
     ],
   },
   da: {
+    myacc: "MIN KONTO", logout: "LOG UD",
     back: "◀ TILBAGE", title: "SERVERENS FEATURES",
     note: { re: "Renewal · 2026-klient · 3. og 4. job · level 275", pre: "Pre-Renewal · 2021-klient · klassisk 99/70" },
     tag: { re: "RENEWAL", pre: "PRE-RENEWAL", both: "BEGGE SERVERE" },
