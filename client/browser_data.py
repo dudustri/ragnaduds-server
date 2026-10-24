@@ -2,11 +2,13 @@
 """The browser client's game folder, made from the friends' download, so the browser sees exactly what the exe does:
 our GRFs (item pictures, casino art, screens) in the same order, the music, and the same item list.
 
-  browser_data.py <pre|re> <out folder>     (run ./duds.sh package <pre|re> first)
+  uv run --no-project --with pillow python3 browser_data.py <pre|re> <out folder>   (run ./duds.sh package first)
 
 Writes into <out folder>:
   - the game folder from deploy/files/duds-<edition>.zip (game.zip inside it), without the Windows program files
   - DATA_browser.INI: the client's DATA.INI as the browser's file server reads it (paths under /game, same order)
+  - SystemEN/: roBrowser reads the English sign, town and quest tables there; renewal keeps them in System/
+  - ragnaduds_browser.grf: what roBrowser asks for under other names than the exe (pre-renewal login picture)
   - System/itemInfo_browser.lua: the item list the exe ends up with, as one plain Lua table. roBrowser runs a
     single Lua file in its own Lua engine, so the client's layered loader (compiled kRO list + English + our
     items + generated fixes) is run here once, with the client's own Lua 5.1, and its result written out.
@@ -14,6 +16,8 @@ Writes into <out folder>:
 import os, re, shutil, subprocess, sys, zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import grf  # noqa: E402
 FILES = os.path.join(HERE, "..", "deploy", "files")
 ZIPS = {"pre": "duds-pre-renewal.zip", "re": "duds-renewal.zip"}
 ENTRY = {"pre": "SystemEN/itemInfo.lua", "re": "System/itemInfo_true.lub"}   # the item list each exe loads
@@ -67,11 +71,56 @@ def unpack(edition, out):
     return n
 
 
+def system_en(edition, out):
+    """roBrowser reads SystemEN/Sign_Data.lub, Towninfo.lub, OngoingQuests.lub...; the 2026 client keeps them in
+    System/, so renewal gets a copy (pre-renewal ships its own SystemEN/)."""
+    if edition != "re":
+        # the 2021 exe is patched (WARP Custom*Lub) to read SystemEN/<file> instead of System/<file>:
+        # roBrowser reads System/, so put the English files there too
+        n = 0
+        for name in os.listdir(os.path.join(out, "SystemEN")):
+            src = os.path.join(out, "SystemEN", name)
+            if os.path.isfile(src) and name.lower().endswith((".lub", ".lua")):
+                for dst in (name, re.sub(r"(?i)\.lub$|\.lua$", "", name) + "_true" + os.path.splitext(name)[1]):
+                    target = os.path.join(out, "System", dst)
+                    if dst == name or os.path.exists(target):   # also over the Korean *_true file roBrowser tries
+                        shutil.copyfile(src, target); n += 1
+        return f"own; {n} English files copied over System/ (as the exe reads them)"
+    dest = os.path.join(out, "SystemEN"); shutil.rmtree(dest, ignore_errors=True)
+    shutil.copytree(os.path.join(out, "System"), dest, ignore=shutil.ignore_patterns("itemInfo_browser.lua"))
+    return "copied from System/"
+
+
+UI = "data\\texture\\유저인터페이스"
+def browser_grf(edition, out):
+    """Our pictures under the names roBrowser asks for when they differ from the exe's. Pre-renewal (2021): the exe
+    shows bgi_temp.bmp at the login, roBrowser the twelve kRO "t_배경" pictures for 2018-2022 clients."""
+    files = {}
+    if edition == "pre":
+        import io
+        from PIL import Image
+        f, ents = grf.entries(os.path.join(out, "ragnaduds_login1.grf"))
+        pic = Image.open(io.BytesIO(grf.read(f, ents[next(k for k in ents if k.lower().endswith(b"t_login.jpg"))]))).convert("RGB")
+        pic = pic.resize((1024, 768), Image.LANCZOS)     # roBrowser draws them as 4 x 3 tiles of 256 x 256
+        for row in range(1, 4):
+            for col in range(1, 5):
+                tile = pic.crop(((col - 1) * 256, (row - 1) * 256, col * 256, row * 256))
+                buf = io.BytesIO(); tile.save(buf, "BMP"); files[f"{UI}\\t_배경{row}-{col}.bmp"] = buf.getvalue()
+    path = os.path.join(out, "ragnaduds_browser.grf")
+    if files:
+        grf.write(path, files)
+    elif os.path.exists(path):
+        os.remove(path)
+    return len(files)
+
+
 def data_ini(out):
     name = next(f for f in os.listdir(out) if f.lower() == "data.ini")
     grfs = [l.split("=", 1)[1].strip() for l in open(os.path.join(out, name), encoding="latin-1")
             if re.match(r"\s*\d+\s*=", l)]
     grfs = [g for g in grfs if os.path.exists(os.path.join(out, g))]
+    if os.path.exists(os.path.join(out, "ragnaduds_browser.grf")):
+        grfs.insert(0, "ragnaduds_browser.grf")   # first: it only holds the browser-only names
     with open(os.path.join(out, "DATA_browser.INI"), "w") as f:
         f.write("[Data]\n" + "".join(f"{i}=/game/{g}\n" for i, g in enumerate(grfs)))
     return grfs
@@ -96,5 +145,7 @@ if __name__ == "__main__":
     edition, out = sys.argv[1], os.path.abspath(sys.argv[2])
     os.makedirs(out, exist_ok=True)
     print(f"{unpack(edition, out)} files written to {out}")
+    print("SystemEN:", system_en(edition, out))
+    print("browser-only pictures:", browser_grf(edition, out))
     print("GRFs, in order:", ", ".join(data_ini(out)))
     print("item list:", item_list(edition, out))

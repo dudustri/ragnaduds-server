@@ -40,7 +40,7 @@ talks to rAthena.
 - **Image**: `build/browser/` → `ghcr.io/dudustri/duds-server-browser`. No game files inside: they're mounted at run time.
 - **Renewal (2026 client)** needed two fixes: its GRFs start with "Event Horizon" instead of "Master of Magic"
   (same format otherwise; the image patches the file server to accept it), and our cash shop sends the item preview
-  fields (`patches/robrowser/0001-…`). Login, characters and maps work; newer UIs may still be missing in places.
+  fields (`patches/robrowser/0001-…`); `0002-…` keeps fast cutin animations (the casino) from stacking up. Login, characters and maps work; newer UIs may still be missing in places.
 
 ## Put it on the VM
 ```bash
@@ -50,7 +50,10 @@ talks to rAthena.
 ```
 The browser's game folders are made **from the friends' downloads** (`client/browser_data.py`, run by
 `./duds.sh browser-data` into `deploy/browser-data/`): the same GRFs in the same order, the music, and the item list
-the exe ends up with (its layered loader run once in Lua 5.1 and written out as `System/itemInfo_browser.lua`). So
+the exe ends up with (its layered loader run once in Lua 5.1 and written out as `System/itemInfo_browser.lua`),
+the English System files where roBrowser looks for them (`SystemEN/`), and our login picture under the names
+roBrowser asks for (`ragnaduds_browser.grf`). Your local GRF work (`grf/`) is mounted only on your PC
+(`BROWSER_DEV_DATA` in `deploy/hosts/local/.env`); the VM gets an empty folder. So
 after `build_shop.py` → `./duds.sh package re`, run `./duds.sh browser-data` and both clients match. The VM keeps its
 copies in `~/duds/browser-data/pre` and `re`.
 

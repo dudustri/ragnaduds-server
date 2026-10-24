@@ -281,7 +281,7 @@ EOF
     steps 4
     for e in pre re; do
       step "Browser game folder: $e (from deploy/files, client/browser_data.py)"
-      python3 "$ROOT/client/browser_data.py" "$e" "$DEPLOY/browser-data/$e" || die "run ./duds.sh package $e first"
+      uv run -q --no-project --with pillow python3 "$ROOT/client/browser_data.py" "$e" "$DEPLOY/browser-data/$e" || die "run ./duds.sh package $e first"
     done
     for e in pre re; do
       step "Upload the $e browser game folder (resumable, only changes travel)"

@@ -179,7 +179,8 @@ services:
             - "${BROWSER_PRE_GAME:-./browser-data/pre}:/game:ro,z"     # pre-renewal game folder, from the download (client/browser_data.py)
             - "${BROWSER_PRE_GAME:-./browser-data/pre}/DATA_browser.INI:/app/resources/DATA.INI:ro,z"
             - "./browser/pre/Config.local.js:/robrowser/Config.local.js:ro,z"
-            - "../grf/.browser/data:/app/data:ro,z"                     # your GRF work (grf/README.md, made by grf refresh): wins over the GRF
+            - "${BROWSER_PRE_GAME:-./browser-data/pre}/SystemEN:/app/SystemEN:ro,z"          # English sign/town/quest tables (roBrowser reads SystemEN/)
+            - "${BROWSER_DEV_DATA:-./browser/no-dev}:/app/data:ro,z"     # your GRF work wins over the GRF: only where hosts/<host>/.env sets it (your PC)
         networks: [web]
     browser-re:     # the same for Renewal: /play-renewal on the site, http://127.0.0.1:3339/ on your PC
         image: "ghcr.io/dudustri/duds-server-browser:${TAG:-latest}"
@@ -201,7 +202,8 @@ services:
             - "${BROWSER_RE_GAME:-./browser-data/re}:/game:ro,z"       # renewal game folder, from the download (client/browser_data.py)
             - "${BROWSER_RE_GAME:-./browser-data/re}/DATA_browser.INI:/app/resources/DATA.INI:ro,z"
             - "./browser/re/Config.local.js:/robrowser/Config.local.js:ro,z"
-            - "../grf/.browser/data:/app/data:ro,z"                     # your GRF work (grf/README.md, made by grf refresh): wins over the GRF
+            - "${BROWSER_RE_GAME:-./browser-data/re}/SystemEN:/app/SystemEN:ro,z"          # English sign/town/quest tables (roBrowser reads SystemEN/)
+            - "${BROWSER_DEV_DATA:-./browser/no-dev}:/app/data:ro,z"     # your GRF work wins over the GRF: only where hosts/<host>/.env sets it (your PC)
         networks: [web]
 
     # ---------------- server status + Hall of Fame for the website (deploy/status.sh) ----------------

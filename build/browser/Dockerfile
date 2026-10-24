@@ -10,11 +10,14 @@ RUN npm install --no-audit --no-fund   # shortcut: upstream lockfile is out of s
 COPY robrowser/ .
 COPY patches/robrowser/ /patches/
 # our fixes on top of the pinned roBrowser (like patches/ for rAthena); a patch that no longer fits stops the build
-RUN apt-get update -qq && apt-get install -y -qq patch >/dev/null \
- && for p in /patches/*.patch; do patch -p1 --forward < "$p" || exit 1; done
+# (git apply, not patch: some roBrowser files have Windows line endings, which git's diffs leave out)
+RUN apt-get update -qq && apt-get install -y -qq git >/dev/null \
+ && for p in /patches/*.patch; do git apply --ignore-whitespace --whitespace=nowarn "$p" || exit 1; done
 RUN npm run build:all \
  && sed -i -e 's|<title>[^<]*</title>|<title>RagnaDuds</title>|' \
-           -e 's|<link rel="icon"[^>]*>|<link rel="icon" href="/img/favicon.ico">|' dist/Web/*.html   # our tab: name + the site's icon
+           -e 's|<link rel="icon"[^>]*>|<link rel="icon" href="/img/favicon.ico">|' \
+           -e 's|<span style="--i:0">L</span>.*<span style="--i:9">.</span>|<span style="--i:0">R</span><span style="--i:1">A</span><span style="--i:2">G</span><span style="--i:3">N</span><span style="--i:4">A</span><span style="--i:5">D</span><span style="--i:6">U</span><span style="--i:7">D</span><span style="--i:8">S</span>|' dist/Web/*.html \
+ && grep -q 'RAGNADUDS\|--i:8">S<' dist/Web/api.html   # our tab name, the site's icon, RAGNADUDS while it loads
 
 FROM node:24-slim
 RUN apt-get update -qq && apt-get install -y -qq git && rm -rf /var/lib/apt/lists/* \
@@ -29,7 +32,10 @@ RUN git clone -q https://github.com/FranciscoWallison/roBrowserLegacy-RemoteClie
  && sed -i 's/if(t!==\([A-Za-z]*\))throw new \([A-Za-z]*\)("INVALID_MAGIC"/if(t!==\1\&\&!t.startsWith("Event Horizon"))throw new \2("INVALID_MAGIC"/' node_modules/@chicowall/grf-loader/dist/index.js node_modules/@chicowall/grf-loader/dist/index.cjs \
  && sed -i 's/if (signature !== "Master of Magic")/if (signature !== "Master of Magic" \&\& !signature.startsWith("Event Horizon"))/' src/validators/startupValidator.js \
  && grep -q 'Event Horizon' node_modules/@chicowall/grf-loader/dist/index.js && grep -q 'Event Horizon' node_modules/@chicowall/grf-loader/dist/index.cjs \
- && grep -q 'Event Horizon' src/validators/startupValidator.js
+ && grep -q 'Event Horizon' src/validators/startupValidator.js \
+ # serve SystemEN/ too: roBrowser reads the English sign/town/quest tables from there
+ && sed -i "s/const SERVABLE_ROOTS = \['data', 'bgm', 'system', 'ai'\];/const SERVABLE_ROOTS = ['data', 'bgm', 'system', 'systemen', 'ai'];/" src/controllers/clientController.js \
+ && grep -q "'systemen'" src/controllers/clientController.js
 COPY --from=build /rb/dist/Web /robrowser
 RUN chown -R robrowser:robrowser /app /robrowser
 ENV PORT=3338 NODE_ENV=production ENABLE_WSPROXY=true ENABLE_STATIC_SERVE=true ROBROWSER_PATH=/robrowser \
