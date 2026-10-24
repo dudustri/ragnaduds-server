@@ -94,7 +94,8 @@ def system_en(edition, out):
 UI = "data\\texture\\유저인터페이스"
 def browser_grf(edition, out):
     """Our pictures under the names roBrowser asks for when they differ from the exe's. Pre-renewal (2021): the exe
-    shows bgi_temp.bmp at the login, roBrowser the twelve kRO "t_배경" pictures for 2018-2022 clients."""
+    shows bgi_temp.bmp at the login, roBrowser the twelve kRO "t_배경" pictures for 2018-2022 clients. Both: the
+    loading pictures roBrowser picks from that the clients don't have."""
     files = {}
     if edition == "pre":
         import io
@@ -106,6 +107,19 @@ def browser_grf(edition, out):
             for col in range(1, 5):
                 tile = pic.crop(((col - 1) * 256, (row - 1) * 256, col * 256, row * 256))
                 buf = io.BytesIO(); tile.save(buf, "BMP"); files[f"{UI}\\t_배경{row}-{col}.bmp"] = buf.getvalue()
+    # roBrowser picks a random loading01-10.jpg between maps; the clients ship loading00-07: without 08-10 it shows
+    # a blank screen 3 times in 10. Fill the gaps with the clients' own pictures.
+    have = {}
+    for g in sorted(f for f in os.listdir(out) if f.lower().endswith(".grf") and f != "ragnaduds_browser.grf"):
+        f, ents = grf.entries(os.path.join(out, g))
+        for k, e in ents.items():
+            m = re.search(rb"\\loading(\d+)\.jpg$", k.lower())
+            if m and int(m.group(1)) not in have:
+                have[int(m.group(1))] = (f, e)
+    pics = [have[n] for n in sorted(have)]
+    for i, n in enumerate(n for n in range(1, 11) if n not in have):
+        f, e = pics[i % len(pics)]
+        files[f"{UI}\\loading{n:02d}.jpg"] = grf.read(f, e)
     path = os.path.join(out, "ragnaduds_browser.grf")
     if files:
         grf.write(path, files)
