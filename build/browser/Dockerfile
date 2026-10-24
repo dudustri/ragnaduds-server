@@ -9,15 +9,18 @@ COPY robrowser/package*.json ./
 RUN npm install --no-audit --no-fund   # shortcut: upstream lockfile is out of sync (npm ci fails); build-time only, output is static JS
 COPY robrowser/ .
 COPY patches/robrowser/ /patches/
+COPY build/browser/preloader.html /preloader.html
 # our fixes on top of the pinned roBrowser (like patches/ for rAthena); a patch that no longer fits stops the build
 # (git apply, not patch: some roBrowser files have Windows line endings, which git's diffs leave out)
 RUN apt-get update -qq && apt-get install -y -qq git >/dev/null \
  && for p in /patches/*.patch; do git apply --ignore-whitespace --whitespace=nowarn "$p" || exit 1; done
 RUN npm run build:all \
  && sed -i -e 's|<title>[^<]*</title>|<title>RagnaDuds</title>|' \
-           -e 's|<link rel="icon"[^>]*>|<link rel="icon" href="/img/favicon.ico">|' \
-           -e 's|<span style="--i:0">L</span>.*<span style="--i:9">.</span>|<span style="--i:0">R</span><span style="--i:1">A</span><span style="--i:2">G</span><span style="--i:3">N</span><span style="--i:4">A</span><span style="--i:5">D</span><span style="--i:6">U</span><span style="--i:7">D</span><span style="--i:8">S</span>|' dist/Web/*.html \
- && grep -q 'RAGNADUDS\|--i:8">S<' dist/Web/api.html   # our tab name, the site's icon, RAGNADUDS while it loads
+           -e 's|<link rel="icon"[^>]*>|<link rel="icon" href="/img/favicon.ico">|' dist/Web/*.html \
+ && node -e 'const fs = require("fs"), p = "dist/Web/api.html", r = /<div id="ro-preloader">[\s\S]*?<\/p>\s*<\/div>/; \
+      let s = fs.readFileSync(p, "utf8"); if (!r.test(s)) process.exit(1); \
+      fs.writeFileSync(p, s.replace(r, () => fs.readFileSync("/preloader.html", "utf8")))' \
+ && grep -q 'rd-title' dist/Web/api.html   # our tab name, the site's icon, and our loading screen (build/browser/preloader.html)
 
 FROM node:24-slim
 RUN apt-get update -qq && apt-get install -y -qq git && rm -rf /var/lib/apt/lists/* \

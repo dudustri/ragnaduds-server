@@ -2,6 +2,7 @@
 *
 !robrowser
 !patches/robrowser
+!build/browser/preloader.html
 robrowser/.git
 robrowser/node_modules
 robrowser/dist
