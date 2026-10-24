@@ -1,0 +1,48 @@
+diff --git a/src/Engine/MapEngine/NPC.js b/src/Engine/MapEngine/NPC.js
+index e7fccfc0..c6857b49 100644
+--- a/src/Engine/MapEngine/NPC.js
++++ b/src/Engine/MapEngine/NPC.js
+@@ -224,7 +224,9 @@ function onDealSelection(pkt) {
+  * @param {object} pkt - PACKET.ZC.SHOW_IMAGE
+  */
+ function onCutin(pkt) {
+-	// Only one instance of cutin
++	// Only one instance of cutin. Each cutin gets a number: a picture that finishes loading after a newer cutin
++	// (or a clear) arrived is dropped, so fast animations never stack up or stay on screen
++	const token = (onCutin.token = (onCutin.token || 0) + 1);
+ 	const cutin = document.getElementById('cutin');
+ 	if (cutin) {
+ 		document.body.removeChild(cutin);
+@@ -240,6 +242,13 @@ function onCutin(pkt) {
+ 	}
+ 
+ 	Client.loadFile(DB.INTERFACE_PATH + 'illust/' + pkt.imageName, function (url) {
++		if (token !== onCutin.token) {
++			return;
++		}
++		const previous = document.getElementById('cutin');
++		if (previous) {
++			previous.remove();
++		}
+ 		const img = new Image();
+ 		img.decoding = 'async';
+ 		img.src = url;
+@@ -260,7 +269,7 @@ function onCutin(pkt) {
+ 			case 1:
+ 				img.style.bottom = '0px';
+ 				img.style.left = '50%';
+-				img.style.marginLeft = '-' + Math.floor(img.width / 2) + 'px';
++				img.style.transform = 'translateX(-50%)';
+ 				break;
+ 
+ 			case 2:
+@@ -275,8 +284,7 @@ function onCutin(pkt) {
+ 			case 4:
+ 				img.style.top = '50%';
+ 				img.style.left = '50%';
+-				img.style.marginLeft = '-' + Math.floor(img.width / 2) + 'px';
+-				img.style.marginTop = '-' + Math.floor(img.height / 2) + 'px';
++				img.style.transform = 'translate(-50%, -50%)';
+ 				break;
+ 		}
+ 

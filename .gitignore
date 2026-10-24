@@ -47,3 +47,11 @@ client/itemInfo_RD.lua
 
 # ---- private notes (game client details: kept on this PC only) ----
 docs/private/
+
+# ---- GRF work (grf/README.md): edited game files stay on this PC ----
+grf/data/
+grf/.browser/
+grf/*.grf
+
+# ---- the browser client's game folders (made from the downloads by client/browser_data.py) ----
+deploy/browser-data/

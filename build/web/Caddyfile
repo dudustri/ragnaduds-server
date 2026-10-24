@@ -47,6 +47,22 @@
 			file_server
 		}
 
+		# play in the browser (deploy/compose.yml "browser"): straight into the game, no launcher, no viewers
+		redir /play /play/api.html?app=ONLINE
+		redir /play/ /play/api.html?app=ONLINE
+		handle_path /play/* {
+			@tools path /index.html /MapViewer.js /GrfViewer.js /ModelViewer.js /StrViewer.js /GrannyModelViewer.js /EffectViewer.js
+			respond @tools 404	# the viewers are for GRF work on your PC only (http://127.0.0.1:3338/)
+			reverse_proxy browser:3338
+		}
+		redir /play-renewal /play-renewal/api.html?app=ONLINE
+		redir /play-renewal/ /play-renewal/api.html?app=ONLINE
+		handle_path /play-renewal/* {
+			@tools path /index.html /MapViewer.js /GrfViewer.js /ModelViewer.js /StrViewer.js /GrannyModelViewer.js /EffectViewer.js
+			respond @tools 404
+			reverse_proxy browser-re:3338
+		}
+
 		handle {
 			try_files {path} {path}.html	# /features -> features.html
 			file_server

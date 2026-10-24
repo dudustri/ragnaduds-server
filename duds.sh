@@ -24,7 +24,7 @@ warn()   { printf '%s%s%s\n' "$Y" "$*" "$N"; }
 
 usage() { cat <<'EOF'
 Build & release (PC → GitHub registry)
-  release [image...]           build x86+ARM images and push (pre_renewal renewal db web; default: all)
+  release [image...]           build x86+ARM images and push (pre_renewal renewal db web portal browser; default: all)
                                tagged :latest and :<git commit>
 
 Run (host = local | vm)
@@ -49,6 +49,14 @@ Configs (hosts/<host>/, never baked into images)
 Client downloads
   package <pre|re> [address]   build a client zip into deploy/files/ (address: default VM_IP in hosts/vm/.env)
   files                        upload deploy/files/*.zip to the vm (resumable)
+  browser-data                 the browser's game folders, made from the downloads (run package first),
+                               into deploy/browser-data/ and up to the vm
+
+GRF work (grf/README.md; needs ./duds.sh up local browser)
+  grf find <text>              list game files whose path has <text>, e.g. grf find poring
+  grf get <path>               copy a game file into grf/ to edit it, e.g. grf get 'data\sprite\...\poring.spr'
+  grf refresh                  after editing: the browser sees new files (permissions, SELinux) and drops its cache
+  grf pack                     pack grf/data/ into grf/ragnaduds_dev.grf for the real game client
 
 Other
   backup <host>                dump both databases to ./backups/<host>/
@@ -61,6 +69,14 @@ compose_local() { (cd "$DEPLOY" && docker compose --env-file hosts/local/.env "$
 compose_vm()    { ssh -t "$SSH_HOST" "cd ~/$REMOTE_DIR && docker compose --env-file hosts/vm/.env $(printf '%q ' "$@")"; }   # %q: args survive the remote shell
 dc() { local host="$1"; shift; case "$host" in local) compose_local "$@" ;; vm) compose_vm "$@" ;; *) die "host must be local or vm";; esac; }
 die() { echo "error: $*" >&2; exit 1; }
+# the browser container reads grf/data as another user, and on SELinux hosts only files labelled for containers
+# (grf/.browser/data: the same files under the cp949-as-Latin-1 names roBrowser asks for, see client/grf.py mirror)
+grf_readable() {
+  rm -rf "$ROOT/grf/.browser"; mkdir -p "$ROOT/grf/data" "$ROOT/grf/.browser/data"
+  python3 "$ROOT/client/grf.py" - mirror "$ROOT/grf" "$ROOT/grf/.browser"
+  chmod -R a+rX "$ROOT/grf/data" "$ROOT/grf/.browser"
+  command -v chcon >/dev/null && chcon -R -t container_file_t "$ROOT/grf/data" "$ROOT/grf/.browser" 2>/dev/null || true
+}
 need_host() { [[ "${1:-}" == local || "${1:-}" == vm ]] || die "host must be local or vm"; }
 
 # players online, as "pre-renewal: N, renewal: N" (0 if a server isn't running)
@@ -91,14 +107,14 @@ sync_vm() {
     ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/files"
     rsync -av --inplace --delete --exclude 'hosts/local/' --exclude 'files/' --exclude 'accounts.txt' \
         "$DEPLOY/compose.yml" "$DEPLOY/gm_commands.txt" "$DEPLOY/special_maps.txt" "$DEPLOY/re_db_import" \
-        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" "$DEPLOY/homunculus_room.txt" "$DEPLOY/ticket_refiner.txt" "$DEPLOY/jobmaster.txt" "$DEPLOY/stylist.txt" "$DEPLOY/fourth_quests.txt" "$DEPLOY/fourth_quests_a.txt" "$DEPLOY/fourth_quests_b.txt" "$DEPLOY/fourth_quests_c.txt" "$DEPLOY/fourth_quests_d.txt" "$DEPLOY/casino.txt" "$DEPLOY/mvp_room.txt" \
+        "$DEPLOY/welcome.txt" "$DEPLOY/motd.txt" "$DEPLOY/backup.sh" "$DEPLOY/buffer.txt" "$DEPLOY/status.sh" "$DEPLOY/cash_points.txt" "$DEPLOY/homunculus_room.txt" "$DEPLOY/ticket_refiner.txt" "$DEPLOY/jobmaster.txt" "$DEPLOY/stylist.txt" "$DEPLOY/fourth_quests.txt" "$DEPLOY/fourth_quests_a.txt" "$DEPLOY/fourth_quests_b.txt" "$DEPLOY/fourth_quests_c.txt" "$DEPLOY/fourth_quests_d.txt" "$DEPLOY/casino.txt" "$DEPLOY/mvp_room.txt" "$DEPLOY/browser" \
         "$DEPLOY/hosts" "$SSH_HOST:$REMOTE_DIR/"
 }
 
 cmd="${1:-help}"; shift || true
 case "$cmd" in
   release)
-    imgs=("$@"); [[ ${#imgs[@]} -eq 0 ]] && imgs=(pre_renewal renewal db web portal)
+    imgs=("$@"); [[ ${#imgs[@]} -eq 0 ]] && imgs=(pre_renewal renewal db web portal browser)
     export TAG="$(git -C "$ROOT" rev-parse --short HEAD)" BUILDX_BUILDER="${BUILDX_BUILDER:-multiarch}"
     steps ${#imgs[@]}
     echo "Releasing ${imgs[*]} as :latest and :$TAG (x86 + ARM)"
@@ -247,6 +263,32 @@ EOF
       rsync -a --delete --info=stats1 "$DEPLOY/files/patch/" "$SSH_HOST:$REMOTE_DIR/files/patch/"
     fi
     finish "Zips and patch files uploaded";;
+  grf)
+    game="$DEPLOY/browser-data/pre"   # the pre-renewal game folder the browser reads (./duds.sh browser-data)
+    case "${1:-}" in
+      find) [[ -n "${2:-}" ]] || die "usage: grf find <text>"; python3 "$ROOT/client/grf.py" "$game/data.grf" list "$2";;
+      get)  [[ -n "${2:-}" ]] || die "usage: grf get <path inside the game data>"
+            p="${2//\\//}"   # client paths use backslashes
+            # through the local browser server: it reads every GRF entry, the scrambled ones too
+            curl -sf --create-dirs -o "$ROOT/grf/$p" "http://127.0.0.1:3338/$p" || die "not found (is ./duds.sh up local browser running? is the path right?)"
+            grf_readable; echo "grf/$p";;
+      refresh) grf_readable; dc local restart browser browser-re; echo "reload http://127.0.0.1:3338/ (pre) or :3339 (renewal)";;
+      pack) python3 "$ROOT/client/grf.py" "$ROOT/grf/ragnaduds_dev.grf" pack "$ROOT/grf";;
+      *)    die "usage: grf find <text> | get <path> | refresh | pack";;
+    esac;;
+  browser-data)
+    # the same files friends download (our GRFs, music, item list), so the browser shows what the exe shows
+    steps 4
+    for e in pre re; do
+      step "Browser game folder: $e (from deploy/files, client/browser_data.py)"
+      uv run -q --no-project --with pillow python3 "$ROOT/client/browser_data.py" "$e" "$DEPLOY/browser-data/$e" || die "run ./duds.sh package $e first"
+    done
+    for e in pre re; do
+      step "Upload the $e browser game folder (resumable, only changes travel)"
+      ssh "$SSH_HOST" "mkdir -p ~/$REMOTE_DIR/browser-data/$e"
+      rsync -aP --delete "$DEPLOY/browser-data/$e/" "$SSH_HOST:$REMOTE_DIR/browser-data/$e/"
+    done
+    finish "Browser game files ready on the VM (restart: ./duds.sh restart vm browser browser-re)";;
   backup)
     host="${1:-}"; need_host "$host"; out="$ROOT/backups/$host"; mkdir -p "$out"; stamp=$(date +%F-%H%M)
     steps 2

@@ -1,0 +1,34 @@
+diff --git a/src/Network/PacketStructure.js b/src/Network/PacketStructure.js
+index 85de6a19..db2cda69 100644
+--- a/src/Network/PacketStructure.js
++++ b/src/Network/PacketStructure.js
+@@ -4104,12 +4104,18 @@ PACKET.ZC.SE_CASHSHOP_OPEN3.size = 10;
+ PACKET.ZC.ACK_SCHEDULER_CASHITEM = function PACKET_ZC_ACK_SCHEDULER_CASHITEM(fp, end) {
+ 	this.count = fp.readUShort();
+ 	this.tabNum = fp.readUShort();
+-	this.items = (function () {
++	this.items = (() => {
+ 		const out = [];
+ 		let divider = 6; // original
+ 		if (PACKETVER.value >= 20181121 || PACKETVER.value >= 20180704 || PACKETVER.value >= 20181114) {
+ 			divider = 8;
+ 		}
++		const base = divider;
++		// servers built with ENABLE_CASHSHOP_PREVIEW_PATCH add viewSprite.W + location.L to every item:
++		// take the real entry size from the packet and skip what we don't read
++		if (this.count > 0 && (end - fp.tell()) % this.count === 0) {
++			divider = (end - fp.tell()) / this.count;
++		}
+ 		const cnt = (end - fp.tell()) / divider;
+ 		for (let i = 0; i < cnt; ++i) {
+ 			out[i] = {};
+@@ -4119,6 +4125,9 @@ PACKET.ZC.ACK_SCHEDULER_CASHITEM = function PACKET_ZC_ACK_SCHEDULER_CASHITEM(fp,
+ 				out[i].itemId = fp.readUShort();
+ 			}
+ 			out[i].price = fp.readULong();
++			if (divider > base) {
++				fp.seek(divider - base, SEEK_CUR);
++			}
+ 		}
+ 		return out;
+ 	})();

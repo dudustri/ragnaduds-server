@@ -44,7 +44,7 @@ flowchart LR
 ## Commands (`./duds.sh`)
 | Command | Does |
 |---|---|
-| `release [image…]` | build + push images (`pre_renewal renewal db web portal`, default all) |
+| `release [image…]` | build + push images (`pre_renewal renewal db web portal browser`, default all) |
 | `up <local\|vm> [service…]` | start/update (vm: copy files, pull, start). Doesn't restart a server whose image didn't change |
 | `restart <host> <service…>` | e.g. `restart vm prere-map re-map` (needed after script changes) |
 | `start` / `stop <host> <pre\|re\|all>` | run only the server you want; data stays |
@@ -55,10 +55,11 @@ flowchart LR
 | `add-user <host> <username> <M\|F> [group]` | add/change one account (asks the password; 99 = admin) |
 | `set-password <host> <user>` | website login (stored as a token) |
 | `package <pre\|re> [address]` · `files` | build a download for friends · upload them (resumable) |
+| `browser-data` | upload the pre-renewal game folder the browser client reads ([BROWSER.md](BROWSER.md)) |
 | `backup vm` · `autobackup vm` | dump the VM databases to your PC · every 6 h on the VM |
 | `ssh` | shell on the VM |
 
-Services: `prere-{db,login,char,map,web}`, `re-{db,login,char,map,web}`, `web`, `portal`, `status`. The `*-web`
+Services: `prere-{db,login,char,map,web}`, `re-{db,login,char,map,web}`, `web`, `portal`, `browser`, `status`. The `*-web`
 services are rAthena's web server (account settings + guild emblems for the game).
 `up`, `restart` and `stop` ask first if players are online. Multi-step commands show green step headers with a progress bar.
 
