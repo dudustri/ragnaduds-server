@@ -22,7 +22,7 @@ Icons/pictures come from client/installer/ (generate them with build/installer/m
 """
 import hashlib, json, os, re, sys, tempfile, time, zipfile
 
-import grf
+import grf, signboards
 
 HOME = os.path.expanduser("~")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -50,11 +50,15 @@ STORED = {".grf", ".zip", ".mp3", ".bmp", ".jpg", ".png", ".avi", ".bik"}   # al
 # don't: the client asks Windows for the folder name in the system code page, which differs between PCs.)
 #  - ragnaduds.grf: warning screen before the login (the 3 kRO age-warning pictures) + renewal item pictures
 #    fixed by cashshop/build_shop.py (client/grf_items/)
+#    + pre-renewal: our own sprites from grf/data/ (e.g. hairstyle 43) and the client's signboard list without
+#    the signs for NPCs our server doesn't have (client/signboards.py)
 #  - ragnaduds_login<N>.grf: login screen N (t_login.jpg for the 2026 client, bgi_temp.bmp for older ones).
 #    The launcher (launch.ps1 / ragnaduds.sh) points DATA.INI line 0 at a random one at every start.
 SCREENS = os.path.join(HERE, "login")                  # build/installer/make_assets.py
 GRF_ITEMS = os.path.join(HERE, "grf_items")            # cashshop/build_shop.py
 GRF_CASINO = os.path.join(HERE, "grf_casino")          # casino/build_casino_art.py (renewal only)
+GRF_OWN = os.path.join(HERE, "..", "grf", "data")      # our own sprites (grf/README.md), pre-renewal only: the 2026
+                                                       # client already has more hairstyles, ours would replace them
 CASINO_BGM = os.path.join(HERE, "casino_media", "BGM")  # your own casino music, duds_casino<N>.mp3 (git-ignored)
 ITEMINFO = {"System/itemInfo_true.lub": os.path.join(HERE, "itemInfo_true.lub"),   # renewal item info loader
             "System/itemInfo_RD.lua": os.path.join(HERE, "itemInfo_RD.lua")}       # + our fixes (build_shop.py)
@@ -72,11 +76,14 @@ def game_grfs(edition, tmpdir):
     if os.path.exists(entrance):
         for w in ("warning.bmp", "warning2.bmp", "warning3.bmp"):
             main[f"{UI}\\login_interface\\{w}"] = open(entrance, "rb").read()
-    if edition == "re" and os.path.isdir(GRF_ITEMS):
-        for root, _, files in os.walk(GRF_ITEMS):
-            for f in files:
-                rel = os.path.relpath(os.path.join(root, f), GRF_ITEMS).replace(os.sep, "\\")
-                main[rel] = open(os.path.join(root, f), "rb").read()
+    for edition_, src, top in (("re", GRF_ITEMS, GRF_ITEMS), ("pre", GRF_OWN, os.path.dirname(GRF_OWN))):
+        if edition == edition_ and os.path.isdir(src):
+            for root, _, files in os.walk(src):
+                for f in files:
+                    rel = os.path.relpath(os.path.join(root, f), top).replace(os.sep, "\\")
+                    main[rel] = open(os.path.join(root, f), "rb").read()
+    if edition == "pre":   # no floating signs over NPCs our server doesn't have (client/signboards.py)
+        main[signboards.LIST.decode("latin-1")] = signboards.filtered(os.path.join(CLIENTS["pre"]["src"], "data.grf"))[0]
     out, logins = {}, []
     if main:
         grf.write(os.path.join(tmpdir, MAIN_GRF), main); out[MAIN_GRF] = os.path.join(tmpdir, MAIN_GRF)

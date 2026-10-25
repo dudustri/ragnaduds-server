@@ -2944,3 +2944,90 @@ Quick test: `@job 4008` → `@allskill` → `@mount`.
 | `@marry <player>` / `@divorce` | instant wedding |
 | `@changecharsex` | change your character's gender (relog) |
 | `@font <0-9>` | change the client font |
+
+## Build guide: Mage → Instant Cast High Wizard (pre-renewal)
+
+In pre-renewal, every point of DEX cuts cast time, and at **150 total DEX** cast time is zero. "Total" includes the job bonus, gear, Blessing and food, so check the second number in the status window. The goal is 150 DEX while keeping INT high for damage.
+
+Path: **Mage → Wizard (job 50) → rebirth → High Wizard**. Rebirth gives 100 extra stat points, which you need to reach both INT 99 and DEX 99.
+
+### Stats
+| Level | INT | DEX | VIT |
+|---|---|---|---|
+| ~53 Mage | 60–65 | 35–40 | 5–10 |
+| 70 | 75 | 50 | 10 |
+| 85 | 85 | 65 | 15 |
+| 99 Wizard | 90+ | 80+ | 20 |
+| 99 High Wizard | 99 | 99 | the rest (~30) |
+
+STR, AGI and LUK stay at 1.
+
+**Mage skills:** Fire Bolt, Cold Bolt and Lightning Bolt to 10. Napalm Beat 1 and Frost Diver 1 unlock Jupitel Thunder and Storm Gust as a Wizard. Put the rest into Fire Wall.
+
+**Tips:** the **Agente VIP** in towns gives free Blessing (+10 DEX), which counts toward the 150. A **Phen** card stops enemies from interrupting your cast, but it makes casting 25% slower, so use it only once your DEX is high.
+
+### Mage (lv 50–70)
+| Slot | Item |
+|---|---|
+| Weapon | Arc Wand [2] +7 (INT +3, MATK +15%) + Centipede Larva (INT +1, MATK +3) + Necromancer (INT +1, ignores 2% MDEF), or Survivor's Rod [1] (DEX +3, MATK +15%, HP +400) |
+| Shield | Memory Book [1] + Thara Frog (−30% damage from players and demi-humans) |
+| Head top | Mage Hat (INT +2, SP +150) |
+| Head mid | Elven Ears (INT +1) |
+| Head low | Well-Chewed Pencil (DEX +2, no hat needed on this server; nothing better for a caster in pre-renewal) |
+| Armor | Mage Coat [1] (lv 50) + Evil Druid (INT +1, undead armor) |
+| Garment | Muffler [1] + Raydric (−20% neutral damage) |
+| Shoes | Shoes [1] + Verit (HP/SP +8%) |
+| Accessories | Earring (INT +2) and Glove (DEX +2) |
+
+```
+@item2 1611 1 1 7 0 4452 4440 0 0
+@item2 2121 1 1 7 0 4058 0 0 0
+@item 5027 1
+@item 2686 1
+@item 5574 1
+@item2 2372 1 1 7 0 4141 0 0 0
+@item2 2504 1 1 7 0 4133 0 0 0
+@item2 2404 1 1 7 0 4107 0 0 0
+@item 2602 1
+@item 2604 1
+```
+Survivor's Rod instead of the Arc Wand: `@item2 1618 1 1 7 0 0 0 0 0`
+
+### Wizard (lv ~70–90)
+Wing Staff +7, Magic Bible Vol1 +7 with Thara Frog, Mage Hat, Robo Eye, Robe of Cast +7 (lv 75) with Evil Druid, Muffler +7 with Raydric, Shoes +7 with Verit, Glove, Earring.
+```
+@item2 1616 1 1 7 0 0 0 0 0
+@item2 2131 1 1 7 0 4058 0 0 0
+@item 5027 1
+@item 5325 1
+@item2 2360 1 1 7 0 4141 0 0 0
+@item2 2504 1 1 7 0 4133 0 0 0
+@item2 2404 1 1 7 0 4107 0 0 0
+@item 2604 1
+@item 2602 1
+```
+
+**Combo option from lv 80:** Memory Book + Monocle + Pocket Watch gives MATK +7% and HP/SP recovery +15%. The cost: Monocle replaces Elven Ears (INT +1), Pocket Watch replaces the Earring (INT +2), and the Memory Book replaces the Magic Bible. Keep the Glove for DEX.
+```
+@item2 2121 1 1 7 0 4058 0 0 0
+@item 2239 1
+@item 2717 1
+```
+
+**Shield card:** general picks are Despero of Thanatos `4397` (INT + refine − 6, so INT +4 on a +10 shield), Thief Bug Egg `4012` (HP +400, best at low levels) or Andre Egg `4013` (HP +5%). Thara Frog `4058` (−30% from demi-humans and players) is the PvP pick. To level, use the card for the race you're fighting instead: Khalitzburg `4136` demons, Orc Warrior `4066` brutes, Bigfoot `4074` insects, Soldier Andre `4059` plants, Teddy Bear `4340` undead, Penomena `4314` formless, Sky Petite `4120` dragons, Anubis `4138` angels, Rafflesia `4083` fish.
+
+### High Wizard endgame (lv 99, after rebirth)
+La'cryma Stick +10 (transcendent only), Valkyrja's Shield +7 with Thara Frog, Diadem +9 with Kathryne Keyron (−1% cast time per refine), Well-Chewed Pencil, Valkyrian Armor +7 with Marc, Valkyrian Manteau +7 with Raydric, Sleipnir +7, Orleans's Glove with Phen, Brisingamen.
+```
+@item2 1646 1 1 10 0 0 0 0 0
+@item2 2115 1 1 7 0 4058 0 0 0
+@item2 5313 1 1 9 0 4366 0 0 0
+@item 5574 1
+@item2 2357 1 1 7 0 4105 0 0 0
+@item2 2524 1 1 7 0 4133 0 0 0
+@item2 2410 1 1 7 0 0 0 0 0
+@item2 2701 1 1 0 0 4077 0 0 0
+@item 2630 1
+```
+
+Extras: `@item 607 100` (Yggdrasil Berries), `@item 505 100` (Blue Potions), `@zeny 10000000`. Change the refine (the 4th number) to anything from `0` to `10`.

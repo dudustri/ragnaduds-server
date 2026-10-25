@@ -1,0 +1,16 @@
+diff --git a/src/DB/DBManager.js b/src/DB/DBManager.js
+index 442c3ab6..b4e7de8b 100644
+--- a/src/DB/DBManager.js
++++ b/src/DB/DBManager.js
+@@ -7139,7 +7139,10 @@ function loadLuaTable(file_list, table_name, callback, onEnd, contextFunc) {
+ 
+ 			// create context function
+ 			ctx.addKeyAndValueToTable = (key, value) => {
+-				table[key] = userStringDecoder.decode(value, userCharpage);
++				// file names (headgear, robe, job sprites) keep the GRF code page, or the sprite path never matches
++				table[key] = /^(AccName|RobeName|JobName)Table$/.test(table_name)
++					? userStringDecoder.decode(value)
++					: userStringDecoder.decode(value, userCharpage);
+ 				return 1;
+ 			};
+ 

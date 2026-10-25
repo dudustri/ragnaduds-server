@@ -31,7 +31,8 @@ read `grf/data/` **before** the game's GRF, so you see your version.
 ./duds.sh grf pack        # grf/data/ → grf/ragnaduds_dev.grf
 ```
 Put `ragnaduds_dev.grf` in the game folder and add it as the first line of its `DATA.INI` (`0=ragnaduds_dev.grf`,
-renumber the others). To ship it to friends, add the files to the download (`client/package_client.py`).
+renumber the others). To ship it to friends (pre-renewal): `./duds.sh package pre`, then `./duds.sh files` and
+`./duds.sh browser-data`; everything in `grf/data/` goes into the download's `ragnaduds.grf`.
 
 **Example: your face as a hairstyle** (`grf/tools/face_head.py`): copy a head's `.act`/`.spr` to a new style number,
 then redraw its frames from a cut-out photo:

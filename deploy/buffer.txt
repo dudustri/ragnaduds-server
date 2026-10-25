@@ -1,7 +1,7 @@
 //===== RagnaDuds: Agente VIP (buffer) ============================================
 //= bRO's VIP buff NPC, at the exact 36 spots bRO listed in its April 2019 VIP update
 //= ("Sistema VIP atualizado no Thor e Valhalla"). Free for everyone here.
-//= Buffs: Blessing + Increase AGI, level 10 (bRO didn't publish its list; add more below).
+//= Buffs: Blessing + Increase AGI, level 10 (bRO didn't publish its list; add more below); +10 all stats for 1 hour.
 //= Loaded on both servers (hosts/<host>/<server>/import/map_conf.txt); every spot checked walkable on both.
 //==================================================================================
 
@@ -10,7 +10,14 @@
 	sc_start SC_BLESSING, 240000, 10;
 	specialeffect2 EF_INCAGILITY;
 	sc_start SC_INCREASEAGI, 240000, 10;
-	dispbottom "Agente VIP: Blessing + Increase AGI (lv 10). Go get them!";
+	// +10 to every stat for 1 hour, like the stat dishes
+	sc_start SC_STRFOOD, 3600000, 10;
+	sc_start SC_AGIFOOD, 3600000, 10;
+	sc_start SC_VITFOOD, 3600000, 10;
+	sc_start SC_INTFOOD, 3600000, 10;
+	sc_start SC_DEXFOOD, 3600000, 10;
+	sc_start SC_LUKFOOD, 3600000, 10;
+	dispbottom "Agente VIP: Blessing + Increase AGI (lv 10) + all stats +10 for 1 hour. Go get them!";
 	end;
 }
 
