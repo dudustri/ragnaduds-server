@@ -1,0 +1,32 @@
+From: dudustri <eduardostrindade@gmail.com>
+Subject: [PATCH] fix(npc): Job Master sets ADVJOB on rebirth and stops at the transcendent second classes on pre-renewal
+
+---
+diff --git a/npc/custom/jobmaster.txt b/npc/custom/jobmaster.txt
+index efa5e5cde..4849bd1ca 100644
+--- a/npc/custom/jobmaster.txt
++++ b/npc/custom/jobmaster.txt
+@@ -350,6 +350,8 @@ function	Job_Change	{
+ 	mes "You are now " + callfunc("F_InsertArticle", jobname(.@to_cls)) + "!";
+ 	if (.@to_cls == Job_Novice_High && .LastJob)
+ 		lastJob = Class; // Saves the lastJob for rebirth
++	if (.@to_cls == Job_Novice_High)
++		ADVJOB = roclass(eaclass()|EAJL_UPPER); // RagnaDuds: the Valkyrie's variable, so the official transcendent job NPCs accept us too
+ 	jobchange .@to_cls;
+ 	if (.@to_cls == Job_Novice_High)
+ 		resetlvl(1);
+@@ -538,6 +540,14 @@ OnInit:
+ 		.BabyExpanded = false;
+ 		.BabySummoner = false;
+ 	}
++	// RagnaDuds: pre-renewal has no job data for these, so stop at the transcendent second classes
++	if( !checkre(0) ) {
++		.ThirdClass = false;
++		.BabyThird = false;
++		.FourthClass = false;
++		.FourthExpanded = false;
++		.SecondExpanded = false;
++	}
+ 	end;
+ }
+ 

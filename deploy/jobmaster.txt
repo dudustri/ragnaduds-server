@@ -357,6 +357,8 @@ function	Job_Change	{
 	mes "You are now " + callfunc("F_InsertArticle", jobname(.@to_cls)) + "!";
 	if (.@to_cls == Job_Novice_High && .LastJob)
 		lastJob = Class; // Saves the lastJob for rebirth
+	if (.@to_cls == Job_Novice_High)
+		ADVJOB = roclass(eaclass()|EAJL_UPPER); // RagnaDuds: the Valkyrie's variable, so the official transcendent job NPCs accept us too
 	jobchange .@to_cls;
 	if (.@to_cls == Job_Novice_High)
 		resetlvl(1);
