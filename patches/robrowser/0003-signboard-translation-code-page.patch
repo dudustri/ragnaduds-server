@@ -1,0 +1,13 @@
+diff --git a/src/DB/DBManager.js b/src/DB/DBManager.js
+index 442c3ab6..e2986146 100644
+--- a/src/DB/DBManager.js
++++ b/src/DB/DBManager.js
+@@ -6267,7 +6267,7 @@ function loadSignBoardData(filename, callback, onEnd) {
+ 
+ 				// create required functions in context
+ 				ctx.AddSignBoardData = (key, translation) => {
+-					const decoded_key = key && key.length > 1 ? userStringDecoder.decode(key) : null;
++					const decoded_key = key && key.length > 1 ? userStringDecoder.decode(key, userCharpage) : null; // same code page as the signboard texts, or no key ever matches
+ 					const decoded_translation =
+ 						translation && translation.length > 1 ? userStringDecoder.decode(translation) : null;
+ 					SignBoardTranslatedTable[decoded_key] = decoded_translation;
