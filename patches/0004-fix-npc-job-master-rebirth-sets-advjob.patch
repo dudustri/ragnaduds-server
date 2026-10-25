@@ -1,9 +1,9 @@
 From: dudustri <eduardostrindade@gmail.com>
-Subject: [PATCH] fix(npc): Job Master rebirth also sets ADVJOB for the Valkyrie's transcendent job NPCs
+Subject: [PATCH] fix(npc): Job Master sets ADVJOB on rebirth and stops at the transcendent second classes on pre-renewal
 
 ---
 diff --git a/npc/custom/jobmaster.txt b/npc/custom/jobmaster.txt
-index efa5e5cde..2362c4bc2 100644
+index efa5e5cde..4849bd1ca 100644
 --- a/npc/custom/jobmaster.txt
 +++ b/npc/custom/jobmaster.txt
 @@ -350,6 +350,8 @@ function	Job_Change	{
@@ -15,3 +15,18 @@ index efa5e5cde..2362c4bc2 100644
  	jobchange .@to_cls;
  	if (.@to_cls == Job_Novice_High)
  		resetlvl(1);
+@@ -538,6 +540,14 @@ OnInit:
+ 		.BabyExpanded = false;
+ 		.BabySummoner = false;
+ 	}
++	// RagnaDuds: pre-renewal has no job data for these, so stop at the transcendent second classes
++	if( !checkre(0) ) {
++		.ThirdClass = false;
++		.BabyThird = false;
++		.FourthClass = false;
++		.FourthExpanded = false;
++		.SecondExpanded = false;
++	}
+ 	end;
+ }
+ 
