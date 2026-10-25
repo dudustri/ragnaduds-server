@@ -1,0 +1,17 @@
+From: dudustri <eduardostrindade@gmail.com>
+Subject: [PATCH] fix(npc): Job Master rebirth also sets ADVJOB for the Valkyrie's transcendent job NPCs
+
+---
+diff --git a/npc/custom/jobmaster.txt b/npc/custom/jobmaster.txt
+index efa5e5cde..2362c4bc2 100644
+--- a/npc/custom/jobmaster.txt
++++ b/npc/custom/jobmaster.txt
+@@ -350,6 +350,8 @@ function	Job_Change	{
+ 	mes "You are now " + callfunc("F_InsertArticle", jobname(.@to_cls)) + "!";
+ 	if (.@to_cls == Job_Novice_High && .LastJob)
+ 		lastJob = Class; // Saves the lastJob for rebirth
++	if (.@to_cls == Job_Novice_High)
++		ADVJOB = roclass(eaclass()|EAJL_UPPER); // RagnaDuds: the Valkyrie's variable, so the official transcendent job NPCs accept us too
+ 	jobchange .@to_cls;
+ 	if (.@to_cls == Job_Novice_High)
+ 		resetlvl(1);
