@@ -1,5 +1,5 @@
 From: dudustri <eduardostrindade@gmail.com>
-Subject: [PATCH] feat(map): pre-renewal Gravitation Field scales with MATK and INT and hits twice per second
+Subject: [PATCH] feat(map): pre-renewal Gravitation Field scales with MATK and INT and hits 5 times per second
 
 ---
 diff --git a/db/pre-re/skill_db.yml b/db/pre-re/skill_db.yml
@@ -11,7 +11,7 @@ index 7b1bd6fe9..09260e4e0 100644
        Id: Gravitation
        Layout: 2
 -      Interval: 1000
-+      Interval: 500   # RagnaDuds: 2 hits per second (official 1000)
++      Interval: 200   # RagnaDuds: 5 hits per second (official 1000)
        Target: Enemy
        Flag:
          NoOverlap: true
