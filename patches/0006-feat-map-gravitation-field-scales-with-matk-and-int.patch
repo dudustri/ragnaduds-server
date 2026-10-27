@@ -1,0 +1,32 @@
+From: dudustri <eduardostrindade@gmail.com>
+Subject: [PATCH] feat(map): pre-renewal Gravitation Field scales with MATK and INT and hits twice per second
+
+---
+diff --git a/db/pre-re/skill_db.yml b/db/pre-re/skill_db.yml
+index 7b1bd6fe9..09260e4e0 100644
+--- a/db/pre-re/skill_db.yml
++++ b/db/pre-re/skill_db.yml
+@@ -13073,7 +13073,7 @@ Body:
+     Unit:
+       Id: Gravitation
+       Layout: 2
+-      Interval: 1000
++      Interval: 500   # RagnaDuds: 2 hits per second (official 1000)
+       Target: Enemy
+       Flag:
+         NoOverlap: true
+diff --git a/src/map/battle.cpp b/src/map/battle.cpp
+index 5420fbde0..eb3631a6b 100644
+--- a/src/map/battle.cpp
++++ b/src/map/battle.cpp
+@@ -6416,7 +6416,9 @@ struct Damage battle_calc_misc_attack(block_list *src,block_list *target,uint16
+ 			nk.set(NK_IGNOREELEMENT); //These two are not properties of the weapon based part.
+ 			break;
+ 		case HW_GRAVITATION:
+-			md.damage = 200 + 200 * skill_lv;
++			// RagnaDuds: 100% MATK + 2x INT per level (500% MATK + 10x INT at lv 5) instead of 200 + 200 * lv;
++			// still misc damage, so it keeps ignoring MDEF and element
++			md.damage = (int64)rnd_value(sstatus->matk_min, sstatus->matk_max) * skill_lv + sstatus->int_ * 2 * skill_lv;
+ 			md.dmotion = 0; //No flinch animation
+ 			if (target->type == BL_MOB) {
+ 				mob_data& mob = *reinterpret_cast<mob_data*>(target);
