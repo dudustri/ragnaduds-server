@@ -1,0 +1,32 @@
+From: dudustri <eduardostrindade@gmail.com>
+Subject: [PATCH] fix(map): no EXP gain at max base or job level
+
+---
+diff --git a/src/map/pc.cpp b/src/map/pc.cpp
+index eceefa9fc..b65ff3d19 100755
+--- a/src/map/pc.cpp
++++ b/src/map/pc.cpp
+@@ -8479,18 +8479,11 @@ void pc_gainexp(map_session_data *sd, block_list *src, t_exp base_exp, t_exp job
+ 	nextb = pc_nextbaseexp(sd);
+ 	nextj = pc_nextjobexp(sd);
+ 
+-	if (flag&4){
+-		if( sd->status.base_exp >= MAX_LEVEL_BASE_EXP )
+-			base_exp = 0;
+-		else if( sd->status.base_exp + base_exp >= MAX_LEVEL_BASE_EXP )
+-			base_exp = MAX_LEVEL_BASE_EXP - sd->status.base_exp;
+-	}
+-	if (flag&8){
+-		if( sd->status.job_exp >= MAX_LEVEL_JOB_EXP )
+-			job_exp = 0;
+-		else if( sd->status.job_exp + job_exp >= MAX_LEVEL_JOB_EXP )
+-			job_exp = MAX_LEVEL_JOB_EXP - sd->status.job_exp;
+-	}
++	// RagnaDuds: no EXP at all at max level (official keeps adding up to MAX_LEVEL_BASE/JOB_EXP)
++	if (flag&4)
++		base_exp = 0;
++	if (flag&8)
++		job_exp = 0;
+ 
+ 	if (!(exp_flag&2) && battle_config.max_exp_gain_rate && (base_exp || job_exp)) {
+ 		//Note that this value should never be greater than the original
