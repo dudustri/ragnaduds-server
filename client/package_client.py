@@ -57,7 +57,7 @@ STORED = {".grf", ".zip", ".mp3", ".bmp", ".jpg", ".png", ".avi", ".bik"}   # al
 SCREENS = os.path.join(HERE, "login")                  # build/installer/make_assets.py
 GRF_ITEMS = os.path.join(HERE, "grf_items")            # cashshop/build_shop.py
 GRF_CASINO = os.path.join(HERE, "grf_casino")          # casino/build_casino_art.py (renewal only)
-GRF_OWN = os.path.join(HERE, "..", "grf", "data")      # our own sprites (grf/README.md), pre-renewal only: the 2026
+GRF_OWN = os.path.join(HERE, "..", "grf", "data")      # our own sprites (grf/readme.md), pre-renewal only: the 2026
                                                        # client already has more hairstyles, ours would replace them
 CASINO_BGM = os.path.join(HERE, "casino_media", "BGM")  # your own casino music, duds_casino<N>.mp3 (git-ignored)
 ITEMINFO = {"System/itemInfo_true.lub": os.path.join(HERE, "itemInfo_true.lub"),   # renewal item info loader
@@ -342,7 +342,7 @@ def main():
               "UNINSTALL: Windows: Start menu -> RagnaDuds -> Uninstall, Settings -> Apps, or 'Uninstall RagnaDuds.bat'.\r\n"
               "  Linux: 'Uninstall RagnaDuds ...' in the app menu, or ./uninstall.sh\r\n\r\n"
               "Keep the game windowed and smaller than your screen (e.g. 1280x720).\r\n"
-              "Homunculus: type /hoai in the chat once and it hunts by itself (AI/USER_AI/README_RagnaDuds.txt).\r\n"
+              "Homunculus: type /hoai in the chat once and it hunts by itself (AI/USER_AI/readme_ragnaduds.txt).\r\n"
               "Account: ask Duds.\r\n")
 
     game_tmp = out + ".game.part"; tmp = out + ".part"

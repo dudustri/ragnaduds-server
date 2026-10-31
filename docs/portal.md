@@ -2,16 +2,16 @@
 
 `build/portal` (Go, one binary, SQLite in the `portal_data` volume), behind Caddy (`build/web/Caddyfile`).
 
-## What players see
+## Player pages
 - **/join** (public): the terms → "I agree", the explicit "no connection with Gravity" statement → "I confirm",
-  then an optional message, name, surname, e-mail and the username they want. Saved as *pending* with the
+  then an optional message, name, surname, e-mail and the requested username. Saved as *pending* with the
   terms version and both confirmations (date + time).
-- **/login**: their own username/password (the same as in the game). Everything else on the site (home, features,
+- **/login**: the player's username/password (the same as in the game). Everything else on the site (home, features,
   downloads) needs it: Caddy asks the portal (`forward_auth /auth`).
-- **/forgot**: e-mail → their username + a link to choose a new password (2 hours, one use).
+- **/forgot**: e-mail → the username + a link to choose a new password (2 hours, one use).
 - **/account**: change password (game on both servers + website).
 
-## What you (admin) do
+## Admin pages
 - **/admin**: pending requests → APPROVE (creates the game account on both servers and e-mails a
   "choose your password" link, 7 days) or REJECT (optional polite e-mail). Users: new link, disable, admin flag.
 - **/admin/outbox**: every e-mail. With SMTP off they are only kept here: open one to copy its link.
@@ -28,9 +28,9 @@ Apply: `./duds.sh config vm env && ./duds.sh up vm portal`. Any SMTP provider wo
 ## Passwords
 - Game passwords are MD5 (`use_MD5_passwords: yes` in hosts/*/*/import/login_conf.txt); `./duds.sh accounts`
   and the portal write MD5. Website passwords: argon2id in SQLite.
-- Existing accounts were imported once (`./duds.sh portal vm import`, their game password became their website
+- Existing accounts were imported once (`./duds.sh portal vm import`: each game password became the website
   password) and then converted (`./duds.sh portal vm md5`). Players without e-mail: `./duds.sh portal vm link <user>`
-  prints a set-password link to send them.
+  prints a set-password link for the player.
 - The launchers keep downloading updates with the shared token (`DL_TOKEN`, `./duds.sh set-password`).
 
 ## Privacy

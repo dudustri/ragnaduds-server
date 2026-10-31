@@ -984,4 +984,4 @@ Verified wearable by **all 11** classes in this file unless noted. Good "bundle"
 - rAthena treats KO/Rebellion as normal-tier and SE/SR/ESN as non-trans 3rd; this is the reason several popular iRO items are missing from their tables.
 - iRO guide tables for Mechanic/Genetic/Rebel/Kagerou are partly marked "outdated"; endgame picks there lean on class-skill Helm of Faith / Temporal Circlet bonuses read from the item scripts.
 - ESN has no named build list on iRO Wiki; its two builds are assembled from ESN-wearable DB gear.
-- Effects of enchant-dependent items (Automatic, Illusion, Temporal Circlet, Biolab) depend on your enchant NPC scripts being enabled on the server.
+- Effects of enchant-dependent items (Automatic, Illusion, Temporal Circlet, Biolab) depend on the enchant NPC scripts being enabled on the server.

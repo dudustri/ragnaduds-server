@@ -1,17 +1,17 @@
 # In-game GM commands
 
-Type them in the chat box. Your account must be a GM (**group 99 = Admin**, e.g. `dudsgm`). Make one (or promote someone):
+Commands are typed in the chat box. The account must be a GM (**group 99 = Admin**). Creating or promoting one:
 ```bash
 ./duds.sh add-user vm <username> <M|F> 99      # then relog
 ```
-- `@command` acts on **you**. `!command <character> <values>` does the same to **another player**: name first, then values (e.g. `!lvup Padrinho 10`, `!job Padrinho 4008`). On our servers it's `!` instead of rAthena's usual `#`, because the 2026 client swallows lines starting with `#`.
-- `@help <command>` shows the syntax in game. `@commands` lists everything you're allowed to use.
+- `@command` acts on **the GM's own character**. `!command <character> <values>` does the same to **another player**: name first, then values (e.g. `!lvup PlayerName 10`, `!job PlayerName 4008`). On these servers it's `!` instead of rAthena's usual `#`, because the 2026 client swallows lines starting with `#`.
+- `@help <command>` shows the syntax in game. `@commands` lists everything the account is allowed to use.
 - Full list (~300 commands): `doc/atcommands.txt` and `conf/atcommands.yml`.
 - `[ ]` = optional, `< >` = required. Names with spaces: use the ID or quotes.
 
 ---
 
-## From your computer, without logging in (no restart)
+## From the command line, without logging in (no restart)
 `./duds.sh gm <host> <re|pre> @command [args]` types the command into the running map server's console and shows
 what it logged, e.g. `./duds.sh gm vm re @reloadscript`, `./duds.sh gm vm re @reloadcashdb`,
 `./duds.sh gm vm pre @kami Server restart in 5 minutes`. Only commands that don't need a target player (reloads,
@@ -22,9 +22,9 @@ announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and 
 |---|---|
 | `@monster <name/ID> [amount]` | spawn monsters (alias `@spawn`). e.g. `@monster poring 10`, `@monster 1002 5` |
 | `@monsterbig <name/ID>` / `@monstersmall <name/ID>` | giant / tiny version |
-| `@summon <name/ID> [minutes]` | spawn a monster that fights **for** you |
-| `@clone <player>` | spawn a clone of a player that helps you |
-| `@killmonster2` | kill all monsters on your map (no drops) |
+| `@summon <name/ID> [minutes]` | spawn a monster that fights **for** the GM |
+| `@clone <player>` | spawn a clone of a player that helps the GM |
+| `@killmonster2` | kill all monsters on the current map (no drops) |
 | `@killmonster <map>` | kill all monsters on a map (they drop items) |
 | `@cleanmap` | delete all items lying on the floor |
 | `@mobinfo <name/ID>` | monster stats, exp, drops |
@@ -37,7 +37,7 @@ announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and 
 | `@blvl <n>` | +n base levels (`@baselevelup`). `@blvl 98` → level 99. Negative lowers |
 | `@jlvl <n>` | +n job levels (`@joblevelup`) |
 | `@job <name/ID>` | change job, e.g. `@job 4008` (Lord Knight), `@job Knight` |
-| `@allskill` | learn every skill of your job |
+| `@allskill` | learn every skill of the current job |
 | `@allstats [value]` | add to all stats (max if no value) |
 | `@str <n>` (also `@agi @vit @int @dex @luk`) | raise one stat |
 | `@stpoint <n>` / `@skpoint <n>` | give stat / skill points |
@@ -46,12 +46,12 @@ announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and 
 ## Survive ("god mode")
 | Command | What it does |
 |---|---|
-| `@god` | **custom** (our `gm_commands.txt`): toggle Invincible status, every hit does 1 damage. `!god <player>` for someone else |
-| `@nocooldown` | **custom**: toggle zero cooldown + zero after-cast delay for the skills you know. Run it again after learning new skills (`@allskill`). Removed on logout. Turning it off also clears other timed script buffs (food etc.) |
-| `@resetcooltime` | built-in: reset all your cooldowns once |
-| `@monsterignore` | monsters and players can't attack you (toggle; alias `@battleignore`) |
+| `@god` | **custom** (`gm_commands.txt`): toggle Invincible status, every hit does 1 damage. `!god <player>` for someone else |
+| `@nocooldown` | **custom**: toggle zero cooldown + zero after-cast delay for the skills the character knows. It needs running again after learning new skills (`@allskill`). Removed on logout. Turning it off also clears other timed script buffs (food etc.) |
+| `@resetcooltime` | built-in: reset all cooldowns once |
+| `@monsterignore` | monsters and players can't attack the character (toggle; alias `@battleignore`) |
 | `@heal [hp sp]` | full heal (no numbers = full) |
-| `@alive` | revive yourself |
+| `@alive` | revive the character |
 | `@raisemap` | revive everyone on the map |
 | `@hide` | invisible (toggle) |
 
@@ -62,7 +62,7 @@ announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and 
 | `@disguise <monster>` / `@undisguise` | look like a monster to others |
 | `@size <0-2>` | 0 normal, 1 small, 2 big |
 | `@hairstyle <n>` / `@dye <n>` / `@model <hair> <color> <clothes>` | change looks |
-| `@effect <id>` | play a visual effect on yourself |
+| `@effect <id>` | play a visual effect on the character |
 
 ## Move around
 | Command | What it does |
@@ -71,9 +71,9 @@ announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and 
 | `@warp <map> [x y]` | warp anywhere (`@mapmove`), e.g. `@warp prt_fild08 150 150` |
 | `@jump [x y]` | random spot on the map (like a Fly Wing) |
 | `@jumpto <player>` | go to a player (`@goto`) |
-| `@recall <player>` / `@recallall` | bring a player / everyone to you |
+| `@recall <player>` / `@recallall` | bring a player / everyone to the GM |
 | `@speed <1-1000>` | walk speed, 1 = fastest, 150 = normal |
-| `@save` / `@load` | set / go to your respawn point |
+| `@save` / `@load` | set / go to the respawn point |
 | `@where <player>` / `@who` | find a player / who's online |
 
 ## Items and money
@@ -82,22 +82,22 @@ announcements...). Needs `console: on` (hosts/<host>/*/import/map_conf.txt) and 
 | `@item <name/ID> <amount>` | get items, e.g. `@item 501 100` (Red Potion), `@item Jellopy 10` |
 | `@item2 <id> <qty> <identified> <refine> <broken> <c1> <c2> <c3> <c4>` | item with refine + cards, e.g. `@item2 1201 1 1 10 0 4001 0 0 0` |
 | `@zeny <amount>` | get zeny (negative removes) |
-| `@cash <amount>` · `!cash "<name>" <amount>` | Cash Shop points for you / for a player (renewal; negative removes) |
-| `@points` | (everyone) your Cash Shop points and how to earn more: +200 daily login, +60/hour played, +50/MVP (+5 in Cheffenia), +30/PvP kill |
+| `@cash <amount>` · `!cash "<name>" <amount>` | Cash Shop points for the GM / for a player (renewal; negative removes) |
+| `@points` | (everyone) the character's Cash Shop points and how to earn more: +200 daily login, +60/hour played, +50/MVP (+5 in Cheffenia), +30/PvP kill |
 | `@refine <position> <+/- n>` | refine equipped gear (`@refine` alone lists positions) |
-| `@refine 0 10` | **refine everything you're wearing to the max** (+10 pre-renewal; use `@refine 0 20` on renewal) |
+| `@refine 0 10` | **refine everything equipped to the max** (+10 pre-renewal; use `@refine 0 20` on renewal) |
 | `@identify` / `@repairall` | identify / repair everything |
 | `@storage` / `@gstorage` | open storage / guild storage anywhere |
 | `@autoloot [on/off/%]` | loot goes to inventory |
 | `@iteminfo <name/ID>` | item details |
-| `@itemreset` | **delete** your whole inventory |
+| `@itemreset` | **delete** the whole inventory |
 
 ## Server / players
 | Command | What it does |
 |---|---|
-| `@broadcast <msg>` / `@kami <msg>` | yellow message to everyone (with / without your name) |
+| `@broadcast <msg>` / `@kami <msg>` | yellow message to everyone (with / without the GM's name) |
 | `@kick <player>` / `@kickall` | disconnect player / everyone |
-| `@ban <time> <player>` / `@unban <player>` | ban, e.g. `@ban +1d Padrinho` |
+| `@ban <time> <player>` / `@unban <player>` | ban, e.g. `@ban +1d PlayerName` |
 | `@jail <player>` / `@unjail <player>` | send to / release from jail |
 | `@mute <player>` | stop someone from talking |
 | `@day` / `@night` | change lighting for everyone |
@@ -538,7 +538,7 @@ One full set per class line. The job IDs it's for are listed under each class na
 - **Min lv** = required base level (empty = none).
 
 ## Refining (`@refine`)
-`@refine <position> <amount>` refines what you're **wearing** (+ or -). Max: **+10 pre-renewal**, **+20 renewal**. GM refine never fails and ignores the "refinable" flag.
+`@refine <position> <amount>` refines what the character is **wearing** (+ or -). Max: **+10 pre-renewal**, **+20 renewal**. GM refine never fails and ignores the "refinable" flag.
 
 | Position | Slot | | Position | Slot |
 |---|---|---|---|---|
@@ -550,7 +550,7 @@ One full set per class line. The job IDs it's for are listed under each class na
 | `1` | head low | | | |
 
 **Refine everything to the max:** `@refine 0 10` (pre-renewal) / `@refine 0 20` (renewal). Asking for more is capped, and `@refine 0 -20` resets everything to +0.
-Only **equipped** items are refined; items in your inventory are skipped (equip them first, or create them refined with `@item2`).
+Only **equipped** items are refined; items in the inventory are skipped (they must be equipped first, or created refined with `@item2`).
 
 Examples: `@refine 2 5` = weapon +5 · `@refine 16 -3` = armor -3.
 Or create items already refined: `@item2 <ID> 1 1 <refine> 0 <card1> <card2> <card3> <card4>`, e.g. `@item2 1172 1 1 10 0 4305 4142 0 0` = +10 Claymore with Turtle General + Doppelganger. (Order: item, amount, identified, refine, attribute, 4 cards; 0 = empty slot.)
@@ -568,7 +568,7 @@ Taken from the MVP drops in `db/pre-re/mob_db.yml`; slot and effect read from ea
 | 4137 | Drake | no size penalty (full damage vs all sizes) | Drake |
 | 4142 | Doppelganger | +10% attack speed | Doppelganger |
 | 4147 | Baphomet | splash damage around target, -10 HIT | Baphomet |
-| 4263 | Samurai Spector | ignores DEF of normal monsters, but no HP regen and you lose HP | Samurai Specter |
+| 4263 | Samurai Spector | ignores DEF of normal monsters, but no HP regen and constant HP loss | Samurai Specter |
 | 4276 | Lord of The Dead | chance of stun/curse/silence/poison…, coma on normal monsters | Lord of the Dead |
 | 4305 | Turtle General | +20% damage vs all monsters, Magnum Break autocast | Turtle General |
 | 4318 | Stormy Knight | freeze chance + Storm Gust autocast | Stormy Knight |
@@ -657,7 +657,7 @@ Taken from the MVP drops in `db/pre-re/mob_db.yml`; slot and effect read from ea
 ### Consumables per class (pre-renewal)
 
 Every item checked in `db/pre-re/item_db_*.yml`: exists, usable by the class (Berserk/Awakening potions are class-locked) and level. Same IDs exist on the renewal server.
-- **Speed potion** = attack speed. Strongest allowed: Berserk `657` (lv 85) > Awakening `656` (lv 40) > Concentration `645` (anyone). If your level is lower, use the next one.
+- **Speed potion** = attack speed. Strongest allowed: Berserk `657` (lv 85) > Awakening `656` (lv 40) > Concentration `645` (anyone). A lower-level character uses the next one.
 - **Stat dishes** = +10 to one stat for 20 minutes (they stack with each other: one of each stat).
 - **For everyone:** White Potion `504`, Condensed White Potion `547`, Blue Potion `505`, Yggdrasil Berry `607`, Yggdrasil Seed `608`, Yggdrasil Leaf `610`, Fly Wing `601`, Butterfly Wing `602`, Speed Potion `12016` (movement speed for 5 s, not attack speed).
 
@@ -2909,7 +2909,7 @@ Other weapons: Adulter Fides Foxtail Wand `550027`
 ## Mounts & pets
 | Command | What it does |
 |---|---|
-| `@mount` | ride / get off your job's mount. **Knight / Lord Knight → Peco Peco**, Crusader / Paladin → Grand Peco. The class is required, the skill isn't |
+| `@mount` | ride / get off the job's mount. **Knight / Lord Knight → Peco Peco**, Crusader / Paladin → Grand Peco. The class is required, the skill isn't |
 | `@mount <1-5>` | Rune Knight (renewal): dragon color (needs Dragon Training skill: `@allskill`) |
 | `@mount` | Ranger (renewal): warg (needs Warg Rider skill); Mechanic: Mado Gear |
 | `@mount2` | cash-shop mount (any class) |
@@ -2928,28 +2928,28 @@ Quick test: `@job 4008` → `@allskill` → `@mount`.
 | `@size 2` / `@size 1` / `@size 0` | giant / tiny / normal |
 | `@monsterbig <monster>` / `@monstersmall <monster>` | giant / tiny monsters |
 | `@evilclone <player>` | spawn an aggressive clone of a player |
-| `@slaveclone <player>` | clone that follows and fights for you |
-| `@summon <monster> [minutes]` | a monster pet that fights for you (`@summon 1039 10` = Baphomet for 10 min) |
+| `@slaveclone <player>` | clone that follows and fights for the GM |
+| `@summon <monster> [minutes]` | a monster pet that fights for the GM (`@summon 1039 10` = Baphomet for 10 min) |
 | `@fakename <name>` | temporary fake name (no name = back to normal) |
-| `@me <text>` | action text: `*YourName text*` |
+| `@me <text>` | action text: `*CharacterName text*` |
 | `@npctalk <npc> <text>` | make an NPC say something |
 | `@kamic <hex color> <text>` | colored server-wide message, e.g. `@kamic FF0000 Hello` |
 | `@effect <id>` / `@misceffect <id>` | play visual effects (try ids 0–1000) |
 | `@nuke <player>` | blow up a player and everyone around them |
-| `@doom` / `@doommap` | kill everyone on the server / on your map (not GMs) |
-| `@raisemap` | revive everyone on your map |
-| `@pvpon` / `@pvpoff` | PvP on your current map |
+| `@doom` / `@doommap` | kill everyone on the server / on the current map (not GMs) |
+| `@raisemap` | revive everyone on the current map |
+| `@pvpon` / `@pvpoff` | PvP on the current map |
 | `@duel` | challenge someone to a duel |
-| `@killer` / `@killable` | you can attack / be attacked outside PvP |
+| `@killer` / `@killable` | the character can attack / be attacked outside PvP |
 | `@marry <player>` / `@divorce` | instant wedding |
-| `@changecharsex` | change your character's gender (relog) |
+| `@changecharsex` | change the character's gender (relog) |
 | `@font <0-9>` | change the client font |
 
 ## Build guide: Mage → Instant Cast High Wizard (pre-renewal)
 
 In pre-renewal, every point of DEX cuts cast time, and at **150 total DEX** cast time is zero. "Total" includes the job bonus, gear, Blessing and food, so check the second number in the status window. The goal is 150 DEX while keeping INT high for damage.
 
-Path: **Mage → Wizard (job 50) → rebirth → High Wizard**. Rebirth gives 100 extra stat points, which you need to reach both INT 99 and DEX 99.
+Path: **Mage → Wizard (job 50) → rebirth → High Wizard**. Rebirth gives 100 extra stat points, which are needed to reach both INT 99 and DEX 99.
 
 ### Stats
 | Level | INT | DEX | VIT |
@@ -2964,7 +2964,7 @@ STR, AGI and LUK stay at 1.
 
 **Mage skills:** Fire Bolt, Cold Bolt and Lightning Bolt to 10. Napalm Beat 1 and Frost Diver 1 unlock Jupitel Thunder and Storm Gust as a Wizard. Put the rest into Fire Wall.
 
-**Tips:** the **Agente VIP** in towns gives free Blessing (+10 DEX), which counts toward the 150. A **Phen** card stops enemies from interrupting your cast, but it makes casting 25% slower, so use it only once your DEX is high.
+**Tips:** the **Agente VIP** in towns gives free Blessing (+10 DEX), which counts toward the 150. A **Phen** card stops enemies from interrupting casts, but it makes casting 25% slower, so it only pays off once DEX is high.
 
 ### Mage (lv 50–70)
 | Slot | Item |
@@ -3014,7 +3014,7 @@ Wing Staff +7, Magic Bible Vol1 +7 with Thara Frog, Mage Hat, Robo Eye, Robe of 
 @item 2717 1
 ```
 
-**Shield card:** general picks are Despero of Thanatos `4397` (INT + refine − 6, so INT +4 on a +10 shield), Thief Bug Egg `4012` (HP +400, best at low levels) or Andre Egg `4013` (HP +5%). Thara Frog `4058` (−30% from demi-humans and players) is the PvP pick. To level, use the card for the race you're fighting instead: Khalitzburg `4136` demons, Orc Warrior `4066` brutes, Bigfoot `4074` insects, Soldier Andre `4059` plants, Teddy Bear `4340` undead, Penomena `4314` formless, Sky Petite `4120` dragons, Anubis `4138` angels, Rafflesia `4083` fish.
+**Shield card:** general picks are Despero of Thanatos `4397` (INT + refine − 6, so INT +4 on a +10 shield), Thief Bug Egg `4012` (HP +400, best at low levels) or Andre Egg `4013` (HP +5%). Thara Frog `4058` (−30% from demi-humans and players) is the PvP pick. For leveling, the card for the race being fought works better: Khalitzburg `4136` demons, Orc Warrior `4066` brutes, Bigfoot `4074` insects, Soldier Andre `4059` plants, Teddy Bear `4340` undead, Penomena `4314` formless, Sky Petite `4120` dragons, Anubis `4138` angels, Rafflesia `4083` fish.
 
 ### High Wizard endgame (lv 99, after rebirth)
 La'cryma Stick +10 (transcendent only), Valkyrja's Shield +7 with Thara Frog, Diadem +9 with Kathryne Keyron (−1% cast time per refine), Well-Chewed Pencil, Valkyrian Armor +7 with Marc, Valkyrian Manteau +7 with Raydric, Sleipnir +7, Orleans's Glove with Phen, Brisingamen.

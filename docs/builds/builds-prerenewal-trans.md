@@ -11,8 +11,8 @@ Server: rAthena **pre-renewal**, max lv 99/70, 10x/10x/3x. Every item and card b
 
 ### How to read this / caveats
 
-- **mid** tier = base lv ~70-90, common/affordable gear (nothing above lv 90 to equip). **end** tier = lv 99 best-in-slot for PvM on a friends server; WoE-only variants are noted.
-- Current bROWiki pages are Renewal-era and most BR pre-re private-server guides rely on **custom donate gear** (Hades/Deuses sets, 4-slot headgears) that does not exist in rAthena. From bRO I only took the build archetypes and the item/card picks that exist in this DB (e.g. Robo Eye, Imp/Siroma bolt cards, Evil Snake Lord card, Kiel-D-01, Diabolus set).
+- **mid** tier = base lv ~70-90, common/affordable gear (nothing above lv 90 to equip). **end** tier = lv 99 best-in-slot for PvM on a small private server; WoE-only variants are noted.
+- Current bROWiki pages are Renewal-era and most BR pre-re private-server guides rely on **custom donate gear** (Hades/Deuses sets, 4-slot headgears) that does not exist in rAthena. From bRO, only the build archetypes were taken and the item/card picks that exist in this DB (e.g. Robo Eye, Imp/Siroma bolt cards, Evil Snake Lord card, Kiel-D-01, Diabolus set).
 - Weapon cards: swap race/size cards per target (Hydra = Demi-Human, Minorous = Large, Skeleton Worker = Medium, Abysmal Knight = Boss). The table shows one sensible default.
 - "trans-only" items (Classes: Upper) cannot be worn by Star Gladiator, Soul Linker, Ninja, Gunslinger or Super Novice. Most "all jobs" gear excludes Novice/Super Novice in this DB, so Super Novice gets its own Angel set.
 - Refine targets: weapons +7~+10, armor pieces +7 (safe +4) unless the note says otherwise.
@@ -569,7 +569,7 @@ Source/basis: irowiki classic HP (INT/VIT support, DEX/VIT WoE); Kiel-D-01 is th
 
 | Slot | Item (Id) | Card (Id) | Notes |
 |---|---|---|---|
-| Weapon | Dea Staff [1] (2005) | - | Dea Staff [1] (trans-only 2H; INT+6 VIT+2, MATK+15%+, heal proc) - or Croce Staff [1] if you want a shield |
+| Weapon | Dea Staff [1] (2005) | - | Dea Staff [1] (trans-only 2H; INT+6 VIT+2, MATK+15%+, heal proc) - or Croce Staff [1] to keep a shield |
 | Shield / Left hand | (two-handed weapon) | - | - |
 | Upper head | Diadem [1] (5313) | Kiel-D-01 (4403) | Diadem [1] (top+mid), Kiel-D-01 (after-cast delay -30%) |
 | Mid head | (covered by upper headgear) | - | - |
@@ -1228,7 +1228,7 @@ Source/basis: irowiki classic Super Novice; Angel set is the SN-exclusive set (c
 | Lower head | Well-Chewed Pencil [0] (5574) | - | Well-Chewed Pencil |
 | Armor | Angelic Protection [1] (2355) | Peco Peco (4031) | Angelic Protection [1], Peco Peco |
 | Garment | Angelic Cardigan [1] (2521) | Raydric (4133) | Angelic Cardigan [1], Raydric |
-| Shoes | Angel's Reincarnation [1] (2420) | Green Ferus (4381) | Angel's Reincarnation [1], Green Ferus (Sleipnir if you drop the set) |
+| Shoes | Angel's Reincarnation [1] (2420) | Green Ferus (4381) | Angel's Reincarnation [1], Green Ferus (Sleipnir when dropping the set) |
 | Accessory 1 | Megingjard [0] (2629) | - | Megingjard |
 | Accessory 2 | Brisingamen [0] (2630) | - | Brisingamen |
 
@@ -1258,7 +1258,7 @@ Items that show up for many classes - good candidates for the permanent Cash Sho
 | Morrigane's Helm (5127) | Morrigane's_Helm | 0 | 61 | all jobs except Novice, SuperNovice | Morrigane's Helm (set with 2519/2650/2651: STR+2, LUK+9, CRIT+13, ATK+18) - crit Sin X/Stalker alt |
 | Morpheus's Hood (5126) | Morpheus's_Hood | 0 | 33 | all jobs except Novice, SuperNovice | Morpheus's Hood (set with 2518/2649/2648: INT+5, no cast cancel, cast +25%) - Asura/caster alt |
 | Assaulter Plate (2376) | Assaulter_Plate | 1 | 80 | Alchemist, Blacksmith, Crusader, Knight, Merchant, StarGladiator, Swordman, Taekwon | Assaulter Plate / Captain's Manteau (2538) / Battle Greaves (2435) - WoE set combo: VIT+3, MaxHP+12%, +10% healing received |
-| Lord Kaho's Horn (5013) | Horn_Of_Lord_Kaho | 0 | 1 | all jobs | Lord Kaho's Horn - STR+5 AGI+10 VIT+10 INT+5 LUK+20, all jobs: very overpowered, only sell if you want a 'god item' |
+| Lord Kaho's Horn (5013) | Horn_Of_Lord_Kaho | 0 | 1 | all jobs | Lord Kaho's Horn - STR+5 AGI+10 VIT+10 INT+5 LUK+20, all jobs: very overpowered, only sell it as a 'god item' |
 
 **Universal cards**
 
@@ -1471,7 +1471,7 @@ Items that show up for many classes - good candidates for the permanent Cash Sho
 
 ## Not found in DB / replaced
 
-| Guide item | Status in pre-re DB | What I used instead |
+| Guide item | Status in pre-re DB | Used instead |
 |---|---|---|
 | Elite Archer's Suit (iRO WoE armor, Sniper/FAS guide) | not in DB | Improved Tights / Tights [1] mid, Valkyrian Armor endgame |
 | Meteor Plate (Paladin tank list) | not in DB | Legion Plate Armor [1] (2342) |
@@ -1502,4 +1502,4 @@ Items that show up for many classes - good candidates for the permanent Cash Sho
 - **Assassin Cross Soul Destroyer**: the wiki only says "Zipper Bear weapons in both hands (or Ice Pick left)" - left-hand choice is debated; both options are listed.
 - **High Priest**: iRO Classic = VIT/INT/DEX support; BR private-server guides centre on custom donate gear, so only archetypes were taken.
 - **Sniper**: DS/AGI vs Falcon/LUK camps; both listed. Ballista vs Falken Blitz is a matter of taste (raw ATK vs +10% skill dmg).
-- **Star Gladiator / Soul Linker / Super Novice**: guides give stat builds but almost no gear lists; gear here is my own pick restricted to what those jobs can equip in this DB.
+- **Star Gladiator / Soul Linker / Super Novice**: guides give stat builds but almost no gear lists; gear here is an editorial pick restricted to what those jobs can equip in this DB.
