@@ -52,7 +52,7 @@ Client downloads
   browser-data                 the browser's game folders, made from the downloads (run package first),
                                into deploy/browser-data/ and up to the vm
 
-GRF work (grf/README.md; needs ./duds.sh up local browser)
+GRF work (grf/readme.md; needs ./duds.sh up local browser)
   grf find <text>              list game files whose path has <text>, e.g. grf find poring
   grf get <path>               copy a game file into grf/ to edit it, e.g. grf get 'data\sprite\...\poring.spr'
   grf refresh                  after editing: the browser sees new files (permissions, SELinux) and drops its cache

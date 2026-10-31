@@ -24,8 +24,8 @@ iRO / international:
   https://irowiki.org/wiki/Minstrel , https://irowiki.org/wiki/Severe_Rainstorm
 - ROGGH Library: https://roggh.com/pvm-dragon-breath-rune-knight-by-overdrive/ , https://roggh.com/general-ranger-guide/ ,
   https://roggh.com/wargys-wandering-sorcerer-guide/ , https://roggh.com/jareks-warlock-guide/ (seen only in search summaries)
-- NovaRO wiki guides (Halves' Royal Guard, Ara's Sorcerer, Wolve's Minstrel, DualityDiscretion's Maestro/Wanderer). I only saw
-  these through search-result summaries because the site did not resolve from here, so they back up the choices but were not read directly.
+- NovaRO wiki guides (Halves' Royal Guard, Ara's Sorcerer, Wolve's Minstrel, DualityDiscretion's Maestro/Wanderer). Seen only
+  through search-result summaries because the site did not resolve from here, so these guides back up the choices but were not read directly.
 
 ### How the tiers map to the bRO equipment route
 bROWiki gives the same basic progression for every 3rd class:

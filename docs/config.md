@@ -1,7 +1,7 @@
 # Configuration
 
 ## Where to change things
-Never edit rAthena's `conf/` files. Put changes in the import files of each host and server:
+rAthena's `conf/` files stay unedited. Changes go in the import files of each host and server:
 `deploy/hosts/<local|vm>/<pre_renewal|renewal>/import/` (private, not in git).
 
 | File | For | Apply |
@@ -13,7 +13,7 @@ Never edit rAthena's `conf/` files. Put changes in the import files of each host
 | `groups.yml` | GM / player permissions | restart map |
 | `inter_conf.txt` | database, party share | restart all |
 
-Our scripts (`deploy/*.txt`): `@reloadscript` in game, or restart map.
+Custom scripts (`deploy/*.txt`): `@reloadscript` in game, or restart map.
 On the VM: `./duds.sh up vm`, then `./duds.sh restart vm prere-map re-map` (or `-char`, `-login`).
 Format: `setting: value`, `//` = comment. Each setting is explained in the rAthena file it comes from, e.g. `grep -n -B5 "^base_exp_rate" conf/battle/exp.conf`.
 
@@ -23,16 +23,16 @@ Format: `setting: value`, `//` = comment. Each setting is explained in the rAthe
 | Rates | 1x | 10x EXP, 3x all drops |
 | Starter kit (Knife, Cotton Shirt, Hat, potions, wings, 10k zeny) | – | ✔ |
 | Warper, healer, job master NPCs | – | ✔ |
-| Agente VIP buffer (Blessing + Agi, free) at bRO's 36 town spots | ✔ | ✔ |
+| Agente VIP buffer (Blessing + Agi + 10 all stats for 1 hour, free) at bRO's 36 town spots | ✔ | ✔ |
 | Free-for-all (no KS protection); parties share EXP + items, always | ✔ | ✔ |
-| `@god`, `@nocooldown` for GMs ([GM-COMMANDS.md](GM-COMMANDS.md)) | ✔ | ✔ |
-| Special maps: Mapas Especiais, Cheffenia, Turn In ([SPECIAL-MAPS.md](SPECIAL-MAPS.md)) | renewal | renewal |
+| `@god`, `@nocooldown` for GMs ([gm-commands.md](gm-commands.md)) | ✔ | ✔ |
+| Special maps: Mapas Especiais, Cheffenia, Turn In ([special-maps.md](special-maps.md)) | renewal | renewal |
 | Random "Bem vindo do Supla:" line at login | ✔ | ✔ |
 | No PIN; characters deleted after 10 min; no self-registration | ✔ | ✔ |
 | Denmark time (daily resets at Danish midnight) | ✔ | ✔ |
 | MVP kills logged + PvP kills counted (website Hall of Fame) | ✔ | ✔ |
-| Autoloot only for your homunculus' kills (players use `@autoloot`) | ✔ | ✔ |
-| Docker's network trusted (no anti-DDoS ban between our servers) | ✔ | ✔ |
+| Autoloot only for a player's homunculus kills (players use `@autoloot`) | ✔ | ✔ |
+| Docker's network trusted (no anti-DDoS ban between the servers) | ✔ | ✔ |
 
 Where each lives:
 - rates, homunculus autoloot, idle trick: `battle_conf.txt`

@@ -1,6 +1,6 @@
 # Deploy
 
-Everything runs from your PC with `./duds.sh`. The VM only needs Docker, the configs and the images.
+Everything runs from the development machine with `./duds.sh`. The VM only needs Docker, the configs and the images.
 
 | | |
 |---|---|
@@ -11,14 +11,14 @@ Everything runs from your PC with `./duds.sh`. The VM only needs Docker, the con
 | Private files | `deploy/hosts/vm/`: `.env` (passwords, `VM_IP`), `accounts.txt`, game configs. Never in git |
 
 ## 1. One-time setup
-**Your PC**
+**Development machine**
 ```bash
 sudo dnf install qemu-user-static                                  # build ARM images
 docker buildx create --name multiarch --driver docker-container --bootstrap
 gh auth refresh -h github.com -s write:packages
 gh auth token | docker login ghcr.io -u dudustri --password-stdin
 ```
-Add `Host duds` (VM IP, user `ubuntu`, your key) to `~/.ssh/config`.
+Add `Host duds` (VM IP, user `ubuntu`, SSH key) to `~/.ssh/config`.
 
 **The VM**
 1. Create it with `vm_provisioning/cloud-init.yaml` (installs Docker, opens the firewall). Reserve the IP.
@@ -34,7 +34,7 @@ Add `Host duds` (VM IP, user `ubuntu`, your key) to `~/.ssh/config`.
 ./duds.sh up vm                # copy configs, pull, start everything
 ./duds.sh accounts vm          # server login + all accounts in accounts.txt
 ./duds.sh autobackup vm        # database backup every 6 h (keeps 7 days)
-./duds.sh package pre          # downloads for friends (address = VM_IP)
+./duds.sh package pre          # player downloads (address = VM_IP)
 ./duds.sh package re
 ./duds.sh files                # upload them (resumable)
 ```
@@ -42,7 +42,7 @@ Add `Host duds` (VM IP, user `ubuntu`, your key) to `~/.ssh/config`.
 ## 3. Check
 - `./duds.sh ps vm`: 12 services "Up".
 - Website: status card shows both servers ONLINE; both download buttons work.
-- Log in with your account on both servers.
+- An account can log in on both servers.
 
 | Problem | Fix |
 |---|---|
@@ -51,9 +51,9 @@ Add `Host duds` (VM IP, user `ubuntu`, your key) to `~/.ssh/config`.
 | stuck after picking a character | `map_ip` in `map_conf.txt` |
 | char/map say "can't connect to login" | `./duds.sh accounts vm` |
 
-## 4. Friends
-Send them: the website link, the website login, and their game account (`./duds.sh add-user vm <username> <M|F>`).
-They download the game from the website, run the installer, press **Start and YEAAAAAAAAAAH!**, and type `/hoai` in game for the homunculus AI.
+## 4. New players
+A new player needs the website link, a website login and a game account (`./duds.sh add-user vm <username> <M|F>`).
+The game is downloaded from the website. The installer sets it up, **Start and YEAAAAAAAAAAH!** launches it, and `/hoai` in game turns on the homunculus AI.
 
 ## 5. Day to day
 | Task | Command |
@@ -66,7 +66,7 @@ They download the game from the website, run the installer, press **Start and YE
 | New account | `./duds.sh add-user vm <username> <M\|F> [99]` |
 | Who's online | `./duds.sh online vm` |
 | New downloads | `./duds.sh package pre\|re` → `./duds.sh files` |
-| Backup to your PC | `./duds.sh backup vm` (the VM keeps its own in `~/duds/backups`) |
+| Backup to the local machine | `./duds.sh backup vm` (the VM keeps its own in `~/duds/backups`) |
 | Restore | `gunzip -c <dump>.sql.gz \| ssh duds 'cd ~/duds && docker compose --env-file hosts/vm/.env exec -T prere-db mariadb -uragnarok -p<PRERE_DB_PASS> ragnarok'` (`re-db` / `RE_DB_PASS` for renewal) |
 
-`up` and `restart` ask first if players are online. Keep it private: the game files are Gravity's.
+`up` and `restart` ask first if players are online. The server stays private because the game files are Gravity's.

@@ -10,4 +10,4 @@ this server's item database (every Id exists and the class can equip it). Each b
 | `builds-renewal-3rd-part1.md` | renewal | Rune Knight, Royal Guard, Warlock, Sorcerer, Ranger, Minstrel, Wanderer |
 | `builds-renewal-3rd-part2.md` | renewal | Arch Bishop, Sura, Guillotine Cross, Shadow Chaser, Mechanic, Genetic, Star Emperor, Soul Reaper, Kagerou/Oboro, Rebellion, Expanded Super Novice |
 
-Read by `cashshop/research_sets.py` to build the shop's class sets ([../CASHSHOP.md](../CASHSHOP.md)).
+Read by `cashshop/research_sets.py` to build the shop's class sets ([../cashshop.md](../cashshop.md)).

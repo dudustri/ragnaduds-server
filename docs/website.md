@@ -1,6 +1,6 @@
 # RagnaDuds website
 
-The friends-only page: login, server status, client downloads, install steps, a mini game, a collage and the Hall of Fame.
+The private player page: login, server status, client downloads, install steps, a mini game, a collage and the Hall of Fame.
 Live at https://ragnaduds.duckdns.org. Languages: EN / PT / DA.
 
 ```mermaid
@@ -10,7 +10,7 @@ flowchart LR
     G -->|duds.sh up vm web| V["VM · HTTPS"]
     Z["client zips"] -->|mounted| V
     ST["status container"] -->|status.json| V
-    V --> B["Friend's browser"]
+    V --> B["Player's browser"]
 ```
 
 ## How it works
@@ -19,11 +19,11 @@ flowchart LR
 - **Login page** (`site/login.html`): the browser turns ID + password into a token and stores it as a cookie. Caddy only serves the site to that cookie (`DL_TOKEN`). The password is never stored on the server.
 - **Server status** and **Hall of Fame** (top 10 by level with MVP/PvP kills, richest, MVP slayers; GMs left out) come from `status/status.json`, written every 15 s by the `status` container (`deploy/status.sh`).
 - **Texts**: all in the `T` object at the top of the script (login page: its own small `T`). The page uses the browser's language (Portuguese, Danish, else English) and remembers the choice.
-- **Lag-o-meter**: measures your real ping every 5 s.
+- **Lag-o-meter**: measures the real ping every 5 s.
 
 ## Fun parts
-- **Mini game** (top): the orc village map. You're the knight on a Peco Peco (your face), with an orc and 3 Porings. Click to walk or attack, or use WASD / arrows. When you bump into a monster there's a 35% chance of a fight. The loser flies off (physics), gets a "RIP", and respawns.
-- **Collage**: your photo with a painted-in white potion and halo. The stickers hang on physics springs: grab and throw them. The card drops from the sky.
+- **Mini game** (top): the orc village map. The player controls a knight on a Peco Peco (with a custom face), alongside an orc and 3 Porings. Clicking walks or attacks; WASD and the arrow keys also work. Bumping into a monster has a 35% chance of starting a fight. The loser flies off (physics), gets a "RIP", and respawns.
+- **Collage**: a photo with a painted-in white potion and halo. The stickers hang on physics springs: they can be grabbed and thrown. The card drops from the sky.
 - **Easter egg**: ↑ ↑ ↓ ↓ ← → ← → B A makes it rain Porings.
 
 ## Tech
